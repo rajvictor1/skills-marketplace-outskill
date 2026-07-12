@@ -1,25 +1,30 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import type { ElementType } from "react";
 import {
-  ArrowRight,
-  BadgeCheck,
-  BookOpen,
-  Boxes,
-  ChevronRight,
-  CircleAlert,
+  ArrowUpRight,
+  Check,
+  Clipboard,
   Code2,
-  Download,
-  Eye,
-  FileScan,
+  Copy,
+  Database,
+  FileText,
   Filter,
   GitFork,
-  LockKeyhole,
+  Layers3,
+  Moon,
+  Package,
   Search,
-  Shield,
-  ShieldAlert,
+  ShieldCheck,
   Sparkles,
-  TerminalSquare,
-  UploadCloud,
+  Sun,
+  Terminal,
+  Wrench,
+  X,
 } from "lucide-react";
 
+import directoryData from "@/data/combined.json";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,402 +38,488 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
-const categories = [
-  "All",
-  "Coding",
-  "Data",
-  "Docs",
-  "Research",
-  "Automation",
-  "Security",
-];
+type Skill = {
+  id: string;
+  name: string;
+  author: string;
+  repo: string | null;
+  description: string;
+  installs: number;
+  downloads: number;
+  stars: number;
+  category: string;
+  tags: string[];
+  source: string;
+  url: string;
+  installCommand: string;
+  lastUpdated: string;
+};
 
-const skills = [
-  {
-    name: "Repo Review Pilot",
-    author: "Avery Chen",
-    category: "Coding",
-    description:
-      "Reviews pull requests with a compact checklist for correctness, tests, accessibility, and risky changes.",
-    tier: "Verified safe",
-    scans: "4 clean layers",
-    downloads: "12.8k",
-    icon: Code2,
-    tone: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-  },
-  {
-    name: "Dataset Cartographer",
-    author: "Mira Patel",
-    category: "Data",
-    description:
-      "Profiles CSV and spreadsheet uploads, flags schema drift, and drafts transformation notes for analysts.",
-    tier: "Verified safe",
-    scans: "No hidden text",
-    downloads: "8.4k",
-    icon: Boxes,
-    tone: "bg-sky-50 text-sky-700 ring-sky-200",
-  },
-  {
-    name: "Grant Draft Studio",
-    author: "Northstar Lab",
-    category: "Docs",
-    description:
-      "Builds first-pass grant narratives from a funder brief, prior proposals, and budget notes.",
-    tier: "Caution",
-    scans: "1 script heuristic",
-    downloads: "5.1k",
-    icon: BookOpen,
-    tone: "bg-amber-50 text-amber-700 ring-amber-200",
-  },
-];
+const skills = directoryData.skills as Skill[];
+const byCategory = directoryData.byCategory as Record<string, number>;
+const categories = ["All", ...Object.keys(byCategory)];
+const featuredTags = Array.from(
+  skills.reduce((counts, skill) => {
+    skill.tags.forEach((tag) => counts.set(tag, (counts.get(tag) ?? 0) + 1));
+    return counts;
+  }, new Map<string, number>())
+)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 14)
+  .map(([tag]) => tag);
 
-const scannerLayers = [
-  {
-    label: "Hidden text",
-    value: "Unicode tags, zero-width characters, and bidi overrides",
-    state: "Passed",
-  },
-  {
-    label: "Dangerous patterns",
-    value: "Prompt overrides, secret reads, and exfiltration language",
-    state: "Passed",
-  },
-  {
-    label: "Script analysis",
-    value: "Network calls, subprocess usage, obfuscation, curl pipes",
-    state: "Review",
-  },
-  {
-    label: "LLM classifier",
-    value: "Best-effort structured triage with conservative weighting",
-    state: "Passed",
-  },
-];
+const categoryIcons: Record<string, ElementType> = {
+  "AI & ML": Sparkles,
+  Backend: Database,
+  "Browser Automation": Wrench,
+  Clawdbot: Package,
+  DevOps: Terminal,
+  Documents: FileText,
+  Frontend: Code2,
+  Mobile: Layers3,
+  Other: Package,
+  "Testing & Quality": ShieldCheck,
+};
 
-const stats = [
-  { label: "Public skills", value: "1,284" },
-  { label: "Blocked submissions", value: "318" },
-  { label: "Clean scan rate", value: "76%" },
-];
+function formatNumber(value: number) {
+  if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+  if (value >= 1000) return `${(value / 1000).toFixed(1)}k`;
+  return String(value);
+}
+
+function categoryTone(category: string) {
+  if (category === "Frontend") return "bg-sky-50 text-sky-700 ring-sky-200";
+  if (category === "AI & ML") return "bg-violet-50 text-violet-700 ring-violet-200";
+  if (category === "Backend") return "bg-emerald-50 text-emerald-700 ring-emerald-200";
+  if (category === "DevOps") return "bg-amber-50 text-amber-700 ring-amber-200";
+  if (category === "Browser Automation") return "bg-rose-50 text-rose-700 ring-rose-200";
+  return "bg-zinc-100 text-zinc-700 ring-zinc-200";
+}
 
 export default function Home() {
+  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isDarkPreview, setIsDarkPreview] = useState(true);
+
+  const filteredSkills = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    return skills.filter((skill) => {
+      const categoryMatch =
+        activeCategory === "All" || skill.category === activeCategory;
+      const tagMatch = !activeTag || skill.tags.includes(activeTag);
+      const queryMatch =
+        !normalizedQuery ||
+        [
+          skill.name,
+          skill.author,
+          skill.repo ?? "",
+          skill.description,
+          skill.category,
+          skill.source,
+          skill.tags.join(" "),
+        ]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedQuery);
+
+      return categoryMatch && tagMatch && queryMatch;
+    });
+  }, [activeCategory, activeTag, query]);
+
+  const displayedSkills = filteredSkills.slice(0, 48);
+
+  async function copyCommand(skill: Skill) {
+    await navigator.clipboard.writeText(skill.installCommand);
+    setCopiedId(skill.id || skill.name);
+    window.setTimeout(() => setCopiedId(null), 1600);
+  }
+
   return (
-    <main className="min-h-screen bg-[#f7f7f4] text-zinc-950">
-      <header className="sticky top-0 z-20 border-b border-zinc-200/80 bg-[#f7f7f4]/90 backdrop-blur">
+    <main
+      className={cn(
+        "min-h-screen transition-colors",
+        isDarkPreview ? "bg-[#0b1020] text-white" : "bg-[#f7f7f4] text-zinc-950"
+      )}
+    >
+      <header
+        className={cn(
+          "sticky top-0 z-20 border-b backdrop-blur",
+          isDarkPreview
+            ? "border-white/10 bg-[#0b1020]/90"
+            : "border-zinc-200 bg-[#f7f7f4]/90"
+        )}
+      >
         <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <a className="flex items-center gap-2 font-semibold" href="#">
-            <span className="grid size-8 place-items-center rounded-lg bg-zinc-950 text-white">
-              <Shield className="size-4" />
+            <span className="grid size-8 place-items-center rounded-lg bg-violet-500 text-white">
+              <Package className="size-4" />
             </span>
-            Outskill
+            Claude Directory
           </a>
-          <nav className="hidden items-center gap-6 text-sm text-zinc-600 md:flex">
-            <a className="hover:text-zinc-950" href="#marketplace">
-              Marketplace
+          <nav
+            className={cn(
+              "hidden items-center gap-5 text-sm md:flex",
+              isDarkPreview ? "text-zinc-300" : "text-zinc-600"
+            )}
+          >
+            <a className="hover:text-violet-400" href="#directory">
+              Directory
             </a>
-            <a className="hover:text-zinc-950" href="#scanner">
-              Scanner
+            <a className="hover:text-violet-400" href="#categories">
+              Categories
             </a>
-            <a className="hover:text-zinc-950" href="#publish">
-              Publish
+            <a className="hover:text-violet-400" href="#source">
+              Source
             </a>
           </nav>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" aria-label="Open GitHub">
-              <GitFork className="size-4" />
+            <Button
+              variant={isDarkPreview ? "secondary" : "outline"}
+              size="icon"
+              aria-label="Toggle theme preview"
+              onClick={() => setIsDarkPreview((value) => !value)}
+            >
+              {isDarkPreview ? <Sun className="size-4" /> : <Moon className="size-4" />}
             </Button>
-            <Button size="sm">
-              <UploadCloud className="size-4" />
-              Submit
+            <Button asChild size="sm">
+              <a href="https://github.com/rajvictor1/skills-marketplace-outskill">
+                <GitFork className="size-4" />
+                Repo
+              </a>
             </Button>
           </div>
         </div>
       </header>
 
-      <section className="border-b border-zinc-200">
-        <div className="mx-auto grid min-h-[620px] w-full max-w-7xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_460px] lg:px-8 lg:py-14">
-          <div className="flex flex-col justify-center">
-            <Badge className="mb-5 w-fit bg-emerald-100 text-emerald-900 hover:bg-emerald-100">
-              <BadgeCheck className="size-3" />
-              Security-first skill discovery
-            </Badge>
-            <h1 className="max-w-3xl text-5xl font-semibold leading-[1.04] tracking-normal text-zinc-950 sm:text-6xl">
-              Browse AI-agent skills with visible trust signals.
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-600">
-              Outskill vets every submitted skill before it reaches the catalog,
-              then shows the scanner evidence that matters: hidden text checks,
-              dangerous patterns, script heuristics, and LLM triage.
-            </p>
+      <section className="mx-auto grid min-h-[560px] w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_440px] lg:px-8 lg:py-14">
+        <div className="flex flex-col justify-center">
+          <Badge className="mb-5 w-fit bg-violet-500/15 text-violet-300 hover:bg-violet-500/15">
+            <Sparkles className="size-3" />
+            Ported from harshith-vaddiparthy/skill-directory
+          </Badge>
+          <h1 className="max-w-3xl text-5xl font-semibold leading-[1.04] tracking-normal sm:text-6xl">
+            Discover Claude Code skills, tools, and extensions.
+          </h1>
+          <p
+            className={cn(
+              "mt-5 max-w-2xl text-lg leading-8",
+              isDarkPreview ? "text-zinc-300" : "text-zinc-600"
+            )}
+          >
+            A browsable directory of installable agent skills from skills.sh and
+            Clawdhub, rebuilt inside your Next.js marketplace with fast search,
+            category filters, tag filters, and copy-ready install commands.
+          </p>
 
-            <div className="mt-8 flex w-full max-w-2xl flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-2 shadow-sm sm:flex-row">
-              <label className="relative flex-1">
-                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
-                <span className="sr-only">Search skills</span>
-                <Input
-                  className="h-11 border-0 bg-transparent pl-9 shadow-none focus-visible:ring-0"
-                  placeholder="Search skills, authors, or trust tiers"
-                />
-              </label>
-              <Button className="h-11 px-4">
-                Search catalog
-                <ArrowRight className="size-4" />
-              </Button>
-            </div>
-
-            <div className="mt-8 grid max-w-2xl grid-cols-3 gap-4">
-              {stats.map((stat) => (
-                <div key={stat.label}>
-                  <div className="text-2xl font-semibold">{stat.value}</div>
-                  <div className="mt-1 text-sm text-zinc-600">{stat.label}</div>
-                </div>
-              ))}
-            </div>
+          <div
+            className={cn(
+              "mt-8 grid gap-3 rounded-lg border p-2 shadow-sm sm:grid-cols-[1fr_auto]",
+              isDarkPreview
+                ? "border-white/10 bg-white/5"
+                : "border-zinc-200 bg-white"
+            )}
+          >
+            <label className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
+              <span className="sr-only">Search skills</span>
+              <Input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                className={cn(
+                  "h-11 border-0 pl-9 shadow-none focus-visible:ring-0",
+                  isDarkPreview ? "bg-transparent text-white" : "bg-transparent"
+                )}
+                placeholder="Search names, authors, tags, or categories"
+              />
+              {query ? (
+                <button
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-100"
+                  onClick={() => setQuery("")}
+                  type="button"
+                  aria-label="Clear search"
+                >
+                  <X className="size-4" />
+                </button>
+              ) : null}
+            </label>
+            <Button className="h-11">
+              <Filter className="size-4" />
+              {filteredSkills.length} results
+            </Button>
           </div>
 
-          <div className="flex items-center">
-            <div className="w-full rounded-lg border border-zinc-200 bg-zinc-950 p-4 text-white shadow-2xl shadow-zinc-900/10">
-              <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                <div className="flex items-center gap-2">
-                  <span className="grid size-8 place-items-center rounded-md bg-emerald-400 text-zinc-950">
-                    <FileScan className="size-4" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-medium">Live scan report</p>
-                    <p className="text-xs text-zinc-400">skill-bundle.zip</p>
-                  </div>
-                </div>
-                <Badge className="bg-emerald-400 text-zinc-950 hover:bg-emerald-400">
-                  Verified safe
-                </Badge>
+          <div className="mt-8 grid max-w-2xl grid-cols-3 gap-4">
+            <div>
+              <div className="text-2xl font-semibold">{directoryData.totalSkills}</div>
+              <div className={cn("mt-1 text-sm", isDarkPreview ? "text-zinc-400" : "text-zinc-600")}>
+                total tools
               </div>
-
-              <div className="space-y-3 py-4">
-                {scannerLayers.map((layer) => (
-                  <div
-                    className="rounded-lg border border-white/10 bg-white/[0.04] p-3"
-                    key={layer.label}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="text-sm font-medium">{layer.label}</p>
-                        <p className="mt-1 text-xs leading-5 text-zinc-400">
-                          {layer.value}
-                        </p>
-                      </div>
-                      <span
-                        className={
-                          layer.state === "Review"
-                            ? "rounded-md bg-amber-300 px-2 py-1 text-xs font-medium text-zinc-950"
-                            : "rounded-md bg-emerald-300 px-2 py-1 text-xs font-medium text-zinc-950"
-                        }
-                      >
-                        {layer.state}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+            </div>
+            <div>
+              <div className="text-2xl font-semibold">{Object.keys(byCategory).length}</div>
+              <div className={cn("mt-1 text-sm", isDarkPreview ? "text-zinc-400" : "text-zinc-600")}>
+                categories
               </div>
-
-              <div className="grid grid-cols-[1fr_auto] gap-3 rounded-lg bg-white p-3 text-zinc-950">
-                <div>
-                  <p className="text-sm font-medium">Publish decision</p>
-                  <p className="mt-1 text-xs leading-5 text-zinc-600">
-                    Eligible for catalog listing with one reviewer note attached
-                    to the script heuristic.
-                  </p>
-                </div>
-                <Button size="icon" aria-label="View scan details">
-                  <Eye className="size-4" />
-                </Button>
+            </div>
+            <div>
+              <div className="text-2xl font-semibold">{directoryData.bySource["skills.sh"]}</div>
+              <div className={cn("mt-1 text-sm", isDarkPreview ? "text-zinc-400" : "text-zinc-600")}>
+                skills.sh items
               </div>
             </div>
           </div>
         </div>
+
+        <aside
+          className={cn(
+            "self-center rounded-lg border p-4 shadow-2xl",
+            isDarkPreview
+              ? "border-white/10 bg-white/[0.06] shadow-black/20"
+              : "border-zinc-200 bg-white shadow-zinc-900/10"
+          )}
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">Most installed</p>
+              <p className={cn("text-xs", isDarkPreview ? "text-zinc-400" : "text-zinc-500")}>
+                Updated {directoryData.generatedAt.slice(0, 10)}
+              </p>
+            </div>
+            <Badge className="bg-violet-500 text-white hover:bg-violet-500">
+              Live dataset
+            </Badge>
+          </div>
+          <div className="mt-4 space-y-3">
+            {skills.slice(0, 5).map((skill, index) => {
+              const Icon = categoryIcons[skill.category] ?? Package;
+
+              return (
+                <a
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg border p-3 transition",
+                    isDarkPreview
+                      ? "border-white/10 bg-black/15 hover:bg-white/10"
+                      : "border-zinc-200 bg-zinc-50 hover:bg-zinc-100"
+                  )}
+                  href={skill.url}
+                  key={skill.id || skill.name}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <span className="grid size-8 shrink-0 place-items-center rounded-md bg-violet-500 text-xs font-semibold text-white">
+                    {index + 1}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{skill.name}</p>
+                    <p className={cn("truncate text-xs", isDarkPreview ? "text-zinc-400" : "text-zinc-500")}>
+                      {skill.author} · {formatNumber(skill.installs)} installs
+                    </p>
+                  </div>
+                  <Icon className="size-4 text-violet-400" />
+                </a>
+              );
+            })}
+          </div>
+        </aside>
       </section>
 
       <section
-        className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8"
-        id="marketplace"
+        className={cn(
+          "border-y px-4 py-5 sm:px-6 lg:px-8",
+          isDarkPreview ? "border-white/10 bg-white/[0.03]" : "border-zinc-200 bg-white"
+        )}
+        id="categories"
       >
-        <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
-          <div>
-            <p className="text-sm font-medium text-emerald-700">Marketplace</p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-normal">
-              Featured skills ready to inspect
-            </h2>
-          </div>
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            <Button variant="outline" size="icon" aria-label="Filter skills">
-              <Filter className="size-4" />
+        <div className="mx-auto flex max-w-7xl gap-2 overflow-x-auto pb-1">
+          {categories.map((category) => (
+            <Button
+              key={category}
+              size="sm"
+              variant={activeCategory === category ? "default" : "outline"}
+              onClick={() => setActiveCategory(category)}
+              className={cn(
+                "shrink-0",
+                activeCategory !== category && isDarkPreview
+                  ? "border-white/10 bg-transparent text-zinc-200 hover:bg-white/10"
+                  : ""
+              )}
+            >
+              {category}
+              <span className="text-xs opacity-70">
+                {category === "All" ? skills.length : byCategory[category]}
+              </span>
             </Button>
-            {categories.map((category) => (
+          ))}
+        </div>
+      </section>
+
+      <section
+        className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+        id="directory"
+      >
+        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm font-medium text-violet-400">Directory</p>
+            <h2 className="mt-2 text-3xl font-semibold tracking-normal">
+              {activeCategory === "All" ? "All skills and tools" : activeCategory}
+            </h2>
+            <p className={cn("mt-2 text-sm", isDarkPreview ? "text-zinc-400" : "text-zinc-600")}>
+              Showing {displayedSkills.length} of {filteredSkills.length} matching items.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              variant={activeTag === null ? "default" : "outline"}
+              onClick={() => setActiveTag(null)}
+              className={cn(
+                activeTag !== null && isDarkPreview
+                  ? "border-white/10 bg-transparent text-zinc-200 hover:bg-white/10"
+                  : ""
+              )}
+            >
+              All tags
+            </Button>
+            {featuredTags.map((tag) => (
               <Button
-                key={category}
-                variant={category === "All" ? "default" : "outline"}
+                key={tag}
                 size="sm"
+                variant={activeTag === tag ? "default" : "outline"}
+                onClick={() => setActiveTag((current) => (current === tag ? null : tag))}
+                className={cn(
+                  activeTag !== tag && isDarkPreview
+                    ? "border-white/10 bg-transparent text-zinc-200 hover:bg-white/10"
+                    : ""
+                )}
               >
-                {category}
+                {tag}
               </Button>
             ))}
           </div>
         </div>
 
-        <div className="mt-7 grid gap-4 md:grid-cols-3">
-          {skills.map((skill) => {
-            const Icon = skill.icon;
+        <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {displayedSkills.map((skill) => {
+            const Icon = categoryIcons[skill.category] ?? Package;
+            const key = skill.id || skill.name;
+            const description =
+              skill.description ||
+              `${skill.name} is listed in ${skill.category} from ${skill.source}.`;
 
             return (
-              <Card className="rounded-lg border-zinc-200 shadow-sm" key={skill.name}>
+              <Card
+                className={cn(
+                  "rounded-lg shadow-sm",
+                  isDarkPreview
+                    ? "border-white/10 bg-white/[0.06] text-white ring-white/10"
+                    : "border-zinc-200"
+                )}
+                key={key}
+              >
                 <CardHeader>
-                  <div
-                    className={`mb-3 grid size-10 place-items-center rounded-lg ring-1 ${skill.tone}`}
-                  >
+                  <div className={cn("mb-3 grid size-10 place-items-center rounded-lg ring-1", categoryTone(skill.category))}>
                     <Icon className="size-5" />
                   </div>
-                  <CardTitle>{skill.name}</CardTitle>
-                  <CardDescription>
-                    {skill.category} by {skill.author}
+                  <CardTitle className="truncate">{skill.name}</CardTitle>
+                  <CardDescription className={isDarkPreview ? "text-zinc-400" : ""}>
+                    {skill.author} · {skill.source}
                   </CardDescription>
                   <CardAction>
-                    <Badge
-                      className={
-                        skill.tier === "Caution"
-                          ? "bg-amber-100 text-amber-900 hover:bg-amber-100"
-                          : "bg-emerald-100 text-emerald-900 hover:bg-emerald-100"
-                      }
-                    >
-                      {skill.tier === "Caution" ? (
-                        <ShieldAlert className="size-3" />
-                      ) : (
-                        <BadgeCheck className="size-3" />
-                      )}
-                      {skill.tier}
+                    <Badge className="bg-violet-500/15 text-violet-300 hover:bg-violet-500/15">
+                      {skill.category}
                     </Badge>
                   </CardAction>
                 </CardHeader>
-                <CardContent className="min-h-28">
-                  <p className="text-sm leading-6 text-zinc-600">
-                    {skill.description}
+                <CardContent className="min-h-36">
+                  <p className={cn("line-clamp-3 text-sm leading-6", isDarkPreview ? "text-zinc-300" : "text-zinc-600")}>
+                    {description}
                   </p>
-                </CardContent>
-                <CardFooter className="justify-between bg-zinc-50">
-                  <div className="flex items-center gap-4 text-xs text-zinc-600">
-                    <span className="flex items-center gap-1">
-                      <FileScan className="size-3.5" />
-                      {skill.scans}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Download className="size-3.5" />
-                      {skill.downloads}
-                    </span>
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {(skill.tags.length ? skill.tags : [skill.category]).slice(0, 4).map((tag) => (
+                      <span
+                        className={cn(
+                          "rounded-md px-2 py-1 text-xs",
+                          isDarkPreview ? "bg-white/10 text-zinc-300" : "bg-zinc-100 text-zinc-600"
+                        )}
+                        key={tag}
+                      >
+                        {tag}
+                      </span>
+                    ))}
                   </div>
-                  <Button variant="ghost" size="icon-sm" aria-label="Open skill">
-                    <ChevronRight className="size-4" />
-                  </Button>
+                </CardContent>
+                <CardFooter className={cn("flex-col items-stretch gap-3", isDarkPreview ? "border-white/10 bg-black/20" : "bg-zinc-50")}>
+                  <div className={cn("flex items-center justify-between text-xs", isDarkPreview ? "text-zinc-400" : "text-zinc-600")}>
+                    <span>{formatNumber(skill.installs)} installs</span>
+                    <span>{skill.lastUpdated}</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      className="min-w-0 flex-1 justify-start"
+                      variant={isDarkPreview ? "secondary" : "outline"}
+                      onClick={() => copyCommand(skill)}
+                    >
+                      {copiedId === key ? <Check className="size-4" /> : <Copy className="size-4" />}
+                      <span className="truncate">{skill.installCommand}</span>
+                    </Button>
+                    <Button asChild size="icon" aria-label={`Open ${skill.name}`}>
+                      <a href={skill.url} target="_blank" rel="noreferrer">
+                        <ArrowUpRight className="size-4" />
+                      </a>
+                    </Button>
+                  </div>
                 </CardFooter>
               </Card>
             );
           })}
         </div>
-      </section>
 
-      <section className="border-y border-zinc-200 bg-white" id="scanner">
-        <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[420px_1fr] lg:px-8">
-          <div>
-            <p className="text-sm font-medium text-emerald-700">Scanner</p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-normal">
-              Trust tiers built from evidence, not vibes.
-            </h2>
-            <p className="mt-4 leading-7 text-zinc-600">
-              The scanner blocks severe submissions, marks ambiguous bundles for
-              caution, and keeps the full finding trail visible for reviewers.
+        {filteredSkills.length === 0 ? (
+          <div className="py-20 text-center">
+            <Clipboard className="mx-auto size-10 text-zinc-400" />
+            <h3 className="mt-4 text-lg font-semibold">No matching tools</h3>
+            <p className={cn("mt-2 text-sm", isDarkPreview ? "text-zinc-400" : "text-zinc-600")}>
+              Try a different category, tag, or search phrase.
             </p>
           </div>
-
-          <div className="grid gap-3 md:grid-cols-3">
-            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-5">
-              <BadgeCheck className="size-5 text-emerald-700" />
-              <h3 className="mt-4 font-semibold">Verified safe</h3>
-              <p className="mt-2 text-sm leading-6 text-emerald-950/75">
-                Deterministic checks pass and model triage finds no injection
-                signal.
-              </p>
-            </div>
-            <div className="rounded-lg border border-amber-200 bg-amber-50 p-5">
-              <CircleAlert className="size-5 text-amber-700" />
-              <h3 className="mt-4 font-semibold">Caution</h3>
-              <p className="mt-2 text-sm leading-6 text-amber-950/75">
-                Heuristics need reviewer context, but the bundle is still safe
-                enough to inspect.
-              </p>
-            </div>
-            <div className="rounded-lg border border-red-200 bg-red-50 p-5">
-              <LockKeyhole className="size-5 text-red-700" />
-              <h3 className="mt-4 font-semibold">Blocked</h3>
-              <p className="mt-2 text-sm leading-6 text-red-950/75">
-                High-confidence prompt injection or secret access attempts never
-                reach public browsing.
-              </p>
-            </div>
-          </div>
-        </div>
+        ) : null}
       </section>
 
-      <section
-        className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_380px] lg:px-8"
-        id="publish"
+      <footer
+        className={cn(
+          "border-t px-4 py-8 sm:px-6 lg:px-8",
+          isDarkPreview ? "border-white/10" : "border-zinc-200"
+        )}
+        id="source"
       >
-        <div className="rounded-lg border border-zinc-200 bg-white p-5">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-medium text-emerald-700">Publish flow</p>
-              <h2 className="mt-2 text-3xl font-semibold tracking-normal">
-                Submit a skill bundle for review
-              </h2>
-            </div>
-            <Button>
-              <UploadCloud className="size-4" />
-              Upload SKILL.md
-            </Button>
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="font-medium">Claude Directory</p>
+            <p className={cn("mt-1 text-sm", isDarkPreview ? "text-zinc-400" : "text-zinc-600")}>
+              Dataset imported from harshith-vaddiparthy/skill-directory and adapted for your Next.js marketplace.
+            </p>
           </div>
-          <Separator className="my-5" />
-          <div className="grid gap-3 md:grid-cols-3">
-            {["Parse metadata", "Run scanner", "Assign trust badge"].map(
-              (step, index) => (
-                <div
-                  className="flex min-h-24 flex-col justify-between rounded-lg border border-zinc-200 p-4"
-                  key={step}
-                >
-                  <span className="text-sm text-zinc-500">Step {index + 1}</span>
-                  <span className="font-medium">{step}</span>
-                </div>
-              )
-            )}
+          <div className="flex gap-2">
+            <Button asChild variant={isDarkPreview ? "secondary" : "outline"}>
+              <a href="https://github.com/harshith-vaddiparthy/skill-directory" target="_blank" rel="noreferrer">
+                <GitFork className="size-4" />
+                Source repo
+              </a>
+            </Button>
+            <Button asChild>
+              <a href="https://github.com/rajvictor1/skills-marketplace-outskill" target="_blank" rel="noreferrer">
+                Your repo
+              </a>
+            </Button>
           </div>
         </div>
-
-        <aside className="rounded-lg border border-zinc-200 bg-zinc-950 p-5 text-white">
-          <Sparkles className="size-5 text-emerald-300" />
-          <h3 className="mt-4 text-xl font-semibold">Open source beta</h3>
-          <p className="mt-3 text-sm leading-6 text-zinc-300">
-            The current product is free and focused on trustworthy discovery,
-            transparent scanner output, and a clean path to installable agent
-            skills.
-          </p>
-          <div className="mt-5 flex gap-2">
-            <Button className="bg-white text-zinc-950 hover:bg-zinc-200">
-              <TerminalSquare className="size-4" />
-              CLI soon
-            </Button>
-            <Button variant="outline" className="border-white/20 bg-transparent text-white hover:bg-white/10">
-              <GitFork className="size-4" />
-              Star
-            </Button>
-          </div>
-        </aside>
-      </section>
+        <Separator className={cn("mx-auto mt-8 max-w-7xl", isDarkPreview ? "bg-white/10" : "")} />
+      </footer>
     </main>
   );
 }

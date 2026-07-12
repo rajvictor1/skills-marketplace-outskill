@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Outskill | Security-first AI skills marketplace",
+  title: "Claude Directory | Skills, tools, and extensions",
   description:
-    "Browse, inspect, and publish vetted AI-agent skills with visible trust badges.",
+    "Browse installable Claude Code, Clawdbot, and AI-agent skills with search, categories, tags, and copy-ready commands.",
 };
 
 export default function RootLayout({
