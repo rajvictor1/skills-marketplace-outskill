@@ -200,7 +200,7 @@ export default function Home() {
         <div className="flex flex-col justify-center">
           <Badge className="mb-5 w-fit bg-violet-500/15 text-violet-300 hover:bg-violet-500/15">
             <Sparkles className="size-3" />
-            Ported from harshith-vaddiparthy/skill-directory
+            Curated Claude skills directory
           </Badge>
           <h1 className="max-w-3xl text-5xl font-semibold leading-[1.04] tracking-normal sm:text-6xl">
             Discover Claude Code skills, tools, and extensions.
@@ -501,16 +501,10 @@ export default function Home() {
           <div>
             <p className="font-medium">Claude Directory</p>
             <p className={cn("mt-1 text-sm", isDarkPreview ? "text-zinc-400" : "text-zinc-600")}>
-              Dataset imported from harshith-vaddiparthy/skill-directory and adapted for your Next.js marketplace.
+              Curated and published by Raj Victor for discovering Claude Code, Clawdbot, and AI-agent skills.
             </p>
           </div>
           <div className="flex gap-2">
-            <Button asChild variant={isDarkPreview ? "secondary" : "outline"}>
-              <a href="https://github.com/harshith-vaddiparthy/skill-directory" target="_blank" rel="noreferrer">
-                <GitFork className="size-4" />
-                Source repo
-              </a>
-            </Button>
             <Button asChild>
               <a href="https://github.com/rajvictor1/skills-marketplace-outskill" target="_blank" rel="noreferrer">
                 Your repo
