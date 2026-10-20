@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
+import matter from "gray-matter";
 import {
   ArrowLeft,
   Download,
@@ -162,7 +163,7 @@ export default async function SkillDetailPage({
               {isExample ? "Illustrative instructions for this preview listing. Adapt and review them before submitting a real skill." : "The full instructions that load into your agent. Read them before installing."}
             </p>
             <div className="mt-4 rounded-2xl border border-border bg-card p-6">
-              <Markdown>{skill.skillMd}</Markdown>
+              <Markdown>{matter(skill.skillMd).content}</Markdown>
             </div>
           </section>
         </div>
@@ -208,10 +209,10 @@ export default async function SkillDetailPage({
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-xs text-muted-foreground">
+            {!isExample && <p className="mt-3 text-xs text-muted-foreground">
               Scripts are analyzed statically. We never execute a submitted
               skill.
-            </p>
+            </p>}
           </div>
         </aside>
       </div>
