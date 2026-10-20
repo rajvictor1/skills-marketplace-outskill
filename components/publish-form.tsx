@@ -8,7 +8,6 @@ import {
   Check,
   CircleAlert,
   FileText,
-  Github,
   LockKeyhole,
   ShieldCheck,
   UploadCloud,
@@ -87,7 +86,7 @@ export function PublishForm() {
         <div className="mt-6 flex flex-wrap gap-2" role="tablist" aria-label="Skill source">
           <SourceTab active={sourceType === "paste"} onClick={() => setSourceType("paste")} icon={<FileText className="size-4" aria-hidden />}>Paste text</SourceTab>
           <SourceTab active={sourceType === "upload"} onClick={() => setSourceType("upload")} icon={<UploadCloud className="size-4" aria-hidden />}>Upload file</SourceTab>
-          <SourceTab active={sourceType === "github"} onClick={() => setSourceType("github")} icon={<Github className="size-4" aria-hidden />}>Import GitHub</SourceTab>
+          <SourceTab active={sourceType === "github"} onClick={() => setSourceType("github")} icon={<ArrowRight className="size-4 -rotate-45" aria-hidden />}>Import GitHub</SourceTab>
         </div>
 
         {sourceType === "paste" && (
