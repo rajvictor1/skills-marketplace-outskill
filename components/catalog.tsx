@@ -148,7 +148,7 @@ export function Catalog({ skills, focusedCategory }: { skills: SampleSkill[]; fo
             {query || subcategory !== "All subcategories" ? "No skills match that search." : focusedCategory ? `No skills published in ${focusedCategory} yet.` : "No skills available yet."}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
-            {focusedCategory ? "Try a different keyword or specialty, or publish the first skill in this field." : "Try a different keyword or clear the category filter."}
+            {query || subcategory !== "All subcategories" ? "Try a different keyword or specialty." : focusedCategory ? "Publish a skill to make this category useful for other builders." : "Published skills will appear here once creators submit them."}
           </p>
         </div>
       ) : (
