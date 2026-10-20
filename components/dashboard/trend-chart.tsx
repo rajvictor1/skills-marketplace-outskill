@@ -46,8 +46,8 @@ function ChartPlot({ data, metric }: { data: TrendPoint[]; metric: ChartMetric }
               const barWidth = (width - gap * (data.length - 1)) / data.length;
               const total = Math.max(point.runs, 1);
               const barHeight = metric === "success" ? height - 18 : (total / Math.max(...data.map((item) => item.runs))) * (height - 18);
-              const successHeight = metric === "success" ? barHeight * point.successful / total : barHeight * point.successful / total;
-              const reviewHeight = metric === "success" ? barHeight * point.review / total : barHeight * point.review / total;
+              const successHeight = barHeight * point.successful / total;
+              const reviewHeight = barHeight * point.review / total;
               const x = index * (barWidth + gap);
               const y = height - barHeight - 8;
               return <g key={point.date}><title>{point.date}: {point.runs.toLocaleString()} completed · {point.successful} successful · {point.review} for human review · {point.failed} failed</title><rect x={x} y={y} width={barWidth} height={successHeight} rx="2" fill="var(--chart-1)" opacity=".86"/><rect x={x} y={y + successHeight} width={barWidth} height={reviewHeight} fill="var(--chart-3)" opacity=".88"/><rect x={x} y={y + successHeight + reviewHeight} width={barWidth} height={Math.max(0, barHeight - successHeight - reviewHeight)} rx="2" fill="var(--chart-4)" opacity=".88"/></g>;
@@ -57,7 +57,7 @@ function ChartPlot({ data, metric }: { data: TrendPoint[]; metric: ChartMetric }
           <svg role="img" aria-label={summary} viewBox={`0 0 ${width} ${height}`} className="relative h-52 w-full" preserveAspectRatio="none">
             <title>{summary}. Illustrative data, not live telemetry.</title>
             <polyline points={points} fill="none" stroke="var(--chart-1)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
-            {data.map((point, index) => <circle key={point.date} cx={10 + (index / Math.max(data.length - 1, 1)) * (width - 20)} cy={Number(points.split(" ")[index]?.split(",")[1] ?? 0)} r="2.5" fill="var(--chart-1)"><title>{point.date}: {metric === "success" ? `${((point.successful / point.runs) * 100).toFixed(1)}%` : metric === "cost" ? `$${point.cost.toFixed(2)}` : `${point.latency} min`}</title></circle>)}
+            {data.map((point, index) => <circle key={point.date} cx={10 + (index / Math.max(data.length - 1, 1)) * (width - 20)} cy={Number(points.split(" ")[index]?.split(",")[1] ?? 0)} r="2.5" fill="var(--chart-1)"><title>{point.date}: {metric === "cost" ? `$${point.cost.toFixed(2)}` : `${point.latency} min`}</title></circle>)}
           </svg>
         )}
         <div className="mt-1 flex justify-between px-1 text-[10px] font-mono text-muted-foreground"><span>{data[0]?.date}</span><span>{data[Math.floor(data.length / 2)]?.date}</span><span>{data.at(-1)?.date}</span></div>
