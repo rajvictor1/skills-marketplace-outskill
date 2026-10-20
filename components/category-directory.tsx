@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 import { CATEGORY_DESCRIPTIONS, CATEGORY_GROUPS, categorySlug } from "@/lib/skills/taxonomy";
+import { WORKFLOW_TEMPLATES } from "@/lib/workflows/templates";
 
 const GROUP_COPY = [
   "Find skills for the teams and customer journeys that move a business forward.",
@@ -40,6 +41,7 @@ export function CategoryDirectory({ compact = false }: { compact?: boolean }) {
                       <span>
                         <span className="block text-sm font-semibold text-foreground group-hover:text-primary">{category.name}</span>
                         <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">{CATEGORY_DESCRIPTIONS[category.name]}</span>
+                        {WORKFLOW_TEMPLATES.some((template) => template.category === category.name) && <span className="mt-2 block text-[11px] font-semibold text-primary">n8n workflow available</span>}
                       </span>
                       <ArrowUpRight className="mt-0.5 size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden />
                     </Link>

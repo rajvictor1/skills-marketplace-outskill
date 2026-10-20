@@ -197,10 +197,17 @@ submissions and scan reports are real database records once Postgres and auth
 are configured.
 
 The category taxonomy is controlled in `lib/skills/taxonomy.ts`. n8n workflow
-JSON files are a different artifact type from `SKILL.md` and have not been
-imported or represented with sample recipes. Add them after the workflow files
-and their license/source details are supplied, then decide whether they belong
-in this skill catalog or a separate workflow collection.
+JSON files are a different artifact type from `SKILL.md` and appear in a
+separate section on the relevant category page. The first user-supplied
+workflow, **Summarize YouTube videos from transcript**, is under Marketing.
+Its original [n8n community page](https://n8n.io/workflows/2736-summarize-youtube-videos-from-transcript/)
+credits Ahmed Alnaqa. The downloadable JSON has its dummy OpenAI credential
+reference removed and the setup note recommends keeping API keys out of shared
+files; its Apify endpoint remains a visible placeholder. The file
+was checked for JSON structure and connection references, but was not imported
+or executed in n8n. Set up Apify and OpenAI in your own n8n account before use.
+This inclusion does not assert a license for other n8n community templates;
+review each template's source and reuse terms before adding more.
 
 ---
 

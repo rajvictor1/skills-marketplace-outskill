@@ -6,8 +6,10 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 
 import { Catalog } from "@/components/catalog";
 import { DemoDataNotice } from "@/components/dashboard/demo-data-notice";
+import { WorkflowTemplateCard } from "@/components/workflow-template-card";
 import { getCatalogState } from "@/lib/skills/catalog";
 import { CATEGORY_DESCRIPTIONS, categorySlug, getCategoryBySlug } from "@/lib/skills/taxonomy";
+import { WORKFLOW_TEMPLATES } from "@/lib/workflows/templates";
 
 type CategoryPageProps = { params: Promise<{ slug: string }> };
 
@@ -15,9 +17,10 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const { slug } = await params;
   const match = getCategoryBySlug(slug);
   if (!match) return { title: "Category not found" };
+  const hasWorkflows = WORKFLOW_TEMPLATES.some((template) => template.category === match.category.name);
   return {
-    title: `${match.category.name} skills`,
-    description: `Explore ${match.category.name.toLowerCase()} AI agent skills on Skillbuffet. ${CATEGORY_DESCRIPTIONS[match.category.name]}`,
+    title: `${match.category.name} skills${hasWorkflows ? " and workflows" : ""}`,
+    description: `Explore ${match.category.name.toLowerCase()} AI agent skills${hasWorkflows ? " and workflow templates" : ""} on Skillbuffet. ${CATEGORY_DESCRIPTIONS[match.category.name]}`,
   };
 }
 
@@ -29,6 +32,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   await headers();
   const catalog = await getCatalogState();
   const skills = catalog.skills.filter((skill) => skill.category === match.category.name);
+  const workflowTemplates = WORKFLOW_TEMPLATES.filter((template) => template.category === match.category.name);
   const related = match.group.categories.filter((item) => item.name !== match.category.name).slice(0, 4);
 
   return (
@@ -60,11 +64,18 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </div>
       </section>
 
+      {workflowTemplates.length > 0 && <section id="workflow-templates" className="mx-auto max-w-7xl scroll-mt-24 px-5 pt-14 sm:px-8" aria-labelledby="workflow-templates-heading">
+        <p className="editorial-kicker text-primary">Automation templates</p>
+        <h2 id="workflow-templates-heading" className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-foreground sm:text-4xl">n8n workflows for {match.category.name.toLowerCase()}</h2>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">Download a workflow to import into your own n8n account. Workflows have separate setup requirements and are not AI agent skills.</p>
+        <div className="mt-8 grid gap-5">{workflowTemplates.map((template) => <WorkflowTemplateCard key={template.slug} template={template} />)}</div>
+      </section>}
+
       <div className="mx-auto max-w-7xl px-5 pt-14 sm:px-8">
         <div className="flex flex-col justify-between gap-5 border-b border-border pb-7 sm:flex-row sm:items-end">
           <div>
             <p className="editorial-kicker text-primary">Explore this category</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-foreground sm:text-4xl">Skills for {match.category.name.toLowerCase()}</h2>
+            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-foreground sm:text-4xl">AI skills for {match.category.name.toLowerCase()}</h2>
           </div>
           <Link href="/skills" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"><ArrowLeft className="size-4" aria-hidden /> All categories</Link>
         </div>
