@@ -6,7 +6,7 @@ import * as schema from "@/lib/db/auth-schema";
 
 const configuredSecret = process.env.BETTER_AUTH_SECRET;
 if (process.env.NODE_ENV === "production" && !configuredSecret) {
-  throw new Error("BETTER_AUTH_SECRET must be configured before running SkillPort in production.");
+  throw new Error("BETTER_AUTH_SECRET must be configured before running Skillbuffet in production.");
 }
 
 export const auth = betterAuth({

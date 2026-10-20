@@ -90,7 +90,7 @@ async function readGitHubSkill(repositoryUrl: string): Promise<string> {
     signal: AbortSignal.timeout(8_000),
     headers: {
       Accept: "application/vnd.github+json",
-      "User-Agent": "SkillPort-Publisher",
+      "User-Agent": "Skillbuffet-Publisher",
     },
   };
 
@@ -113,7 +113,7 @@ async function readGitHubSkill(repositoryUrl: string): Promise<string> {
   const skillResponse = await fetch(rawUrl, {
     signal: AbortSignal.timeout(8_000),
     redirect: "error",
-    headers: { "User-Agent": "SkillPort-Publisher" },
+    headers: { "User-Agent": "Skillbuffet-Publisher" },
   });
 
   if (!skillResponse.ok) {

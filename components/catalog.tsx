@@ -6,7 +6,7 @@ import { Search, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { SkillCard } from "@/components/skill-card";
 import { cn } from "@/lib/utils";
-import { getSubcategories } from "@/lib/skills/taxonomy";
+import { CATEGORY_GROUPS, getSubcategories } from "@/lib/skills/taxonomy";
 import { CATEGORIES, type SampleSkill } from "@/lib/sample-data";
 
 type SortKey = "popular" | "recent" | "safest";
@@ -20,6 +20,7 @@ const TIER_RANK: Record<string, number> = {
 
 export function Catalog({ skills }: { skills: SampleSkill[] }) {
   const [query, setQuery] = useState("");
+  const [group, setGroup] = useState("All");
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("All");
   const [subcategory, setSubcategory] = useState("All subcategories");
   const [sort, setSort] = useState<SortKey>("popular");
@@ -27,6 +28,7 @@ export function Catalog({ skills }: { skills: SampleSkill[] }) {
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     let list = skills.filter((s) => {
+      const matchesGroup = group === "All" || CATEGORY_GROUPS.some((item) => item.name === group && item.categories.some((entry) => entry.name === s.category));
       const matchesCategory = category === "All" || s.category === category;
       const matchesSubcategory = subcategory === "All subcategories" || s.subcategory === subcategory;
       const matchesQuery =
@@ -36,7 +38,7 @@ export function Catalog({ skills }: { skills: SampleSkill[] }) {
         s.description.toLowerCase().includes(q) ||
         s.author.name.toLowerCase().includes(q) ||
         (s.tags ?? []).some((tag) => tag.toLowerCase().includes(q));
-      return matchesCategory && matchesSubcategory && matchesQuery;
+      return matchesGroup && matchesCategory && matchesSubcategory && matchesQuery;
     });
 
     list = [...list].sort((a, b) => {
@@ -47,22 +49,24 @@ export function Catalog({ skills }: { skills: SampleSkill[] }) {
     });
 
     return list;
-  }, [skills, query, category, subcategory, sort]);
+  }, [skills, query, group, category, subcategory, sort]);
+
+  const visibleCategories = group === "All" ? [] : CATEGORY_GROUPS.find((item) => item.name === group)?.categories ?? [];
 
   return (
     <div>
       {/* search + sort */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search
-            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+            className="pointer-events-none absolute left-5 top-1/2 size-5 -translate-y-1/2 text-muted-foreground"
             aria-hidden
           />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search skills, authors, or use cases"
-            className="pl-9"
+            className="h-13 rounded-full border-border bg-[#f6f7fb] pl-13 pr-5 text-sm"
             aria-label="Search skills"
           />
         </div>
@@ -71,7 +75,7 @@ export function Catalog({ skills }: { skills: SampleSkill[] }) {
             className="size-4 text-muted-foreground"
             aria-hidden
           />
-          <div className="flex rounded-lg border border-border bg-card p-0.5">
+          <div className="flex rounded-full border border-border bg-[#f6f7fb] p-1">
             {(
               [
                 ["popular", "Popular"],
@@ -84,9 +88,9 @@ export function Catalog({ skills }: { skills: SampleSkill[] }) {
                 type="button"
                 onClick={() => setSort(key)}
                 className={cn(
-                  "rounded-md px-3 py-1.5 text-sm transition-colors",
+                  "rounded-full px-4 py-2 text-sm transition-colors",
                   sort === key
-                    ? "bg-secondary text-secondary-foreground"
+                    ? "bg-white font-medium text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
@@ -97,24 +101,28 @@ export function Catalog({ skills }: { skills: SampleSkill[] }) {
         </div>
       </div>
 
-      {/* category chips */}
-      <div className="mt-4 flex flex-wrap gap-2">
-        {CATEGORIES.map((c) => (
+      {/* grouped category navigation */}
+      <div className="mt-8 flex flex-wrap gap-2 border-b border-border pb-5" aria-label="Category groups">
+        {["All", ...CATEGORY_GROUPS.map((item) => item.name)].map((item) => (
           <button
-            key={c}
+            key={item}
             type="button"
-            onClick={() => { setCategory(c); setSubcategory("All subcategories"); }}
+            onClick={() => { setGroup(item); setCategory("All"); setSubcategory("All subcategories"); }}
             className={cn(
-              "rounded-full border px-3 py-1 text-sm transition-colors",
-              category === c
-                ? "border-primary/40 bg-primary/10 text-primary"
-                : "border-border bg-card text-muted-foreground hover:text-foreground",
+              "rounded-full border px-5 py-2.5 text-sm font-medium transition-colors",
+              group === item
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground",
             )}
           >
-            {c}
+            {item === "All" ? "All skills" : item}
           </button>
         ))}
       </div>
+
+      {visibleCategories.length > 0 && <div className="mt-4 flex flex-wrap gap-2" aria-label="Categories">
+        {visibleCategories.map((item) => <button key={item.name} type="button" onClick={() => { setCategory(item.name); setSubcategory("All subcategories"); }} className={cn("rounded-full px-4 py-2 text-sm transition-colors", category === item.name ? "bg-accent font-semibold text-accent-foreground" : "text-muted-foreground hover:bg-secondary hover:text-foreground")}>{item.name}</button>)}
+      </div>}
 
       {category !== "All" && getSubcategories(category).length > 0 && (
         <div className="mt-3 flex items-center gap-3">
@@ -127,9 +135,9 @@ export function Catalog({ skills }: { skills: SampleSkill[] }) {
       )}
 
       {/* results */}
-      <p className="mt-6 text-sm text-muted-foreground">
+      <p className="mt-8 text-sm text-muted-foreground">
         {results.length} {results.length === 1 ? "skill" : "skills"}
-        {category !== "All" ? ` in ${category}` : ""}
+        {category !== "All" ? ` in ${category}` : group !== "All" ? ` in ${group}` : ""}
       </p>
 
       {results.length === 0 ? (
@@ -142,7 +150,7 @@ export function Catalog({ skills }: { skills: SampleSkill[] }) {
           </p>
         </div>
       ) : (
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {results.map((skill) => (
             <SkillCard key={skill.id} skill={skill} />
           ))}

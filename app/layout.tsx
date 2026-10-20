@@ -18,11 +18,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "SkillPort — the security-first skills marketplace",
-    template: "%s · SkillPort",
+    default: "Skillbuffet — the security-first skills marketplace",
+    template: "%s · Skillbuffet",
   },
   description:
     "A marketplace for AI agent skills where every skill is scanned for prompt injection and malicious code before it can be published.",
+  icons: { icon: "/icon.svg" },
 };
 
 export default function RootLayout({
@@ -31,11 +32,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // Dark theme is locked app-wide — a deliberate brand choice for a
-    // security product. `dark` keeps shadcn tokens aligned with :root.
     <html
       lang="en"
-      className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <SiteNav />

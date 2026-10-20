@@ -55,95 +55,92 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/*
-  Dark-locked, emerald-accented security palette. The whole app runs in one
-  theme (per the Page Theme Lock rule) — a deliberate brand decision for a
-  trust/security product. Neutrals are a cool near-black zinc; the single
-  accent is emerald, which also doubles as the "verified-safe" trust signal.
-*/
+/* Circle-inspired product system: clean product surfaces and a cinematic hero. */
 :root {
-  --background: oklch(0.155 0.004 285.8);
-  --foreground: oklch(0.97 0.003 286);
-  --card: oklch(0.185 0.005 285.8);
-  --card-foreground: oklch(0.97 0.003 286);
-  --popover: oklch(0.185 0.005 285.8);
-  --popover-foreground: oklch(0.97 0.003 286);
-  --primary: oklch(0.76 0.15 163);
-  --primary-foreground: oklch(0.16 0.02 165);
-  --secondary: oklch(0.24 0.006 286);
-  --secondary-foreground: oklch(0.97 0.003 286);
-  --muted: oklch(0.24 0.006 286);
-  --muted-foreground: oklch(0.68 0.012 286);
-  --accent: oklch(0.27 0.02 165);
-  --accent-foreground: oklch(0.9 0.05 163);
-  --destructive: oklch(0.62 0.21 18);
-  --border: oklch(1 0 0 / 9%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.76 0.15 163);
-  --chart-1: oklch(0.76 0.15 163);
-  --chart-2: oklch(0.7 0.13 200);
-  --chart-3: oklch(0.72 0.15 85);
-  --chart-4: oklch(0.62 0.21 18);
-  --chart-5: oklch(0.6 0.11 285);
-  --radius: 0.7rem;
-
-  /* Trust tiers */
-  --safe: oklch(0.76 0.15 163);
-  --safe-foreground: oklch(0.16 0.02 165);
-  --caution: oklch(0.79 0.15 78);
-  --caution-foreground: oklch(0.25 0.05 78);
-  --danger: oklch(0.64 0.21 18);
-  --danger-foreground: oklch(0.98 0.01 18);
-
-  --sidebar: oklch(0.185 0.005 285.8);
-  --sidebar-foreground: oklch(0.97 0.003 286);
-  --sidebar-primary: oklch(0.76 0.15 163);
-  --sidebar-primary-foreground: oklch(0.16 0.02 165);
-  --sidebar-accent: oklch(0.24 0.006 286);
-  --sidebar-accent-foreground: oklch(0.97 0.003 286);
-  --sidebar-border: oklch(1 0 0 / 9%);
-  --sidebar-ring: oklch(0.76 0.15 163);
+  --background: #f8f8fb;
+  --foreground: #14152b;
+  --card: #ffffff;
+  --card-foreground: #14152b;
+  --popover: #ffffff;
+  --popover-foreground: #14152b;
+  --primary: #4034d4;
+  --primary-foreground: #ffffff;
+  --secondary: #f0f1f7;
+  --secondary-foreground: #252646;
+  --muted: #f0f1f7;
+  --muted-foreground: #62657d;
+  --accent: #ebedff;
+  --accent-foreground: #3026a7;
+  --destructive: #b52e45;
+  --border: #e2e3ed;
+  --input: #d7d9e6;
+  --ring: #4a64e9;
+  --chart-1: #4034d4;
+  --chart-2: #5188e8;
+  --chart-3: #c46f59;
+  --chart-4: #148261;
+  --chart-5: #8d72cf;
+  --radius: 0.9rem;
+  --safe: #167957;
+  --safe-foreground: #ffffff;
+  --caution: #a8601a;
+  --caution-foreground: #ffffff;
+  --danger: #b52e45;
+  --danger-foreground: #ffffff;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #14152b;
+  --sidebar-primary: #4034d4;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f0f1f7;
+  --sidebar-accent-foreground: #252646;
+  --sidebar-border: #e2e3ed;
+  --sidebar-ring: #4a64e9;
 }
 
-/* Keep `.dark` in sync so shadcn components relying on it match :root. */
-.dark {
-  --background: oklch(0.155 0.004 285.8);
-  --foreground: oklch(0.97 0.003 286);
-  --card: oklch(0.185 0.005 285.8);
-  --card-foreground: oklch(0.97 0.003 286);
-  --popover: oklch(0.185 0.005 285.8);
-  --popover-foreground: oklch(0.97 0.003 286);
-  --primary: oklch(0.76 0.15 163);
-  --primary-foreground: oklch(0.16 0.02 165);
-  --secondary: oklch(0.24 0.006 286);
-  --secondary-foreground: oklch(0.97 0.003 286);
-  --muted: oklch(0.24 0.006 286);
-  --muted-foreground: oklch(0.68 0.012 286);
-  --accent: oklch(0.27 0.02 165);
-  --accent-foreground: oklch(0.9 0.05 163);
-  --destructive: oklch(0.62 0.21 18);
-  --border: oklch(1 0 0 / 9%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.76 0.15 163);
-  --chart-1: oklch(0.76 0.15 163);
-  --chart-2: oklch(0.7 0.13 200);
-  --chart-3: oklch(0.72 0.15 85);
-  --chart-4: oklch(0.62 0.21 18);
-  --chart-5: oklch(0.6 0.11 285);
-  --safe: oklch(0.76 0.15 163);
-  --safe-foreground: oklch(0.16 0.02 165);
-  --caution: oklch(0.79 0.15 78);
-  --caution-foreground: oklch(0.25 0.05 78);
-  --danger: oklch(0.64 0.21 18);
-  --danger-foreground: oklch(0.98 0.01 18);
-  --sidebar: oklch(0.185 0.005 285.8);
-  --sidebar-foreground: oklch(0.97 0.003 286);
-  --sidebar-primary: oklch(0.76 0.15 163);
-  --sidebar-primary-foreground: oklch(0.16 0.02 165);
-  --sidebar-accent: oklch(0.24 0.006 286);
-  --sidebar-accent-foreground: oklch(0.97 0.003 286);
-  --sidebar-border: oklch(1 0 0 / 9%);
-  --sidebar-ring: oklch(0.76 0.15 163);
+/* Scope dark tokens to atmospheric brand sections without darkening product UI. */
+.dark-surface {
+  --background: #10112f;
+  --foreground: #f8f8ff;
+  --card: #1b1c43;
+  --card-foreground: #f8f8ff;
+  --popover: #1b1c43;
+  --popover-foreground: #f8f8ff;
+  --primary: #aebcff;
+  --primary-foreground: #11133b;
+  --secondary: #27294f;
+  --secondary-foreground: #f8f8ff;
+  --muted: #27294f;
+  --muted-foreground: #bfc1da;
+  --accent: #282c64;
+  --accent-foreground: #f8f8ff;
+  --border: #ffffff2a;
+  --input: #ffffff3a;
+  --ring: #9aafff;
+}
+
+.brand-hero {
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse 38rem 24rem at 14% -5%, #2148ba94, transparent 70%),
+    radial-gradient(ellipse 34rem 24rem at 92% 28%, #c26b6075, transparent 68%),
+    radial-gradient(ellipse 32rem 20rem at 53% 17%, #5f26805e, transparent 72%),
+    linear-gradient(150deg, #111642, #0b0b29 67%, #20152e);
+}
+
+.brand-button {
+  color: #ffffff;
+  background: linear-gradient(110deg, #5b94ea, #3924c9);
+  box-shadow: 0 10px 30px #1f1d8930;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.brand-button:hover { transform: translateY(-2px); box-shadow: 0 14px 34px #1f1d8950; }
+.brand-button:focus-visible { outline: 3px solid #a8bcff; outline-offset: 3px; }
+
+.editorial-kicker { letter-spacing: .16em; text-transform: uppercase; font-size: .72rem; font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-button { transition: none; }
+  .brand-button:hover { transform: none; }
 }
 
 @layer base {
@@ -155,15 +152,6 @@
   }
   html {
     @apply font-sans;
-  }
-  /* Subtle top-of-page glow for the security/tech feel. */
-  body {
-    background-image: radial-gradient(
-      60rem 40rem at 50% -10rem,
-      oklch(0.76 0.15 163 / 0.08),
-      transparent 70%
-    );
-    background-repeat: no-repeat;
   }
 }
 

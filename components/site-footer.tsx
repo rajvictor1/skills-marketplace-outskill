@@ -4,8 +4,8 @@ import { Logo } from "@/components/logo";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 border-t border-border/80">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-[1.5fr_1fr_1fr]">
+    <footer className="dark-surface border-t border-white/10 bg-[#10112f] text-foreground">
+      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:px-8 md:grid-cols-[1.5fr_1fr_1fr]">
         <div>
           <Logo />
           <p className="mt-3 max-w-xs text-sm text-muted-foreground">
@@ -57,8 +57,8 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="border-t border-border/80">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <div className="border-t border-white/10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <p>Built as an open teaching project. Free to use and build on.</p>
           <p>
             Automated vetting reduces risk. It is not a guarantee of safety.

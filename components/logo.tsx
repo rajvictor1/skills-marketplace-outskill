@@ -16,7 +16,7 @@ export function Logo({
     <span className={cn("inline-flex items-center gap-2", className)}>
       <svg
         viewBox="0 0 24 24"
-        className="size-6 text-primary"
+        className="size-7 text-primary"
         fill="none"
         aria-hidden
       >
@@ -35,8 +35,8 @@ export function Logo({
         />
       </svg>
       {withWordmark && (
-        <span className="text-[15px] font-semibold tracking-tight text-foreground">
-          SkillPort
+        <span className="text-[20px] font-semibold tracking-[-0.05em] text-foreground">
+          Skillbuffet
         </span>
       )}
     </span>

@@ -1,4 +1,4 @@
-# SkillPort — Security-first AI skills marketplace
+# Skillbuffet — Security-first AI skills marketplace
 
 This local product build starts from [Harshith Vaddiparthy's
 skills-marketplace-outskill repository](https://github.com/harshith-vaddiparthy/skills-marketplace-outskill)

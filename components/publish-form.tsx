@@ -279,7 +279,7 @@ export function PublishForm() {
 
       <div className="rounded-xl border border-border bg-background/30 p-4 text-xs leading-relaxed text-muted-foreground">
         <p className="flex items-center gap-2 font-medium text-foreground"><ShieldCheck className="size-4 text-primary" aria-hidden />What happens to the upload?</p>
-        <p className="mt-2">The current version stores SKILL.md, category, tags, declared permissions, and the scan report in the SkillPort Postgres database. It is part of the marketplace data, not committed into this application&apos;s source-code repository. GitHub imports keep the repository URL and a snapshot of the submitted SKILL.md.</p>
+        <p className="mt-2">The current version stores SKILL.md, category, tags, declared permissions, and the scan report in the Skillbuffet Postgres database. It is part of the marketplace data, not committed into this application&apos;s source-code repository. GitHub imports keep the repository URL and a snapshot of the submitted SKILL.md.</p>
       </div>
     </form>
   );
