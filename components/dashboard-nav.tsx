@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { href: "/dashboard", label: "Overview", icon: ChartNoAxesCombined, exact: true },
-  { href: "/dashboard/skills", label: "My skills", icon: Package },
-  { href: "/dashboard/runs", label: "Agents & runs", icon: Activity },
-  { href: "/skills", label: "Marketplace", icon: Sparkles },
+  { href: "/dashboard/skills", label: "My skills", icon: Package, exact: false },
+  { href: "/dashboard/runs", label: "Agents & runs", icon: Activity, exact: false },
+  { href: "/skills", label: "Marketplace", icon: Sparkles, exact: false },
 ] as const;
 
 export function DashboardNav() {
