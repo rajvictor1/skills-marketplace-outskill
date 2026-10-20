@@ -13,6 +13,19 @@ import {
 
 import { user } from "./auth-schema";
 
+export interface SkillMetadata {
+  /** Internal marker for catalog fixtures inserted by the optional seed script. */
+  isSample?: boolean;
+  license?: string;
+  compatibility?: string[];
+  requestedPermissions?: string[];
+  inputs?: string;
+  outputs?: string;
+  dataHandling?: string;
+  documentationUrl?: string;
+  supportUrl?: string;
+}
+
 // Re-export the Better Auth tables so a single `schema` module holds everything
 // (the drizzle client and drizzle-kit both point here).
 export * from "./auth-schema";
@@ -69,6 +82,10 @@ export const skill = pgTable("skill", {
   // surface, which is why we scan and display it prominently.
   description: text("description").notNull(),
   summary: text("summary"),
+  category: text("category").notNull().default("Other"),
+  subcategory: text("subcategory"),
+  tags: jsonb("tags").$type<string[]>().notNull().default([]),
+  metadata: jsonb("metadata").$type<SkillMetadata>().notNull().default({}),
   status: skillStatus("status").notNull().default("draft"),
   latestTrustTier: trustTier("latest_trust_tier").notNull().default("pending"),
   // The published version. Blocked versions are persisted but never set here.
@@ -91,6 +108,7 @@ export const skillVersion = pgTable(
       .notNull()
       .references(() => skill.id, { onDelete: "cascade" }),
     version: integer("version").notNull(),
+    versionLabel: text("version_label").notNull().default("1.0.0"),
     // sha256 of the canonical bundle — immutable version identity.
     contentHash: text("content_hash").notNull(),
     frontmatterName: text("frontmatter_name").notNull(),

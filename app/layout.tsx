@@ -1,10 +1,28 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+import { SiteNav } from "@/components/site-nav";
+import { SiteFooter } from "@/components/site-footer";
+import { Toaster } from "@/components/ui/sonner";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-  title: "Claude Directory | Skills, tools, and extensions",
+  title: {
+    default: "SkillPort — the security-first skills marketplace",
+    template: "%s · SkillPort",
+  },
   description:
-    "Browse installable Claude Code, Clawdbot, and AI-agent skills with search, categories, tags, and copy-ready commands.",
+    "A marketplace for AI agent skills where every skill is scanned for prompt injection and malicious code before it can be published.",
 };
 
 export default function RootLayout({
@@ -13,8 +31,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}</body>
+    // Dark theme is locked app-wide — a deliberate brand choice for a
+    // security product. `dark` keeps shadcn tokens aligned with :root.
+    <html
+      lang="en"
+      className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="flex min-h-full flex-col">
+        <SiteNav />
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
+        <Toaster />
+      </body>
     </html>
   );
 }

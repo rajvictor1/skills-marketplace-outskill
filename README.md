@@ -1,4 +1,8 @@
-# Skills Marketplace — Outskill
+# SkillPort — Security-first AI skills marketplace
+
+This local product build starts from [Harshith Vaddiparthy's
+skills-marketplace-outskill repository](https://github.com/harshith-vaddiparthy/skills-marketplace-outskill)
+and retains its MIT license. See [LICENSE](./LICENSE) for terms.
 
 **A security-first marketplace for AI-agent skills. Every skill is vetted by a multi-layer security scanner before it can be published, and each one carries a visible trust badge.**
 
@@ -137,7 +141,7 @@ Then open `.env.local` and fill in the values:
 This creates the tables (users, skills, scan results, findings, etc.) in your database:
 
 ```bash
-pnpm drizzle-kit migrate
+pnpm db:migrate
 ```
 
 ### 5. Start the dev server
@@ -149,6 +153,54 @@ pnpm dev
 ### 6. Open the app
 
 Visit **[http://localhost:3000](http://localhost:3000)** in your browser. 🎉
+
+Create an account at **Sign up** before submitting a skill. You can optionally
+load the repository's sample catalog with `pnpm db:seed` after migrations.
+
+---
+
+## Publishing a skill
+
+The current upload flow accepts one standalone `SKILL.md` (paste, file upload,
+or the root `SKILL.md` from a public GitHub repository). The file must contain
+YAML frontmatter with a lowercase `name` and a plain-language `description`.
+The maximum file size is 256 KB. ZIP bundles, companion files, private GitHub
+repositories, and nested GitHub paths are not supported in this first version.
+
+The publishing form asks for:
+
+- A marketplace title, version, category, subcategory, short summary, tags, and
+  license.
+- Compatible agent products and the permissions the skill may request.
+- Expected inputs and outputs, data-handling notes, and optional HTTPS links to
+  documentation and support.
+- Confirmation that you own or have permission to publish the content and have
+  removed secrets and private customer information.
+
+After submission, the server parses and scans the instructions. Critical
+findings block publication; other findings may publish with a caution badge.
+The scanner never executes submitted instructions. Published content, versions,
+and scan findings are saved in the configured Postgres database, not in this
+application's source-code repository. GitHub imports also keep the source URL
+and the submitted file snapshot. Blocked submissions stay out of the public
+catalog. A creator can see their own saved submissions from **Dashboard → My
+skills** after signing in.
+
+## Dashboard data status
+
+The dashboard includes the requested overview, creator workspace, category
+filters, and example agent-run views. Overview KPIs, trend lines, activity,
+sample run details, earnings, and time-saved values are visibly marked as
+illustrative. This repository does not yet collect real agent run events, model
+costs, latency, payout data, or measured time saved. The creator's own skill
+submissions and scan reports are real database records once Postgres and auth
+are configured.
+
+The category taxonomy is controlled in `lib/skills/taxonomy.ts`. n8n workflow
+JSON files are a different artifact type from `SKILL.md` and have not been
+imported or represented with sample recipes. Add them after the workflow files
+and their license/source details are supplied, then decide whether they belong
+in this skill catalog or a separate workflow collection.
 
 ---
 
