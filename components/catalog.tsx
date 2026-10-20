@@ -19,6 +19,7 @@ const TIER_RANK: Record<string, number> = {
 };
 
 export function Catalog({ skills, focusedCategory }: { skills: SampleSkill[]; focusedCategory?: SkillCategory }) {
+  const allExamples = skills.length > 0 && skills.every((skill) => skill.metadata?.isSample);
   const [query, setQuery] = useState("");
   const [group, setGroup] = useState("All");
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>(focusedCategory ?? "All");
@@ -42,14 +43,14 @@ export function Catalog({ skills, focusedCategory }: { skills: SampleSkill[]; fo
     });
 
     list = [...list].sort((a, b) => {
-      if (sort === "popular") return b.installs - a.installs;
+      if (sort === "popular") return allExamples ? a.name.localeCompare(b.name) : b.installs - a.installs;
       if (sort === "recent")
         return b.updatedAt.localeCompare(a.updatedAt);
       return TIER_RANK[a.trustTier] - TIER_RANK[b.trustTier];
     });
 
     return list;
-  }, [skills, query, group, category, subcategory, sort]);
+  }, [skills, query, group, category, subcategory, sort, allExamples]);
 
   const visibleCategories = group === "All" ? [] : CATEGORY_GROUPS.find((item) => item.name === group)?.categories ?? [];
 
@@ -77,11 +78,14 @@ export function Catalog({ skills, focusedCategory }: { skills: SampleSkill[]; fo
           />
           <div className="flex rounded-full border border-border bg-[#f6f7fb] p-1">
             {(
-              [
+              (allExamples ? [
+                ["popular", "A–Z"],
+                ["recent", "Recent"],
+              ] : [
                 ["popular", "Popular"],
                 ["recent", "Recent"],
                 ["safest", "Safest"],
-              ] as [SortKey, string][]
+              ]) as [SortKey, string][]
             ).map(([key, label]) => (
               <button
                 key={key}
@@ -138,7 +142,7 @@ export function Catalog({ skills, focusedCategory }: { skills: SampleSkill[]; fo
 
       {/* results */}
       <p className="mt-8 text-sm text-muted-foreground">
-        {results.length} {results.length === 1 ? "skill" : "skills"}
+        {results.length} {allExamples ? "example " : ""}{results.length === 1 ? "skill" : "skills"}
         {category !== "All" ? ` in ${category}` : group !== "All" ? ` in ${group}` : ""}
       </p>
 

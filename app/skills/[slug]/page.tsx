@@ -42,6 +42,7 @@ export default async function SkillDetailPage({
   if (lookup.status === "not_found") notFound();
   if (lookup.status === "unavailable") return <main className="mx-auto max-w-4xl px-4 py-16 sm:px-6"><DemoDataNotice>The catalog database is currently unavailable, so this listing could not be confirmed. Check the database connection and migrations, then try again.</DemoDataNotice></main>;
   const { skill } = lookup;
+  const isExample = lookup.source === "demo" || Boolean(skill.metadata?.isSample);
 
   const severityCounts = skill.findings.reduce<Record<string, number>>(
     (acc, f) => {
@@ -69,7 +70,7 @@ export default async function SkillDetailPage({
               {skill.category}
             </span>
             {skill.subcategory && <span className="rounded-md border border-border px-2 py-0.5 text-xs text-muted-foreground">{skill.subcategory}</span>}
-            <TrustBadge tier={skill.trustTier} />
+            {isExample ? <span className="rounded-full border border-primary/20 bg-primary/[0.07] px-2.5 py-1 text-xs font-semibold text-primary">Example skill</span> : <TrustBadge tier={skill.trustTier} />}
             <span className="font-mono text-xs text-muted-foreground">
               v{skill.version}
             </span>
@@ -90,25 +91,25 @@ export default async function SkillDetailPage({
               <span className="text-foreground">{skill.author.name}</span>
               <span>· {skill.author.role}</span>
             </span>
-            <span className="flex items-center gap-1.5">
+            {!isExample && <span className="flex items-center gap-1.5">
               <Download className="size-4" aria-hidden />
-              {skill.metadata && !skill.metadata.isSample ? "Install tracking not connected" : `${skill.installs.toLocaleString()} sample installs`}
-            </span>
-            <span className="flex items-center gap-1.5">
+              Install tracking not connected
+            </span>}
+            {!isExample && <span className="flex items-center gap-1.5">
               <Clock className="size-4" aria-hidden />
               Updated {skill.updatedAt}
-            </span>
+            </span>}
           </div>
         </div>
       </div>
 
-      {(lookup.source === "demo" || skill.metadata?.isSample) && <div className="mt-6"><DemoDataNotice>This skill and its scan report are sample marketplace content. They are not a creator submission or live database record.</DemoDataNotice></div>}
+      {isExample && <div className="mt-6"><DemoDataNotice>This is an example for the marketplace preview. It is not a creator submission, has not been security scanned, and cannot be installed from Skillbuffet.</DemoDataNotice></div>}
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_20rem] lg:gap-12">
         {/* main column */}
         <div className="min-w-0 space-y-10">
           {/* scan report */}
-          <section>
+          {!isExample && <section>
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">
                 Security scan report
@@ -150,7 +151,7 @@ export default async function SkillDetailPage({
               risk but is not a guarantee. Review a skill before trusting it with
               sensitive data.
             </p>
-          </section>
+          </section>}
 
           {/* SKILL.md */}
           <section>
@@ -158,8 +159,7 @@ export default async function SkillDetailPage({
               SKILL.md
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              The full instructions that load into your agent. Read them before
-              installing.
+              {isExample ? "Illustrative instructions for this preview listing. Adapt and review them before submitting a real skill." : "The full instructions that load into your agent. Read them before installing."}
             </p>
             <div className="mt-4 rounded-2xl border border-border bg-card p-6">
               <Markdown>{skill.skillMd}</Markdown>
@@ -170,12 +170,12 @@ export default async function SkillDetailPage({
         {/* sidebar */}
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
           <MarketplaceDetails metadata={skill.metadata} />
-          <div className="rounded-2xl border border-border bg-card p-5">
+          {isExample ? <div className="rounded-2xl border border-border bg-card p-5"><h3 className="text-sm font-semibold text-foreground">Build a real skill</h3><p className="mt-2 text-xs leading-relaxed text-muted-foreground">Use this example for inspiration, then submit your own SKILL.md for security review.</p><Link href="/publish" className="mt-4 inline-flex text-sm font-semibold text-primary hover:underline">Open publishing form</Link></div> : <div className="rounded-2xl border border-border bg-card p-5">
             <h3 className="text-sm font-semibold text-foreground">Install</h3>
             <div className="mt-3">
               <InstallCommand slug={skill.slug} />
             </div>
-          </div>
+          </div>}
 
           <div className="rounded-2xl border border-border bg-card p-5">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">

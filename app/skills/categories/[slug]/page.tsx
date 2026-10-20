@@ -80,8 +80,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           <Link href="/skills" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"><ArrowLeft className="size-4" aria-hidden /> All categories</Link>
         </div>
 
-        {catalog.hasSampleContent && <div className="mt-7 max-w-3xl"><DemoDataNotice>Example skills may appear below for preview. Their install counts are illustrative, not live platform analytics.</DemoDataNotice></div>}
-        {catalog.source === "unavailable" && <div className="mt-7 max-w-3xl"><DemoDataNotice>The database could not be reached. Category listings will return when the connection is available.</DemoDataNotice></div>}
+        {catalog.hasSampleContent && <div className="mt-7 max-w-3xl"><DemoDataNotice>These example skills are preview fixtures. They are not real submissions, scanned listings, or install activity.</DemoDataNotice></div>}
+        {catalog.source === "unavailable" && <div className="mt-7 max-w-3xl"><DemoDataNotice>{`The database could not be reached. Real submissions are unavailable${catalog.hasSampleContent ? ", but examples remain visible." : "."}`}</DemoDataNotice></div>}
         <div className="mt-9"><Catalog skills={skills} focusedCategory={match.category.name} /></div>
         {skills.length === 0 && catalog.source !== "unavailable" && <Link href={`/publish?category=${slug}`} className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">Be the first to publish here <ArrowRight className="size-4" aria-hidden /></Link>}
       </div>

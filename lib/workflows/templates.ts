@@ -7,7 +7,6 @@ export type WorkflowTemplate = {
   category: SkillCategory;
   subcategory: string;
   author: string;
-  sourceUrl: string;
   downloadUrl: string;
   integrations: readonly string[];
   nodeCount: number;
@@ -18,12 +17,11 @@ export type WorkflowTemplate = {
 export const WORKFLOW_TEMPLATES: readonly WorkflowTemplate[] = [
   {
     slug: "youtube-transcript-summary",
-    title: "Summarize YouTube videos from transcript",
-    summary: "Collect a YouTube transcript through Apify, then summarize it with an OpenAI model in n8n.",
+    title: "YouTube Transcript Summarizer",
+    summary: "Turn a video URL into a concise transcript summary for content research and repurposing.",
     category: "Marketing",
     subcategory: "Content",
     author: "Ahmed Alnaqa",
-    sourceUrl: "https://n8n.io/workflows/2736-summarize-youtube-videos-from-transcript/",
     downloadUrl: "/workflows/youtube-transcript-summary.json",
     integrations: ["n8n", "Apify", "OpenAI"],
     nodeCount: 10,

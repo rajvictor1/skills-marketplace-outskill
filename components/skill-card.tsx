@@ -10,6 +10,7 @@ function formatInstalls(n: number): string {
 }
 
 export function SkillCard({ skill }: { skill: SampleSkill }) {
+  const isExample = Boolean(skill.metadata?.isSample);
   return (
     <Link
       href={`/skills/${skill.slug}`}
@@ -19,7 +20,7 @@ export function SkillCard({ skill }: { skill: SampleSkill }) {
         <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
           {skill.category}
         </span>
-        <TrustBadge tier={skill.trustTier} />
+        {isExample ? <span className="rounded-full border border-primary/20 bg-primary/[0.07] px-2.5 py-1 text-xs font-semibold text-primary">Example</span> : <TrustBadge tier={skill.trustTier} />}
       </div>
 
       <h3 className="mt-7 text-lg font-semibold tracking-[-0.035em] text-foreground group-hover:text-primary">
@@ -43,7 +44,7 @@ export function SkillCard({ skill }: { skill: SampleSkill }) {
             {skill.author.role}
           </p>
         </div>
-        {skill.metadata && !skill.metadata.isSample ? <span className="text-right text-[10px] leading-tight text-muted-foreground">Install tracking<br />not connected</span> : <span className="flex items-center gap-1 font-mono text-xs text-muted-foreground"><Download className="size-3.5" aria-hidden />{formatInstalls(skill.installs)}</span>}
+        {isExample ? <span className="text-right text-[10px] font-medium text-primary">Preview only</span> : skill.metadata ? <span className="text-right text-[10px] leading-tight text-muted-foreground">Install tracking<br />not connected</span> : <span className="flex items-center gap-1 font-mono text-xs text-muted-foreground"><Download className="size-3.5" aria-hidden />{formatInstalls(skill.installs)}</span>}
       </div>
     </Link>
   );

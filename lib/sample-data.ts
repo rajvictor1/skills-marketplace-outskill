@@ -1,5 +1,6 @@
 import type { Severity, TrustTier } from "@/lib/trust";
 import { SKILL_CATEGORY_NAMES } from "@/lib/skills/taxonomy";
+import { DEMO_SKILL_SEEDS } from "@/lib/demo-skill-seeds";
 
 /**
  * Demo catalog. These objects mirror the Drizzle row shapes in lib/db/schema.ts
@@ -69,7 +70,7 @@ export type SkillMarketplaceMetadata = {
 
 export const CATEGORIES = ["All", ...SKILL_CATEGORY_NAMES] as const;
 
-export const SAMPLE_SKILLS: SampleSkill[] = [
+const BASE_SAMPLE_SKILLS: SampleSkill[] = [
   {
     id: "skl_month_end_close",
     slug: "month-end-close",
@@ -421,6 +422,72 @@ Cite the matching playbook clause for each flag.`,
   },
 ];
 
+const GENERATED_SAMPLE_SKILLS: SampleSkill[] = DEMO_SKILL_SEEDS.map((seed) => {
+  const slug = seed.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const skillMd = `---
+name: ${slug}
+description: ${seed.summary}
+---
+
+# ${seed.name}
+
+This is an example skill for the Skillbuffet preview. Adapt and review it before submitting a real version.
+
+## Inputs
+
+Ask the user for: ${seed.input}.
+
+## Workflow
+
+1. Confirm the task, intended audience, and any missing context.
+2. Work only from the information the user provides or explicitly approved sources.
+3. Draft the requested result in a clear, reusable format.
+4. Flag assumptions, missing evidence, and items that need human review.
+
+## Output
+
+Produce: ${seed.output}.
+
+Do not claim that an external action was completed unless it was actually verified.`;
+
+  return {
+    id: `demo_${slug}`,
+    slug,
+    name: seed.name,
+    description: seed.summary,
+    summary: seed.summary,
+    category: seed.category,
+    subcategory: seed.subcategory,
+    tags: [seed.subcategory.toLowerCase(), "example"],
+    version: "0.1.0",
+    trustTier: "pending",
+    riskScore: 0,
+    status: "published",
+    installs: 0,
+    updatedAt: "2026-10-20",
+    author: { name: "Skillbuffet Demo", handle: "skillbuffet-demo", role: "Example content", initials: "SD" },
+    files: [{ path: "SKILL.md", sizeLabel: `${new TextEncoder().encode(skillMd).length} B`, isScript: false }],
+    skillMd,
+    findings: [],
+    scannerVersion: "Demo: not scanned",
+    classifierModel: "Not run",
+  };
+});
+
+export const SAMPLE_SKILLS: SampleSkill[] = [...BASE_SAMPLE_SKILLS, ...GENERATED_SAMPLE_SKILLS].map((skill) => ({
+  ...skill,
+  version: "0.1.0",
+  metadata: { ...skill.metadata, isSample: true },
+  trustTier: "pending",
+  riskScore: 0,
+  installs: 0,
+  author: { name: "Skillbuffet Demo", handle: "skillbuffet-demo", role: "Example content", initials: "SD" },
+  files: [{ path: "SKILL.md", sizeLabel: `${new TextEncoder().encode(skill.skillMd).length} B`, isScript: false }],
+  findings: [],
+  scannerVersion: "Demo: not scanned",
+  classifierModel: "Not run",
+}));
+
 /**
  * The blocked skill lives separately: it never appears in the public catalog.
  * It's surfaced on the seller's dashboard and used to demonstrate the scanner
@@ -521,7 +588,4 @@ export function getSkillBySlug(slug: string): SampleSkill | undefined {
 
 export const CATALOG_STATS = {
   totalSkills: SAMPLE_SKILLS.length,
-  blockedThisWeek: 37,
-  verifiedProfessionals: 128,
-  scansRun: 2141,
 };

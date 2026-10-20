@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -15,7 +16,8 @@ import { ScanPreview } from "@/components/scan-preview";
 import { SkillCard } from "@/components/skill-card";
 import { DemoDataNotice } from "@/components/dashboard/demo-data-notice";
 import { CategoryDirectory } from "@/components/category-directory";
-import { SAMPLE_SKILLS, CATALOG_STATS } from "@/lib/sample-data";
+import { getCatalogState } from "@/lib/skills/catalog";
+import { WORKFLOW_TEMPLATES } from "@/lib/workflows/templates";
 import { SCAN_LAYERS } from "@/lib/trust";
 
 const LAYER_ICONS = {
@@ -25,8 +27,12 @@ const LAYER_ICONS = {
   llm_injection: Bot,
 } as const;
 
-export default function Home() {
-  const featured = SAMPLE_SKILLS.slice(0, 3);
+export default async function Home() {
+  await headers();
+  const catalog = await getCatalogState();
+  const featured = catalog.skills.slice(0, 3);
+  const exampleCount = catalog.skills.filter((skill) => skill.metadata?.isSample).length;
+  const coveredCategories = new Set(catalog.skills.map((skill) => skill.category)).size;
 
   return (
     <main className="overflow-hidden">
@@ -137,24 +143,24 @@ export default function Home() {
             <div>
               <p className="editorial-kicker text-primary">Marketplace preview</p>
               <h2 className="mt-4 max-w-2xl text-balance text-4xl font-semibold leading-tight tracking-[-0.05em] sm:text-5xl">Find your next useful skill.</h2>
-              <p className="mt-4 max-w-xl text-base text-muted-foreground">Explore example skills across marketing, sales, and technical workflows.</p>
+              <p className="mt-4 max-w-xl text-base text-muted-foreground">Explore skills across marketing, sales, and technical workflows.</p>
             </div>
             <Button size="lg" asChild className="brand-button h-11 rounded-full px-6"><Link href="/skills">Browse all skills <ArrowRight className="size-4" aria-hidden /></Link></Button>
           </div>
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {featured.length > 0 && <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((skill) => <SkillCard key={skill.id} skill={skill} />)}
-          </div>
-          <div className="mt-8 max-w-3xl"><DemoDataNotice>These skill cards are example content for preview. Their install counts are not live platform analytics.</DemoDataNotice></div>
+          </div>}
+          {exampleCount > 0 && <div className="mt-8 max-w-3xl"><DemoDataNotice>Example skills in this preview have not been submitted, scanned, or installed.</DemoDataNotice></div>}
         </div>
       </section>
 
       <section className="bg-[#f3f5fb] px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-5 max-w-3xl"><DemoDataNotice>The figures below are example values for this preview, not live customer or platform analytics.</DemoDataNotice></div>
+          {exampleCount > 0 && <div className="mb-5 max-w-3xl"><DemoDataNotice>{`Catalog counts include ${exampleCount} local preview examples. They are not customer activity or live adoption data.`}</DemoDataNotice></div>}
           <div className="grid grid-cols-2 gap-8 border-t border-border pt-10 lg:grid-cols-4">
-            <Stat value={CATALOG_STATS.scansRun.toLocaleString()} label="Example scans run" />
-            <Stat value={`${CATALOG_STATS.blockedThisWeek}`} label="Example skills blocked" />
-            <Stat value={`${CATALOG_STATS.verifiedProfessionals}`} label="Example professionals" />
+            <Stat value={String(catalog.skills.length)} label="Catalog skills" />
+            <Stat value={String(coveredCategories)} label="Covered categories" />
+            <Stat value={String(WORKFLOW_TEMPLATES.length)} label="Workflow template" />
             <Stat value="4" label="Checks on every submission" />
           </div>
         </div>

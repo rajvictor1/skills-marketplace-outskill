@@ -1,31 +1,8 @@
-import { SAMPLE_SKILLS } from "@/lib/sample-data";
-
-/** Example values based on the supplied dashboard brief. Not product telemetry. */
-export const DASHBOARD_KPIS = [
-  { label: "Published skills", value: "1,284", change: "+12.4%", note: "vs. previous period" },
-  { label: "Successful runs", value: "48,920", change: "+8.2%", note: "of 50,560 completed runs" },
-  { label: "Success rate", value: "96.8%", change: "+1.6 pts", note: "successful / completed" },
-  { label: "Agent installs", value: "14,206", change: "+18.7%", note: "across the marketplace" },
-] as const;
-
 export const DASHBOARD_PULSE = [
-  { label: "Active creators", value: "642", detail: "Creators with a published skill" },
-  { label: "Estimated time saved", value: "9,680 hrs", detail: "Illustrative estimate" },
-  { label: "Creator earnings", value: "$84,560", detail: "Example only · payouts not connected" },
+  { label: "Example active creators", value: "642", detail: "Illustrative scenario, not live accounts" },
+  { label: "Example time saved", value: "9,680 hrs", detail: "Illustrative estimate" },
+  { label: "Example creator earnings", value: "$84,560", detail: "Payouts are not connected" },
 ] as const;
-
-export const TOP_SKILLS = SAMPLE_SKILLS
-  .filter((skill) => skill.status === "published")
-  .slice()
-  .sort((a, b) => b.installs - a.installs)
-  .slice(0, 5)
-  .map((skill, index) => ({
-    name: skill.name,
-    category: skill.category,
-    installs: skill.installs,
-    trustTier: skill.trustTier,
-    rank: index + 1,
-  }));
 
 export const SAMPLE_ACTIVITY = [
   { title: "SEO Content Brief Builder completed a run", detail: "Marketing · 18 sec · success", time: "4 min ago", type: "success" },

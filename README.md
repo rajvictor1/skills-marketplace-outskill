@@ -155,7 +155,8 @@ pnpm dev
 Visit **[http://localhost:3000](http://localhost:3000)** in your browser. 🎉
 
 Create an account at **Sign up** before submitting a skill. You can optionally
-load the repository's sample catalog with `pnpm db:seed` after migrations.
+view the removable example catalog in Preview or local development. These
+examples do not need a database seed.
 
 ---
 
@@ -189,9 +190,10 @@ skills** after signing in.
 ## Dashboard data status
 
 The dashboard includes the requested overview, creator workspace, category
-filters, and example agent-run views. Overview KPIs, trend lines, activity,
-sample run details, earnings, and time-saved values are visibly marked as
-illustrative. This repository does not yet collect real agent run events, model
+filters, and example agent-run views. Preview KPIs count the 36 local example
+skills across all 18 categories, the included workflow JSON, and the four
+scanner layers. Trend lines, activity, sample run details, earnings, and
+time-saved values are visibly marked as illustrative. This repository does not yet collect real agent run events, model
 costs, latency, payout data, or measured time saved. The creator's own skill
 submissions and scan reports are real database records once Postgres and auth
 are configured.
@@ -199,7 +201,7 @@ are configured.
 The category taxonomy is controlled in `lib/skills/taxonomy.ts`. n8n workflow
 JSON files are a different artifact type from `SKILL.md` and appear in a
 separate section on the relevant category page. The first user-supplied
-workflow, **Summarize YouTube videos from transcript**, is under Marketing.
+workflow, **YouTube Transcript Summarizer**, is under Marketing.
 Its original [n8n community page](https://n8n.io/workflows/2736-summarize-youtube-videos-from-transcript/)
 credits Ahmed Alnaqa. The downloadable JSON has its dummy OpenAI credential
 reference removed and the setup note recommends keeping API keys out of shared
@@ -208,6 +210,12 @@ was checked for JSON structure and connection references, but was not imported
 or executed in n8n. Set up Apify and OpenAI in your own n8n account before use.
 This inclusion does not assert a license for other n8n community templates;
 review each template's source and reuse terms before adding more.
+
+The 36 example skill listings are local Preview fixtures, with two per
+category. They are labeled **Example**, have no install counts or scan badge,
+and do not appear in Production. They can be removed without deleting any
+real creator submissions. See [the first-skill upload guide](docs/FIRST-SKILL-UPLOAD.md)
+for a step-by-step publishing walkthrough.
 
 ---
 

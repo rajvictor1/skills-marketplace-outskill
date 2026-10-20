@@ -32,7 +32,7 @@ export default async function PublishPage({ searchParams }: { searchParams: Prom
           Publish a skill
         </h1>
         <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-          Paste your SKILL.md, upload a bundle, or import a public repo. Every
+          Paste your SKILL.md, upload that file, or import a public repo. Every
           submission runs through four independent scanner layers before it can
           reach the catalog. A single critical finding blocks publication, so
           the trust badge on a listed skill actually means something.

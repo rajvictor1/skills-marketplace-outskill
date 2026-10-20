@@ -32,8 +32,8 @@ export default async function SkillsPage() {
       <div id="catalog-results" className="mx-auto max-w-7xl scroll-mt-20 border-t border-border px-5 pt-14 sm:px-8">
         <p className="editorial-kicker text-primary">Search the marketplace</p>
         <h2 className="mb-7 mt-3 text-3xl font-semibold tracking-[-0.045em] text-foreground sm:text-4xl">All available skills</h2>
-        {catalog.hasSampleContent && <div className="mb-6 max-w-3xl"><DemoDataNotice>The catalog includes example skills for preview. Their stored scan records do not represent customer submissions or live install analytics.</DemoDataNotice></div>}
-        {catalog.source === "unavailable" && <div className="mb-6 max-w-3xl"><DemoDataNotice>The database is configured but could not be reached. The catalog is empty until the connection and migrations are available.</DemoDataNotice></div>}
+        {catalog.hasSampleContent && <div className="mb-6 max-w-3xl"><DemoDataNotice>Example skills fill the preview categories. They are code fixtures, not creator submissions; they have not been scanned or installed.</DemoDataNotice></div>}
+        {catalog.source === "unavailable" && <div className="mb-6 max-w-3xl"><DemoDataNotice>{`The database is unavailable. Real submissions cannot be shown right now${catalog.hasSampleContent ? ", but preview examples remain visible." : "."}`}</DemoDataNotice></div>}
         <Catalog skills={catalog.skills} />
       </div>
     </main>

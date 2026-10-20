@@ -1,4 +1,4 @@
-import { ArrowUpRight, Download, Workflow } from "lucide-react";
+import { Download, Workflow } from "lucide-react";
 
 import type { WorkflowTemplate } from "@/lib/workflows/templates";
 
@@ -19,7 +19,6 @@ export function WorkflowTemplateCard({ template }: { template: WorkflowTemplate 
           <p className="mt-6 text-xs text-muted-foreground">{template.nodeCount} nodes · {template.subcategory} · Original creator: {template.author}</p>
           <div className="mt-7 flex flex-wrap gap-3">
             <a href={template.downloadUrl} download className="brand-button inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold"><Download className="size-4" aria-hidden /> Download JSON</a>
-            <a href={template.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border px-5 text-sm font-semibold text-foreground hover:border-primary/40 hover:text-primary">View original on n8n <ArrowUpRight className="size-4" aria-hidden /></a>
           </div>
         </div>
         <div className="border-t border-border bg-[#f6f7fb] p-7 sm:p-9 lg:border-l lg:border-t-0">
