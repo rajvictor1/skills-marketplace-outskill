@@ -142,7 +142,7 @@ export function Catalog({ skills, focusedCategory }: { skills: SampleSkill[]; fo
 
       {/* results */}
       <p className="mt-8 text-sm text-muted-foreground">
-        {results.length} {allExamples ? "example " : ""}{results.length === 1 ? "skill" : "skills"}
+        {`${results.length} ${allExamples ? "example " : ""}${results.length === 1 ? "skill" : "skills"}`}
         {category !== "All" ? ` in ${category}` : group !== "All" ? ` in ${group}` : ""}
       </p>
 

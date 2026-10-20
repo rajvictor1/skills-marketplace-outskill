@@ -76,9 +76,9 @@ const BASE_SAMPLE_SKILLS: SampleSkill[] = [
     slug: "month-end-close",
     name: "Month-End Close Assistant",
     description:
-      "Walk through a GAAP-compliant month-end close: reconcile accounts, flag unusual variances, and draft the close checklist. Use when closing the books for a period.",
+      "Draft a month-end close checklist: reconcile accounts, flag unusual variances, and identify items for a qualified reviewer. Use when preparing to close the books for a period.",
     summary:
-      "A CPA's month-end close workflow, encoded as a repeatable checklist your agent can run.",
+      "Organize reconciliation steps and review questions for a month-end close.",
     category: "Finance & Accounting",
     subcategory: "Accounting",
     tags: ["accounting", "month-end close", "reconciliation"],
@@ -133,7 +133,7 @@ Never post journal entries automatically — always leave them for human review.
     description:
       "Turn a target keyword into a full content brief: search intent, outline, entities to cover, internal links, and a title/meta set. Use when planning an article.",
     summary:
-      "The exact brief format a senior content strategist hands to writers, minus the guesswork.",
+      "Outline search intent, article structure, entities, and internal links for a writer.",
     category: "Marketing",
     subcategory: "SEO & GEO",
     tags: ["SEO", "content strategy", "keyword research"],
@@ -188,7 +188,7 @@ Keep the brief to a single page. Writers skim; make it scannable.`,
     description:
       "Build weekly and monthly cohort retention tables from an events table, then explain the drop-off in plain language. Use when analyzing product retention.",
     summary:
-      "Turns a raw events table into cohort curves and a readable narrative of why users churn.",
+      "Turn event data into cohort retention tables and questions about drop-off.",
     category: "Data & Analytics",
     subcategory: "Product analytics",
     tags: ["cohorts", "retention", "SQL"],
@@ -249,7 +249,7 @@ names to the provided schema. Explain findings for a non-technical PM.`,
     description:
       "Sanity-check a SaaS metrics pack: MRR movements, net revenue retention, CAC payback, and burn multiple. Flags definitions that don't reconcile. Use before a board meeting.",
     summary:
-      "A fractional CFO's board-prep review, catching the metric definitions founders get wrong.",
+      "Review SaaS metric definitions and flag figures that need reconciliation.",
     category: "Data & Analytics",
     subcategory: "Business intelligence",
     tags: ["SaaS metrics", "finance", "board reporting"],
@@ -321,7 +321,7 @@ To compare against industry benchmarks, the skill may call
     description:
       "Draft a polite, escalating sequence of overdue-invoice emails matched to how late the payment is. Use when chasing accounts receivable.",
     summary:
-      "The accounts-receivable email ladder that gets invoices paid without burning the relationship.",
+      "Draft a respectful overdue-invoice email sequence for human review.",
     category: "Finance & Accounting",
     subcategory: "Billing",
     tags: ["accounts receivable", "collections", "email"],
@@ -367,7 +367,7 @@ amount, and a single clear payment link in every message.`,
     description:
       "Review a mutual NDA against a standard playbook: flag one-sided terms, missing carve-outs, and unusual durations. Use when reviewing an inbound NDA.",
     summary:
-      "A commercial lawyer's NDA playbook, so you know which clauses to push back on.",
+      "Compare NDA terms with a supplied playbook and flag clauses for legal review.",
     category: "Legal & Compliance",
     subcategory: "Contract review",
     tags: ["NDA", "legal operations", "risk review"],
