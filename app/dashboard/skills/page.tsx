@@ -36,7 +36,7 @@ export default async function MySkillsPage() {
         </article>)}</div>
       </div>
     </>}
-    <p className="mt-6 text-xs leading-relaxed text-muted-foreground">Submitted content and its scan results are stored with the marketplace database; they are not added to this application's source code repository.</p>
+    <p className="mt-6 text-xs leading-relaxed text-muted-foreground">Submitted content and its scan results are stored with the marketplace database; they are not added to this application&apos;s source code repository.</p>
   </main>;
 }
 

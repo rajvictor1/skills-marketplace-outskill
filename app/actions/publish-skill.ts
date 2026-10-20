@@ -3,7 +3,7 @@
 import { createHash } from "node:crypto";
 import { createId } from "@paralleldrive/cuid2";
 import Anthropic from "@anthropic-ai/sdk";
-import { and, desc, eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 

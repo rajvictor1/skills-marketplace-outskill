@@ -162,6 +162,9 @@ examples do not need a database seed.
 
 ## Publishing a skill
 
+For application delivery and dependency security, see the
+[Skillbuffet DevSecOps guide](docs/DEVSECOPS.md).
+
 The current upload flow accepts one standalone `SKILL.md` (paste, file upload,
 or the root `SKILL.md` from a public GitHub repository). The file must contain
 YAML frontmatter with a lowercase `name` and a plain-language `description`.
