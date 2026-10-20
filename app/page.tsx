@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ScanPreview } from "@/components/scan-preview";
 import { SkillCard } from "@/components/skill-card";
 import { DemoDataNotice } from "@/components/dashboard/demo-data-notice";
+import { CategoryDirectory } from "@/components/category-directory";
 import { SAMPLE_SKILLS, CATALOG_STATS } from "@/lib/sample-data";
 import { SCAN_LAYERS } from "@/lib/trust";
 
@@ -74,17 +75,14 @@ export default function Home() {
             <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
               Skillbuffet brings discovery, review, and publishing together. Find a skill by the work it helps you do, read its instructions, and inspect its security result before you install it.
             </p>
-            <div className="mt-9 flex flex-wrap gap-2" aria-label="Marketplace categories">
-              {["Marketing", "Sales", "Technology", "Operations"].map((category) => (
-                <span key={category} className="rounded-full border border-border bg-[#f6f7fb] px-4 py-2 text-sm font-medium text-foreground">{category}</span>
-              ))}
-            </div>
-            <Link href="/skills" className="mt-9 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
-              Explore the catalog <ArrowRight className="size-4" aria-hidden />
+            <Link href="#categories" className="mt-9 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+              Explore all 18 categories <ArrowRight className="size-4" aria-hidden />
             </Link>
           </div>
         </div>
       </section>
+
+      <CategoryDirectory compact />
 
       <section className="bg-[#f3f5fb] px-5 py-24 sm:px-8 lg:py-32">
         <div className="mx-auto max-w-7xl">

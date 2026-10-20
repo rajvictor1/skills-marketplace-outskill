@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Eye, FileWarning, TerminalSquare, Bot, ShieldCheck } from "lucide-react";
 
 import { PublishForm } from "@/components/publish-form";
+import { getCategoryBySlug } from "@/lib/skills/taxonomy";
 import { SCAN_LAYERS } from "@/lib/trust";
 
 export const metadata: Metadata = {
@@ -17,7 +18,9 @@ const LAYER_ICONS = {
   llm_injection: Bot,
 } as const;
 
-export default function PublishPage() {
+export default async function PublishPage({ searchParams }: { searchParams: Promise<{ category?: string | string[] }> }) {
+  const requestedCategory = (await searchParams).category;
+  const selectedCategory = typeof requestedCategory === "string" ? getCategoryBySlug(requestedCategory)?.category.name : undefined;
   return (
     <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-16">
       <div className="max-w-2xl">
@@ -37,7 +40,7 @@ export default function PublishPage() {
       </div>
 
       <div className="mt-10 grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:gap-10">
-        <PublishForm />
+        <PublishForm initialCategory={selectedCategory} />
 
         <aside className="lg:pt-1">
           <h2 className="text-sm font-semibold tracking-tight text-foreground">

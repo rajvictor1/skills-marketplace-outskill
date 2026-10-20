@@ -55,10 +55,10 @@ Keep instructions concrete. Do not ask the agent to reveal secrets or run untrus
 
 const inputClass = "min-h-11 rounded-xl border-border bg-background/60";
 
-export function PublishForm() {
+export function PublishForm({ initialCategory = "Marketing" }: { initialCategory?: string }) {
   const [sourceType, setSourceType] = useState<SourceType>("paste");
-  const [category, setCategory] = useState<string>("Marketing");
-  const [subcategory, setSubcategory] = useState<string>(getSubcategories("Marketing")[0] ?? "");
+  const [category, setCategory] = useState<string>(initialCategory);
+  const [subcategory, setSubcategory] = useState<string>(getSubcategories(initialCategory)[0] ?? "");
   const [selectedFileName, setSelectedFileName] = useState("");
   const [state, formAction, pending] = useActionState(
     publishSkill,

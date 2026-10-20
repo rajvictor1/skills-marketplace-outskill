@@ -6,7 +6,7 @@ import { Search, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { SkillCard } from "@/components/skill-card";
 import { cn } from "@/lib/utils";
-import { CATEGORY_GROUPS, getSubcategories } from "@/lib/skills/taxonomy";
+import { CATEGORY_GROUPS, getSubcategories, type SkillCategory } from "@/lib/skills/taxonomy";
 import { CATEGORIES, type SampleSkill } from "@/lib/sample-data";
 
 type SortKey = "popular" | "recent" | "safest";
@@ -18,10 +18,10 @@ const TIER_RANK: Record<string, number> = {
   pending: 3,
 };
 
-export function Catalog({ skills }: { skills: SampleSkill[] }) {
+export function Catalog({ skills, focusedCategory }: { skills: SampleSkill[]; focusedCategory?: SkillCategory }) {
   const [query, setQuery] = useState("");
   const [group, setGroup] = useState("All");
-  const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("All");
+  const [category, setCategory] = useState<(typeof CATEGORIES)[number]>(focusedCategory ?? "All");
   const [subcategory, setSubcategory] = useState("All subcategories");
   const [sort, setSort] = useState<SortKey>("popular");
 
@@ -101,8 +101,7 @@ export function Catalog({ skills }: { skills: SampleSkill[] }) {
         </div>
       </div>
 
-      {/* grouped category navigation */}
-      <div className="mt-8 flex flex-wrap gap-2 border-b border-border pb-5" aria-label="Category groups">
+      {!focusedCategory && <div className="mt-8 flex flex-wrap gap-2 border-b border-border pb-5" aria-label="Category groups">
         {["All", ...CATEGORY_GROUPS.map((item) => item.name)].map((item) => (
           <button
             key={item}
@@ -118,19 +117,22 @@ export function Catalog({ skills }: { skills: SampleSkill[] }) {
             {item === "All" ? "All skills" : item}
           </button>
         ))}
-      </div>
+      </div>}
 
-      {visibleCategories.length > 0 && <div className="mt-4 flex flex-wrap gap-2" aria-label="Categories">
+      {!focusedCategory && visibleCategories.length > 0 && <div className="mt-4 flex flex-wrap gap-2" aria-label="Categories">
         {visibleCategories.map((item) => <button key={item.name} type="button" onClick={() => { setCategory(item.name); setSubcategory("All subcategories"); }} className={cn("rounded-full px-4 py-2 text-sm transition-colors", category === item.name ? "bg-accent font-semibold text-accent-foreground" : "text-muted-foreground hover:bg-secondary hover:text-foreground")}>{item.name}</button>)}
       </div>}
 
       {category !== "All" && getSubcategories(category).length > 0 && (
-        <div className="mt-3 flex items-center gap-3">
+        <div className={focusedCategory ? "mt-6 flex flex-wrap items-center gap-2" : "mt-3 flex items-center gap-3"}>
+          {focusedCategory ? <span className="mr-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">Specialties</span> : null}
+          {focusedCategory ? ["All subcategories", ...getSubcategories(category)].map((item) => <button key={item} type="button" onClick={() => setSubcategory(item)} className={cn("rounded-full border px-4 py-2 text-sm transition-colors", subcategory === item ? "border-primary bg-primary text-primary-foreground" : "border-border bg-white text-muted-foreground hover:border-primary/40 hover:text-foreground")}>{item === "All subcategories" ? "All specialties" : item}</button>) : <>
           <label htmlFor="subcategory-filter" className="text-xs text-muted-foreground">Narrow by subcategory</label>
           <select id="subcategory-filter" value={subcategory} onChange={(event) => setSubcategory(event.target.value)} className="h-9 rounded-lg border border-border bg-card px-3 text-sm text-foreground">
             <option>All subcategories</option>
             {getSubcategories(category).map((item) => <option key={item}>{item}</option>)}
           </select>
+          </>}
         </div>
       )}
 
@@ -143,10 +145,10 @@ export function Catalog({ skills }: { skills: SampleSkill[] }) {
       {results.length === 0 ? (
         <div className="mt-6 rounded-2xl border border-dashed border-border bg-card/40 p-12 text-center">
           <p className="text-sm font-medium text-foreground">
-            No skills match that search.
+            {query || subcategory !== "All subcategories" ? "No skills match that search." : focusedCategory ? `No skills published in ${focusedCategory} yet.` : "No skills available yet."}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Try a different keyword or clear the category filter.
+            {focusedCategory ? "Try a different keyword or specialty, or publish the first skill in this field." : "Try a different keyword or clear the category filter."}
           </p>
         </div>
       ) : (

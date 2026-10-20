@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 
 import { Catalog } from "@/components/catalog";
+import { CategoryDirectory } from "@/components/category-directory";
 import { getCatalogState } from "@/lib/skills/catalog";
 import { DemoDataNotice } from "@/components/dashboard/demo-data-notice";
 
@@ -27,7 +28,10 @@ export default async function SkillsPage() {
           </p>
         </div>
       </section>
-      <div className="mx-auto max-w-7xl px-5 pt-10 sm:px-8">
+      <CategoryDirectory />
+      <div id="catalog-results" className="mx-auto max-w-7xl scroll-mt-20 border-t border-border px-5 pt-14 sm:px-8">
+        <p className="editorial-kicker text-primary">Search the marketplace</p>
+        <h2 className="mb-7 mt-3 text-3xl font-semibold tracking-[-0.045em] text-foreground sm:text-4xl">All available skills</h2>
         {catalog.hasSampleContent && <div className="mb-6 max-w-3xl"><DemoDataNotice>The catalog includes example skills for preview. Their stored scan records do not represent customer submissions or live install analytics.</DemoDataNotice></div>}
         {catalog.source === "unavailable" && <div className="mb-6 max-w-3xl"><DemoDataNotice>The database is configured but could not be reached. The catalog is empty until the connection and migrations are available.</DemoDataNotice></div>}
         <Catalog skills={catalog.skills} />
