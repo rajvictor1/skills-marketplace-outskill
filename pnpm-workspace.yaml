@@ -1,5 +1,11 @@
 packages:
   - .
 
+allowBuilds:
+  '@prisma/client': false
+  better-sqlite3: false
+  esbuild: true
+  unrs-resolver: true
+
 overrides:
   browserslist: 4.29.4

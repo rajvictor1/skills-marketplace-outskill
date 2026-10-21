@@ -9,11 +9,10 @@ contest or bonus-prize requirements.
 
 1. A contributor opens a pull request against `main`. Vercel builds a Preview
    deployment from that branch.
-2. GitHub Actions runs **Code quality** (ESLint and TypeScript), **Production
-   dependencies** (high-or-worse advisory audit), and **Dependency review**
-   (new high-or-worse dependency advisories in the pull request). The workflow
+2. GitHub Actions runs **Code quality** (ESLint and TypeScript) and **Production
+   dependencies** (high-or-worse advisory audit). The workflow
    installs the committed lockfile and uses read-only repository permissions.
-3. Review the changed code, the three check results, and the Vercel Preview.
+3. Review the changed code, both check results, and the Vercel Preview.
    The checks do not themselves prevent a merge until the GitHub branch rule
    described below is enabled. Vercel's Git integration can build a Preview
    while checks are running.
@@ -40,7 +39,7 @@ is the source of truth. A scan reduces risk but cannot guarantee safety.
 
 In GitHub, open the repository, then **Settings → Rules → Rulesets**. Create a
 branch ruleset for `main` that requires a pull request and the successful
-`Code quality`, `Production dependencies`, and `Dependency review` checks.
+`Code quality` and `Production dependencies` checks.
 Set at least one reviewer if your team has someone who can review the code.
 Check the exact required status names after the first workflow run. If you
 cannot see **Rulesets**, use **Settings → Branches → Add branch protection
@@ -50,6 +49,10 @@ saved setting is active.
 The repository workflow does not add a Vercel production approval gate. If the
 team wants a separate release approval, configure Vercel Deployment Checks or
 an environment approval before changing production release behavior.
+
+GitHub's Dependency Review action also requires the repository Dependency Graph
+setting. Enable that setting before adding the separate pull request review
+check. The production audit above already blocks high and critical advisories.
 
 ### Enable monitoring and alerts
 
@@ -77,7 +80,7 @@ liveness probe so a database incident is diagnosed accurately.
 | Area | Current state |
 | --- | --- |
 | Code review and verification | GitHub pull request workflow added; branch rule pending |
-| Package and dependency security | Frozen lockfile, production audit, and pull request dependency review added |
+| Package and dependency security | Frozen lockfile and production audit added; GitHub Dependency Graph setting pending for the separate review action |
 | User-submitted skill security | Four-layer scanner already in the application; LLM layer is best effort |
 | Preview release | Existing Vercel Git integration |
 | Production release approval | Pending team policy and account setting |
