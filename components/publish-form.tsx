@@ -14,8 +14,8 @@ import {
 } from "lucide-react";
 
 import {
-  INITIAL_PUBLISH_STATE,
   publishSkill,
+  type PublishState,
 } from "@/app/actions/publish-skill";
 import { TrustBadge } from "@/components/trust-badge";
 import { Button } from "@/components/ui/button";
@@ -54,6 +54,7 @@ Explain the workflow your agent should follow, step by step.
 Keep instructions concrete. Do not ask the agent to reveal secrets or run untrusted code.`;
 
 const inputClass = "min-h-11 rounded-xl border-border bg-background/60";
+const INITIAL_PUBLISH_STATE: PublishState = { status: "idle" };
 
 export function PublishForm({ initialCategory = "Marketing" }: { initialCategory?: string }) {
   const [sourceType, setSourceType] = useState<SourceType>("paste");

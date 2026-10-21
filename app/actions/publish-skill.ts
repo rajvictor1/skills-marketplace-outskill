@@ -51,8 +51,6 @@ export type PublishState =
       trustTier: "verified_safe" | "caution";
     };
 
-export const INITIAL_PUBLISH_STATE: PublishState = { status: "idle" };
-
 function field(formData: FormData, key: string): string {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
