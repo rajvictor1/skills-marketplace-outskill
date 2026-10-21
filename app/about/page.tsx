@@ -10,15 +10,15 @@ export default function About() {
       sections={[
         {
           title: "Why this marketplace exists",
-          body: "An instruction file can ask an agent to read files, call tools or use external services. Skillbuffet makes the instructions and declared access needs visible before download so users can make a more informed decision. The marketplace organizes skills for business, technology, research and everyday work.",
+          body: "An instruction file can ask an agent to read files, call tools or use external services. Skillbuffet makes the instructions and declared access needs visible before download so users can make a more informed decision. The marketplace organizes recipes for business, technology, research and everyday work.",
         },
         {
-          title: "How a skill reaches the public catalog",
+          title: "How a recipe reaches the public catalog",
           body: "Creators submit a SKILL.md file with a category, version, license and access declarations. Automated checks look for suspicious patterns. An administrator then reviews that saved version. Pending, rejected and blocked submissions stay private; an approved version can become public.",
         },
         {
           title: "What we can and cannot verify",
-          body: "Scanning and review reduce risk but do not prove a skill is safe, accurate or useful for every task. Skillbuffet does not execute submissions, independently verify every creator identity or certify external services. Review the instructions yourself and grant only the permissions your agent needs.",
+          body: "Scanning and review reduce risk but do not prove a recipe is safe, accurate or useful for every task. Skillbuffet does not execute submissions, independently verify every creator identity or certify external services. Review the instructions yourself and grant only the permissions your agent needs.",
         },
         {
           title: "Operator, source and beta status",

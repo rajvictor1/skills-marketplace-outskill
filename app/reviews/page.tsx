@@ -26,7 +26,7 @@ export default async function ReviewsPage() {
       </h1>
       <p className="mt-5 text-lg text-muted-foreground">
         Tell other builders what using Skillbuffet is like. These are community
-        reviews of this marketplace, separate from GitHub stars and skill
+        reviews of this marketplace, separate from GitHub stars and recipe
         security checks.
       </p>
       <section className="mt-9 rounded-3xl border border-border bg-category-violet p-7">

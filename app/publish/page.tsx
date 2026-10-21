@@ -43,10 +43,10 @@ export default async function PublishPage({
       <PageSeo
         path="/publish"
         {...PUBLIC_PAGES["/publish"]}
-        crumbs={[{ name: "Submit a skill", path: "/publish" }]}
+        crumbs={[{ name: "Submit a recipe", path: "/publish" }]}
       />
       <div className="col-span-full mx-auto w-full max-w-7xl px-5 pt-6">
-        <Breadcrumbs items={[{ name: "Submit a skill", path: "/publish" }]} />
+        <Breadcrumbs items={[{ name: "Submit a recipe", path: "/publish" }]} />
       </div>
       <div className="max-w-2xl">
         <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
@@ -54,12 +54,12 @@ export default async function PublishPage({
           Scanned before it ships
         </span>
         <h1 className="mt-5 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-          Publish a skill
+          Publish a recipe
         </h1>
         <p className="mt-3 text-base leading-relaxed text-muted-foreground">
           Paste your SKILL.md, upload that file, or import a public repo. Every
           submission is checked by the scanner and then reviewed by the
-          administrator. Your skill stays private until the administrator
+          administrator. Your recipe stays private until the administrator
           approves this version. Critical scanner findings block the submission.
         </p>
       </div>

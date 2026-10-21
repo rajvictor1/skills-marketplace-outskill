@@ -78,8 +78,8 @@ export function ReviewForm({ target }: { target: string }) {
         {state.message}
       </p>
       <p className="text-xs text-muted-foreground">
-        Sign-in required. One editable rating per account. Skill reviews require
-        a recorded download; creators cannot review their own skill.
+        Sign-in required. One editable rating per account. Recipe reviews require
+        a recorded download; creators cannot review their own recipe.
       </p>
     </form>
   );

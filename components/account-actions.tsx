@@ -78,7 +78,7 @@ export function AccountActions() {
             href="/dashboard/skills"
             className="rounded-xl px-4 py-3 text-sm hover:bg-primary/10"
           >
-            My skills
+            My recipes
           </Link>
           <button
             onClick={logout}
@@ -110,7 +110,7 @@ export function AccountActions() {
           className="rounded-full px-4 text-foreground hover:bg-primary/10"
           asChild
         >
-          <Link href="/dashboard/skills">My skills</Link>
+          <Link href="/dashboard/skills">My recipes</Link>
         </Button>
         <Button
           variant="outline"

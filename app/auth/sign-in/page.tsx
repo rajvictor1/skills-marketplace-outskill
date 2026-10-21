@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: null },
   title: "Sign in",
   description:
-    "Sign in to publish and install security-scanned AI agent skills.",
+    "Sign in to publish and install security-scanned AI agent recipes.",
 };
 
 export default async function SignInPage() {

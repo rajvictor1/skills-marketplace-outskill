@@ -18,15 +18,15 @@ export default function PrivacyPage() {
         },
         {
           title: "What becomes public",
-          body: "Approved skill instructions, creator display name, declared metadata, source links, security summaries, ratings and public review comments are visible to visitors. Pending, rejected and blocked submissions are restricted to the creator and administrators. Administrator review notes may be shown privately to the creator. Account email addresses are not part of the public catalog API.",
+          body: "Approved recipe instructions, creator display name, declared metadata, source links, security summaries, ratings and public review comments are visible to visitors. Pending, rejected and blocked submissions are restricted to the creator and administrators. Administrator review notes may be shown privately to the creator. Account email addresses are not part of the public catalog API.",
         },
         {
           title: "Providers and automated review",
-          body: "Vercel hosts this deployment and Neon stores marketplace records. Public GitHub imports fetch the specified repository. If the optional AI classifier is configured, submitted skill instructions are sent to its model provider for security review; the scan report shows whether it was used. No claim is made that an AI review ran when it was skipped. Provider terms and processing locations also apply.",
+          body: "Vercel hosts this deployment and Neon stores marketplace records. Public GitHub imports fetch the specified repository. If the optional AI classifier is configured, submitted recipe instructions are sent to its model provider for security review; the scan report shows whether it was used. No claim is made that an AI review ran when it was skipped. Provider terms and processing locations also apply.",
         },
         {
           title: "Cookies and measurement",
-          body: "Authentication uses essential session cookies. Download events store account, skill, version and time; ratings store account, target, stars and optional comment. The current product does not measure agent execution, time saved or revenue. It does not implement an advertising or third-party marketing analytics integration.",
+          body: "Authentication uses essential session cookies. Download events store account, recipe, version and time; ratings store account, target, stars and optional comment. The current product does not measure agent execution, time saved or revenue. It does not implement an advertising or third-party marketing analytics integration.",
         },
         {
           title: "Retention and requests",

@@ -3,7 +3,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Skillbuffet",
     short_name: "Skillbuffet",
-    description: "Discover and share reviewed AI agent skills.",
+    description: "Discover and share reviewed AI agent recipes.",
     start_url: "/",
     display: "standalone",
     background_color: "#101522",

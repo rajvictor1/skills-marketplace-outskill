@@ -4,8 +4,8 @@ import { Catalog } from "@/components/catalog";
 import { Breadcrumbs, PageSeo } from "@/components/seo/page-seo";
 export const metadata = pageMetadata(
   "/search",
-  "Search AI Agent Skills by Task, Creator or Category",
-  "Search the Skillbuffet catalog by task, skill name, creator or tag. Compare approved listings, declared permissions and supported agents before downloading.",
+  "Search AI Agent Recipes by Task, Creator or Category",
+  "Search the Skillbuffet catalog by task, recipe name, creator or tag. Compare approved listings, declared permissions and supported agents before downloading.",
   false,
 );
 export const dynamic = "force-dynamic";
@@ -22,12 +22,12 @@ export default async function Search({
     <main className="mx-auto max-w-7xl px-5 py-12">
       <PageSeo
         path="/search"
-        title="Search AI agent skills"
+        title="Search AI agent recipes"
         description="Search approved Skillbuffet listings by task, creator or tag."
-        crumbs={[{ name: "Search skills", path: "/search" }]}
+        crumbs={[{ name: "Search recipes", path: "/search" }]}
       />
-      <Breadcrumbs items={[{ name: "Search skills", path: "/search" }]} />
-      <h1 className="text-4xl font-semibold">Search AI agent skills</h1>
+      <Breadcrumbs items={[{ name: "Search recipes", path: "/search" }]} />
+      <h1 className="text-4xl font-semibold">Search AI agent recipes</h1>
       <p className="my-6 text-lg text-muted-foreground">
         Search approved listings by task, creator or tag. A matching result is a
         starting point: read its instructions and review before downloading.

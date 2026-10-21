@@ -40,12 +40,12 @@ export async function generateMetadata({
       title:
         lookup.status === "unavailable"
           ? "Catalog unavailable"
-          : "Skill not found",
+          : "Recipe not found",
     };
   const { skill } = lookup;
   return pageMetadata(
     `/skills/${slug}`,
-    `${skill.name}: ${skill.category} AI Skill`,
+    `${skill.name}: ${skill.category} AI Recipe`,
     skill.summary,
     lookup.source !== "demo" && !skill.metadata?.isSample,
   );
@@ -85,7 +85,7 @@ export default async function SkillDetailPage({
     .slice(0, 3);
   const path = `/skills/${slug}`;
   const crumbs = [
-    { name: "All skills", path: "/skills" },
+    { name: "All recipes", path: "/skills" },
     {
       name: skill.category,
       path: `/skills/categories/${categorySlug(skill.category)}`,
@@ -163,7 +163,7 @@ export default async function SkillDetailPage({
             )}
             {isExample ? (
               <span className="rounded-full border border-primary/20 bg-primary/[0.07] px-2.5 py-1 text-xs font-semibold text-primary">
-                Example skill
+                Example recipe
               </span>
             ) : (
               <TrustBadge tier={skill.trustTier} />
@@ -239,7 +239,7 @@ export default async function SkillDetailPage({
         {/* main column */}
         <div className="min-w-0 space-y-10">
           <section>
-            <h2 className="text-xl font-semibold">How to use this skill</h2>
+            <h2 className="text-xl font-semibold">How to use this recipe</h2>
             <ol className="mt-4 list-decimal space-y-3 pl-5 leading-7 text-muted-foreground">
               <li>
                 Read the complete instructions, license, compatibility and
@@ -248,7 +248,7 @@ export default async function SkillDetailPage({
               <li>
                 {isExample
                   ? "Download the example SKILL.md for inspection. Review and adapt it in an isolated environment before use."
-                  : "Sign in and download the approved SKILL.md. Follow your agent application’s skill installation instructions."}
+                  : "Sign in and download the approved SKILL.md. Follow your agent application’s instructions for loading SKILL.md."}
               </li>
               <li>
                 Use the creator’s declared inputs, check the result, and keep
@@ -256,7 +256,7 @@ export default async function SkillDetailPage({
               </li>
             </ol>
             <p className="mt-4 leading-7 text-muted-foreground">
-              Skillbuffet does not execute this skill. Approval and scanning
+              Skillbuffet does not execute this recipe. Approval and scanning
               cannot guarantee safety, compatibility or output quality.{" "}
               {skill.metadata?.inputs
                 ? `Declared input: ${skill.metadata.inputs}`
@@ -315,7 +315,7 @@ export default async function SkillDetailPage({
 
               <p className="mt-4 text-xs text-muted-foreground">
                 Classifier: {skill.classifierModel}. Automated vetting reduces
-                risk but is not a guarantee. Review a skill before trusting it
+                risk but is not a guarantee. Review a recipe before trusting it
                 with sensitive data.
               </p>
             </section>
@@ -335,7 +335,7 @@ export default async function SkillDetailPage({
               </div>
               {!ratings.count && (
                 <p className="mt-3 text-sm text-muted-foreground">
-                  No reviews yet. Download and try this skill, then share your
+                  No reviews yet. Download and try this recipe, then share your
                   experience.
                 </p>
               )}
@@ -363,7 +363,7 @@ export default async function SkillDetailPage({
             <h2 className="text-lg font-semibold text-foreground">SKILL.md</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               {isExample
-                ? "Illustrative instructions for this preview listing. Adapt and review them before submitting a real skill."
+                ? "Illustrative instructions for this preview listing. Adapt and review them before submitting a real recipe."
                 : "The full instructions that load into your agent. Read them before installing."}
             </p>
             <div className="mt-4 rounded-2xl border border-border bg-card p-6">
@@ -459,7 +459,7 @@ export default async function SkillDetailPage({
             {!isExample && (
               <p className="mt-3 text-xs text-muted-foreground">
                 Scripts are analyzed statically. We never execute a submitted
-                skill.
+                recipe.
               </p>
             )}
           </div>
@@ -468,7 +468,7 @@ export default async function SkillDetailPage({
       {related.length > 0 && (
         <section className="mt-14">
           <h2 className="text-2xl font-semibold">
-            Related {skill.category.toLowerCase()} skills
+            Related {skill.category.toLowerCase()} recipes
           </h2>
           <div className="mt-6 grid gap-5 md:grid-cols-3">
             {related.map((s) => (
@@ -512,7 +512,7 @@ function MarketplaceDetails({
       aria-labelledby="skill-profile-title"
     >
       <h2 id="skill-profile-title" className="text-sm font-semibold">
-        Skill profile
+        Recipe profile
       </h2>
       {metadata.license && (
         <DetailField label="License" value={metadata.license} />

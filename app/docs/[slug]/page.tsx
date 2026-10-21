@@ -12,7 +12,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const doc = Object.hasOwn(DOCS, slug) ? DOCS[slug] : undefined;
   return doc
-    ? pageMetadata(`/docs/${slug}`, `${doc.title}: AI Skill Guide`, doc.intro)
+    ? pageMetadata(`/docs/${slug}`, `${doc.title}: AI Recipe Guide`, doc.intro)
     : pageMetadata(
         `/docs/${slug}`,
         "Documentation not found",

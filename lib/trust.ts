@@ -52,7 +52,7 @@ export const TRUST_META: Record<
   blocked: {
     label: "Blocked",
     short: "Blocked",
-    blurb: "A critical finding was detected. This skill cannot be published.",
+    blurb: "A critical finding was detected. This recipe cannot be published.",
     icon: ShieldX,
     dot: "bg-danger",
     text: "text-danger",

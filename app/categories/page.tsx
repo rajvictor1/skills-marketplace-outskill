@@ -12,12 +12,12 @@ export default function Categories() {
           crumbs={[{ name: "Categories", path: "/categories" }]}
         />
         <Breadcrumbs items={[{ name: "Categories", path: "/categories" }]} />
-        <h1 className="text-4xl font-semibold">AI agent skill categories</h1>
+        <h1 className="text-4xl font-semibold">AI agent recipe categories</h1>
         <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">
-          Explore business, technology, data, research and productivity skills.
+          Explore business, technology, data, research and productivity recipes.
           Each category lists its specialties so you can find a relevant task or
           choose a field for your own submission. Empty categories accept
-          submissions; only approved skills are available for download.
+          submissions; only approved recipes are available for download.
         </p>
       </div>
       <CategoryDirectory />

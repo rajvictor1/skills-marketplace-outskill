@@ -140,7 +140,7 @@ export const SKILL_CATEGORY_NAMES = CATEGORY_GROUPS.flatMap((group) =>
 );
 
 export const CATEGORY_DESCRIPTIONS: Record<SkillCategory, string> = {
-  Marketing: "Skills for campaigns, content, SEO, GEO, and audience growth.",
+  Marketing: "Recipes for campaigns, content, SEO, GEO, and audience growth.",
   Sales: "Find prospects, research accounts, and improve sales workflows.",
   "Customer Support":
     "Help teams answer questions and support customers consistently.",
@@ -165,7 +165,7 @@ export const CATEGORY_DESCRIPTIONS: Record<SkillCategory, string> = {
   Education: "Create learning materials, tutoring support, and assessments.",
   Entertainment:
     "Create stories, explore games, and build playful media experiences.",
-  Other: "Explore useful skills that do not fit a specialist field yet.",
+  Other: "Explore useful recipes that do not fit a specialist field yet.",
 };
 
 export function categorySlug(name: string): string {

@@ -57,10 +57,10 @@ export default async function Home() {
           <div className="mx-auto max-w-5xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-primary/10 px-4 py-2 text-xs font-medium text-foreground/90 backdrop-blur-md">
               <ShieldCheck className="size-4 text-safe" aria-hidden />A more
-              thoughtful home for AI agent skills
+              thoughtful home for AI agent recipes
             </span>
             <h1 className="mt-9 text-balance text-[clamp(2.4rem,5.5vw,4.8rem)] font-semibold leading-[0.99] tracking-[-0.065em] text-foreground">
-              Discover AI agent skills.
+              Discover AI agent recipes.
               <br />
               <span className="text-primary">Know what&apos;s inside.</span>
             </h1>
@@ -68,7 +68,7 @@ export default async function Home() {
               Skillbuffet is a marketplace of reusable AI agent instructions.
               Browse by category, read each SKILL.md and its review results, and
               download an approved version for your own agent. Creators can
-              submit skills for administrator review; approval reduces risk but
+              submit recipes for administrator review; approval reduces risk but
               does not guarantee safety.
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -76,13 +76,13 @@ export default async function Home() {
                 href="/skills"
                 className="brand-button inline-flex h-13 min-w-44 items-center justify-center gap-2 rounded-full px-7 text-sm font-semibold"
               >
-                Explore skills <ArrowRight className="size-4" aria-hidden />
+                Explore recipes <ArrowRight className="size-4" aria-hidden />
               </Link>
               <Link
                 href="/publish"
                 className="cta-secondary inline-flex h-13 min-w-44 items-center justify-center gap-2 rounded-full border border-border px-7 text-sm font-semibold text-foreground transition-colors hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
               >
-                Publish a skill <ArrowUpRight className="size-4" aria-hidden />
+                Publish a recipe <ArrowUpRight className="size-4" aria-hidden />
               </Link>
             </div>
             <div className="mx-auto mt-9 flex max-w-xl flex-wrap items-center justify-center gap-4 rounded-2xl border border-border bg-primary/10 p-5 text-foreground">
@@ -122,13 +122,13 @@ export default async function Home() {
               One clear place to start
             </p>
             <h2 className="mt-5 max-w-2xl text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.05em] sm:text-5xl lg:text-6xl">
-              From a useful idea to a skill people can trust.
+              From a useful idea to a recipe people can trust.
             </h2>
           </div>
           <div className="lg:pt-9">
             <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
               Skillbuffet brings discovery, review, and publishing together.
-              Find a skill by the work it helps you do, read its instructions,
+              Find a recipe by the work it helps you do, read its instructions,
               and inspect its security result before you install it.
             </p>
             <Link
@@ -161,17 +161,17 @@ export default async function Home() {
               [
                 "01",
                 "Discover",
-                "Browse skills by category, search for a use case, and compare what each one does.",
+                "Browse recipes by category, search for a use case, and compare what each one does.",
               ],
               [
                 "02",
                 "Inspect",
-                "Read the skill and its scan findings before deciding whether it belongs in your agent.",
+                "Read the recipe and its scan findings before deciding whether it belongs in your agent.",
               ],
               [
                 "03",
                 "Publish",
-                "Submit your skill for scanning and administrator review. It becomes public only after approval.",
+                "Submit your recipe for scanning and administrator review. It becomes public only after approval.",
               ],
             ].map(([number, title, description]) => (
               <div
@@ -199,7 +199,7 @@ export default async function Home() {
             <div>
               <p className="editorial-kicker text-primary">The review layer</p>
               <h2 className="mt-4 max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.05em] sm:text-5xl lg:text-6xl">
-                Good skills deserve a closer look.
+                Good recipes deserve a closer look.
               </h2>
             </div>
             <p className="max-w-xl text-base leading-relaxed text-muted-foreground lg:pb-2">
@@ -232,7 +232,7 @@ export default async function Home() {
           </div>
           <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground">
             Automated scanning reduces risk; it cannot guarantee that every
-            skill is safe. Always review permissions and code before installing.
+            recipe is safe. Always review permissions and code before installing.
           </p>
           <Link
             href="/security"
@@ -251,10 +251,10 @@ export default async function Home() {
                 The curated collection
               </p>
               <h2 className="mt-4 max-w-2xl text-balance text-4xl font-semibold leading-tight tracking-[-0.05em] sm:text-5xl">
-                Find your next useful skill.
+                Find your next useful recipe.
               </h2>
               <p className="mt-4 max-w-xl text-base text-muted-foreground">
-                Explore skills across marketing, sales, and technical workflows.
+                Explore recipes across marketing, sales, and technical workflows.
               </p>
             </div>
             <Button
@@ -263,7 +263,7 @@ export default async function Home() {
               className="brand-button h-11 rounded-full px-6"
             >
               <Link href="/skills">
-                Browse all skills <ArrowRight className="size-4" aria-hidden />
+                Browse all recipes <ArrowRight className="size-4" aria-hidden />
               </Link>
             </Button>
           </div>
@@ -277,7 +277,7 @@ export default async function Home() {
           {exampleCount > 0 && (
             <div className="mt-8 max-w-3xl">
               <DemoDataNotice>
-                Example skills in this preview have not been submitted, scanned,
+                Example recipes in this preview have not been submitted, scanned,
                 or installed.
               </DemoDataNotice>
             </div>
@@ -293,7 +293,7 @@ export default async function Home() {
             </div>
           )}
           <div className="grid grid-cols-2 gap-8 border-t border-border pt-10 lg:grid-cols-4">
-            <Stat value={String(realSkills.length)} label="Catalog skills" />
+            <Stat value={String(realSkills.length)} label="Catalog recipes" />
             <Stat
               value={String(coveredCategories)}
               label="Covered categories"
@@ -319,14 +319,14 @@ export default async function Home() {
             Your expertise deserves a better home.
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-lg text-muted-foreground">
-            Publish an AI agent skill, see its review result, and make it
+            Publish an AI agent recipe, see its review result, and make it
             discoverable to the people who need it.
           </p>
           <Link
             href="/publish"
             className="brand-button mt-9 inline-flex h-13 items-center justify-center gap-2 rounded-full px-8 text-sm font-semibold"
           >
-            Publish a skill <ArrowRight className="size-4" aria-hidden />
+            Publish a recipe <ArrowRight className="size-4" aria-hidden />
           </Link>
         </div>
       </section>

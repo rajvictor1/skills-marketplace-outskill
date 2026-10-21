@@ -24,7 +24,7 @@ export const SAMPLE_ACTIVITY = [
     type: "success",
   },
   {
-    title: "New skill version passed security review",
+    title: "New recipe version passed security review",
     detail: "Month-End Close Assistant · v2.1.0",
     time: "26 min ago",
     type: "scan",

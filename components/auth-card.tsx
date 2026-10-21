@@ -75,30 +75,30 @@ export function AuthCard({
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-primary/10 px-4 py-2 text-xs font-medium text-foreground/90">
             <ShieldCheck className="size-4 text-safe" aria-hidden />
-            Skills with a closer look
+            Recipes with a closer look
           </span>
           <p className="mt-14 max-w-md text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.055em] text-foreground sm:text-5xl">
             {isSignUp
-              ? "A better place to build with AI skills."
-              : "Welcome back to your skills."}
+              ? "A better place to build with AI recipes."
+              : "Welcome back to your recipes."}
           </p>
           <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
             {isSignUp
-              ? "Join Skillbuffet to publish your expertise and explore skills with visible security reviews."
+              ? "Join Skillbuffet to publish your expertise and explore recipes with visible security reviews."
               : "Sign in to manage your submissions, explore the marketplace, and keep building."}
           </p>
         </div>
         <div className="mt-14 border-t border-border pt-6 text-sm leading-relaxed text-muted-foreground">
           <p className="font-semibold text-foreground">What happens next?</p>
           <p className="mt-2">
-            Explore the catalog, read a skill&apos;s review result, or submit
-            your own skill for scanning.
+            Explore the catalog, read a recipe&apos;s review result, or submit
+            your own recipe for scanning.
           </p>
           <Link
             href="/skills"
             className="mt-4 inline-flex items-center gap-2 font-semibold text-primary hover:underline"
           >
-            Browse skills <ArrowRight className="size-4" aria-hidden />
+            Browse recipes <ArrowRight className="size-4" aria-hidden />
           </Link>
         </div>
       </div>
@@ -112,8 +112,8 @@ export function AuthCard({
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
           {isSignUp
-            ? "Start discovering and publishing AI agent skills."
-            : "Continue to your skills and dashboard."}
+            ? "Start discovering and publishing AI agent recipes."
+            : "Continue to your recipes and dashboard."}
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 grid gap-5">
@@ -225,7 +225,7 @@ export function AuthCard({
             ? "Account access needs a configured database. This form cannot submit until setup is complete."
             : isSignUp
               ? "Your account is stored in the Skillbuffet database. Email verification is disabled for this beta."
-              : "Sign in to manage your private submissions and publish new skills."}
+              : "Sign in to manage your private submissions and publish new recipes."}
         </p>
       </div>
     </div>

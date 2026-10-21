@@ -79,7 +79,7 @@ export async function POST(
     });
     if (result === null)
       return Response.json(
-        { error: "Approved skill not found." },
+        { error: "Approved recipe not found." },
         { status: 404 },
       );
     return new Response(result, {

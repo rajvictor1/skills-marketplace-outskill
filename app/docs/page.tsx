@@ -21,7 +21,7 @@ export default function DocsPage() {
         Build with a little more clarity.
       </h1>
       <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
-        Practical guides for creators, skill users and developers. Start with
+        Practical guides for creators, recipe users and developers. Start with
         the workflow you need.
       </p>
       <div className="mt-10 grid gap-5 md:grid-cols-2">

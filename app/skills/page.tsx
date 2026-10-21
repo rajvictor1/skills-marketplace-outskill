@@ -19,10 +19,10 @@ export default async function SkillsPage() {
       <PageSeo
         path="/skills"
         {...PUBLIC_PAGES["/skills"]}
-        crumbs={[{ name: "All skills", path: "/skills" }]}
+        crumbs={[{ name: "All recipes", path: "/skills" }]}
       />
       <div className="col-span-full mx-auto w-full max-w-7xl px-5 pt-6">
-        <Breadcrumbs items={[{ name: "All skills", path: "/skills" }]} />
+        <Breadcrumbs items={[{ name: "All recipes", path: "/skills" }]} />
       </div>
       <section className="brand-hero dark-surface px-5 py-20 text-foreground sm:px-8 sm:py-24">
         <div className="mx-auto max-w-7xl">
@@ -30,10 +30,10 @@ export default async function SkillsPage() {
             The Skillbuffet marketplace
           </p>
           <h1 className="mt-5 max-w-4xl text-balance text-5xl font-semibold leading-[1.04] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
-            Find a skill for what comes next.
+            Find a recipe for what comes next.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            Browse AI agent skills by use case, inspect each review result, and
+            Browse AI agent recipes by use case, inspect each review result, and
             decide what belongs in your workflow. Blocked submissions never
             appear here.
           </p>
@@ -46,7 +46,7 @@ export default async function SkillsPage() {
       >
         <p className="editorial-kicker text-primary">Search the marketplace</p>
         <h2 className="mb-7 mt-3 text-3xl font-semibold tracking-[-0.045em] text-foreground sm:text-4xl">
-          All available skills
+          All available recipes
         </h2>
         {catalog.hasSampleContent && (
           <div className="mb-6 max-w-3xl">

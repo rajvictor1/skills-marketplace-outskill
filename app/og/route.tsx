@@ -21,8 +21,8 @@ export async function GET(request: Request) {
         ? match.category.subcategories.find((s) => categorySlug(s) === parts[3])
         : undefined;
       if (parts.length === 3 || sub) {
-        title = `${sub ?? match.category.name} AI agent skills`;
-        description = `Explore ${match.category.name} skills. Inspect instructions, requirements and review results.`;
+        title = `${sub ?? match.category.name} AI agent recipes`;
+        description = `Explore ${match.category.name} recipes. Inspect instructions, requirements and review results.`;
       }
     }
   }
@@ -50,7 +50,7 @@ export async function GET(request: Request) {
         }}
       >
         <div style={{ display: "flex", color: "#b8adff", fontSize: 32 }}>
-          Skillbuffet / AI agent skills
+          Skillbuffet / AI agent recipes
         </div>
         <div
           style={{

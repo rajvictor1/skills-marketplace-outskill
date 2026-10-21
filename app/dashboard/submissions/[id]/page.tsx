@@ -36,7 +36,7 @@ export default async function SubmissionPage({
   return (
     <main className="mx-auto max-w-4xl p-6 sm:p-10">
       <Link href="/dashboard/skills" className="text-primary underline">
-        Back to My skills
+        Back to My recipes
       </Link>
       <p className="mt-7 text-sm font-semibold capitalize text-primary">
         {row.submission.status.replaceAll("_", " ")}

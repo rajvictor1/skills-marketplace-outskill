@@ -9,7 +9,7 @@ import {
 import { WORKFLOW_TEMPLATES } from "@/lib/workflows/templates";
 
 const GROUP_COPY = [
-  "Find skills for the teams and customer journeys that move a business forward.",
+  "Find recipes for the teams and customer journeys that move a business forward.",
   "Explore the systems, data, and technical work behind modern products.",
   "Turn information and ideas into useful, repeatable work.",
 ] as const;
@@ -31,7 +31,7 @@ export function CategoryDirectory({ compact = false }: { compact?: boolean }) {
               id="category-directory-title"
               className="mt-4 max-w-2xl text-balance text-4xl font-semibold tracking-[-0.05em] text-foreground sm:text-5xl"
             >
-              Browse skills by category.
+              Browse recipes by category.
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">

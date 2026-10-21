@@ -1,22 +1,22 @@
 export type Faq = { question: string; answer: string };
 export const HOME_FAQ: Faq[] = [
   {
-    question: "What is an AI agent skill?",
+    question: "What is an AI agent recipe?",
     answer:
-      "An AI agent skill is a reusable set of instructions, commonly stored in a SKILL.md file, that guides an agent through a specific task. Skillbuffet lets you inspect those instructions and the creator’s declared requirements before downloading. Your chosen agent runs the skill; Skillbuffet does not run it for you.",
+      "On Skillbuffet, an AI agent recipe is a reusable set of instructions that guides an agent through a specific task. Recipes currently use the SKILL.md file format. Skillbuffet lets you inspect those instructions and the creator’s declared requirements before downloading. Your chosen agent runs the recipe; Skillbuffet does not run it for you.",
   },
   {
-    question: "Does approval guarantee a skill is safe?",
+    question: "Does approval guarantee a recipe is safe?",
     answer:
       "No. Skillbuffet combines automated checks with administrator review of a saved version. Checks can miss harmful behavior, inaccurate instructions or risks introduced by external services. Read the full instructions, check the requested access and avoid using sensitive data until you understand how your agent will handle it.",
   },
   {
     question: "Can I publish without a GitHub repository?",
     answer:
-      "Yes. Sign in and upload or paste a SKILL.md file, then complete its category, version, license, compatibility and access declarations. A GitHub link is optional for file submissions. New skills and new versions stay private until an administrator approves the submitted version.",
+      "Yes. Sign in and upload or paste a SKILL.md file, then complete its category, version, license, compatibility and access declarations. A GitHub link is optional for file submissions. New recipes and new versions stay private until an administrator approves the submitted version.",
   },
   {
-    question: "Are n8n templates the same as AI agent skills?",
+    question: "Are n8n templates the same as AI agent recipes?",
     answer:
       "No. An n8n template is a JSON workflow that you import into your own n8n instance and configure with the required credentials. A SKILL.md file contains instructions for a compatible AI agent. Skillbuffet presents workflow templates separately because their installation, execution and security requirements differ.",
   },
@@ -24,7 +24,7 @@ export const HOME_FAQ: Faq[] = [
 export function categoryFaq(name: string): Faq[] {
   return [
     {
-      question: `How do I choose a ${name.toLowerCase()} skill?`,
+      question: `How do I choose a ${name.toLowerCase()} recipe?`,
       answer: `Start with the task you need to complete in ${name}. Open a listing to compare its summary, supported agents, declared inputs and outputs, license and requested access. Review the saved instructions and scan findings before downloading. A category match alone does not establish suitability for your data or workflow.`,
     },
     {
@@ -33,7 +33,7 @@ export function categoryFaq(name: string): Faq[] {
         "Each submitted version goes through automated static checks and a separate administrator decision. Critical findings block approval. An approved version can enter the public catalog; pending, rejected and blocked submissions remain private. Approval applies to the saved version and does not guarantee accuracy or the safety of external services.",
     },
     {
-      question: `Can I contribute a skill in ${name}?`,
+      question: `Can I contribute a recipe in ${name}?`,
       answer: `Yes. Sign in, choose ${name} and the closest specialty in the publishing form, and provide one SKILL.md file with a clear name and description. Explain its inputs, outputs, compatibility, license, access needs and limitations. The administrator reviews the submission before it becomes publicly available.`,
     },
   ];
@@ -43,7 +43,7 @@ export function skillFaq(name: string): Faq[] {
   return [
     {
       question: `Where does ${name} run?`,
-      answer: `${name} runs in your own compatible AI agent environment. Skillbuffet distributes its saved instruction file and shows the creator’s declarations and review results. The marketplace does not execute the agent, connect your accounts or verify every possible output. Follow your agent application's installation instructions and check the skill's stated requirements.`,
+      answer: `${name} runs in your own compatible AI agent environment. Skillbuffet distributes its saved instruction file and shows the creator’s declarations and review results. The marketplace does not execute the agent, connect your accounts or verify every possible output. Follow your agent application's installation instructions and check the recipe's stated requirements.`,
     },
     {
       question: "What does administrator approval mean?",
@@ -53,7 +53,7 @@ export function skillFaq(name: string): Faq[] {
     {
       question: "How are downloads and ratings counted?",
       answer:
-        "A signed-in non-creator account counts once per downloaded skill version. That record does not prove installation or successful execution. A recorded downloader can leave one editable star rating and optional public comment. Creator self-ratings are disallowed, and marketplace ratings remain separate from the security scan and administrator decision.",
+        "A signed-in non-creator account counts once per downloaded recipe version. That record does not prove installation or successful execution. A recorded downloader can leave one editable star rating and optional public comment. Creator self-ratings are disallowed, and marketplace ratings remain separate from the security scan and administrator decision.",
     },
   ];
 }

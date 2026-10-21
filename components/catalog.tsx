@@ -95,9 +95,9 @@ export function Catalog({
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search skills, authors, or use cases"
+            placeholder="Search recipes, authors, or use cases"
             className="h-13 rounded-full border-border bg-background pl-13 pr-5 text-sm"
-            aria-label="Search skills"
+            aria-label="Search recipes"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -157,7 +157,7 @@ export function Catalog({
                   : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground",
               )}
             >
-              {item === "All" ? "All skills" : item}
+              {item === "All" ? "All recipes" : item}
             </button>
           ))}
         </div>
@@ -241,7 +241,7 @@ export function Catalog({
 
       {/* results */}
       <p className="mt-8 text-sm text-muted-foreground">
-        {`${results.length} ${allExamples ? "example " : ""}${results.length === 1 ? "skill" : "skills"}`}
+        {`${results.length} ${allExamples ? "example " : ""}${results.length === 1 ? "recipe" : "recipes"}`}
         {category !== "All"
           ? ` in ${category}`
           : group !== "All"
@@ -253,17 +253,17 @@ export function Catalog({
         <div className="mt-6 rounded-2xl border border-dashed border-border bg-card/40 p-12 text-center">
           <p className="text-sm font-medium text-foreground">
             {query || subcategory !== "All subcategories"
-              ? "No skills match that search."
+              ? "No recipes match that search."
               : focusedCategory
-                ? `No skills published in ${focusedCategory} yet.`
-                : "No skills available yet."}
+                ? `No recipes published in ${focusedCategory} yet.`
+                : "No recipes available yet."}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
             {query || subcategory !== "All subcategories"
               ? "Try a different keyword or specialty."
               : focusedCategory
-                ? "Publish a skill to make this category useful for other builders."
-                : "Published skills will appear here once creators submit them."}
+                ? "Publish a recipe to make this category useful for other builders."
+                : "Published recipes will appear here once creators submit them."}
           </p>
         </div>
       ) : (

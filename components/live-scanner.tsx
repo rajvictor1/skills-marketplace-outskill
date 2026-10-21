@@ -109,7 +109,7 @@ export function LiveScanner() {
           {pending && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
-              Running four layers over your skill...
+              Running four layers over your recipe...
             </div>
           )}
 

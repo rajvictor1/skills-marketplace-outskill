@@ -32,7 +32,7 @@ export async function scanPastedSkill(
     if (err instanceof SkillParseError) {
       return { ok: false, error: err.message, issues: err.issues };
     }
-    return { ok: false, error: "Could not parse the skill." };
+    return { ok: false, error: "Could not parse the recipe." };
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;

@@ -3,13 +3,13 @@ export const DOCS: Record<
   { title: string; intro: string; sections: { title: string; body: string }[] }
 > = {
   "getting-started": {
-    title: "Start with a useful skill",
+    title: "Start with a useful recipe",
     intro:
-      "Skillbuffet is a curated library of AI agent instructions. Discover an approved skill, inspect it, and download the SKILL.md file.",
+      "Skillbuffet is a curated library of AI agent recipes. Recipes currently use SKILL.md instruction files. Discover an approved recipe, inspect it, and download its file.",
     sections: [
       {
         title: "1. Discover",
-        body: "Browse a category or search by skill name, use case, creator or tag. Entertainment, Marketing, Research and the other categories share one submission and review process.",
+        body: "Browse a category or search by recipe name, use case, creator or tag. Entertainment, Marketing, Research and the other categories share one submission and review process.",
       },
       {
         title: "2. Inspect",
@@ -17,18 +17,18 @@ export const DOCS: Record<
       },
       {
         title: "3. Download and use",
-        body: "Sign in, then select Download SKILL.md. Follow your agent application's skill installation instructions and grant only the access needed. Skillbuffet does not execute your agent or connect your accounts. The CLI shown in earlier previews is not a supported installation method.",
+        body: "Sign in, then select Download SKILL.md. Follow your agent application's instructions for loading SKILL.md and grant only the access needed. Skillbuffet does not execute your agent or connect your accounts. The CLI shown in earlier previews is not a supported installation method.",
       },
       {
         title: "4. Share feedback",
-        body: "After downloading a skill, you can leave 1–5 stars and an optional public comment. One rating per account can be edited by resubmitting. Creators cannot rate their own skill. Marketplace reviews are separate from GitHub stars and security reviews.",
+        body: "After downloading a recipe, you can leave 1–5 stars and an optional public comment. One rating per account can be edited by resubmitting. Creators cannot rate their own recipe. Marketplace reviews are separate from GitHub stars and security reviews.",
       },
     ],
   },
   publishing: {
     title: "Publish your expertise",
     intro:
-      "Every new skill and every new version requires administrator approval before it becomes public.",
+      "Every new recipe and every new version requires administrator approval before it becomes public.",
     sections: [
       {
         title: "Prepare SKILL.md",
@@ -36,7 +36,7 @@ export const DOCS: Record<
       },
       {
         title: "Complete your listing",
-        body: "Sign in and choose Submit a skill. Paste or upload SKILL.md, or import a public GitHub repository containing SKILL.md at its root. GitHub is optional for file uploads. Add a title, category, subcategory, summary, version, license, tags, supported agents and access declarations. A source URL is not a claim that ownership has been independently verified.",
+        body: "Sign in and choose Submit a recipe. Paste or upload SKILL.md, or import a public GitHub repository containing SKILL.md at its root. GitHub is optional for file uploads. Add a title, category, subcategory, summary, version, license, tags, supported agents and access declarations. A source URL is not a claim that ownership has been independently verified.",
       },
       {
         title: "Scan and submit",
@@ -44,7 +44,7 @@ export const DOCS: Record<
       },
       {
         title: "Follow the decision",
-        body: "Open My skills to see status and administrator feedback. Approval publishes the reviewed version automatically. Request changes or rejection keeps that submission private. Submit a revision with the same skill name and a new version number, such as 1.0.1. An existing approved version remains public until a replacement is approved or it is explicitly unpublished.",
+        body: "Open My recipes to see status and administrator feedback. Approval publishes the reviewed version automatically. Request changes or rejection keeps that submission private. Submit a revision with the same recipe name and a new version number, such as 1.0.1. An existing approved version remains public until a replacement is approved or it is explicitly unpublished.",
       },
       {
         title: "Useful frontmatter",
@@ -55,7 +55,7 @@ export const DOCS: Record<
   api: {
     title: "Catalog API",
     intro:
-      "A small read-only API for discovering approved public skills. Pending, rejected, blocked and unpublished submissions are excluded.",
+      "A small read-only API for discovering approved public recipes. Pending, rejected, blocked and unpublished submissions are excluded. Existing /skills endpoint paths and the skills response field are retained for compatibility.",
     sections: [
       {
         title: "GET /api/v1/skills",
@@ -63,7 +63,7 @@ export const DOCS: Record<
       },
       {
         title: "GET /api/v1/skills/{slug}",
-        body: "Returns the approved listing, public creator declarations, instructions and security summary. Returns 404 for a skill that is not public, and 503 if the catalog is unavailable. A ratingAverage of 0 with ratingCount 0 means no ratings, not a zero-star review.",
+        body: "Returns the approved listing, public creator declarations, instructions and security summary. Returns 404 for a recipe that is not public, and 503 if the catalog is unavailable. A ratingAverage of 0 with ratingCount 0 means no ratings, not a zero-star review.",
       },
       {
         title: "Downloads",
@@ -71,7 +71,7 @@ export const DOCS: Record<
       },
       {
         title: "Counting and limits",
-        body: "A recorded download is a successful server response request by a signed-in non-creator account. Each account counts once per skill version. It does not prove the skill was installed or used successfully. Catalog responses are bounded; there is no API uptime guarantee in beta. Avoid bulk polling.",
+        body: "A recorded download is a successful server response request by a signed-in non-creator account. Each account counts once per recipe version. It does not prove the recipe was installed or used successfully. Catalog responses are bounded; there is no API uptime guarantee in beta. Avoid bulk polling.",
       },
     ],
   },
@@ -105,11 +105,11 @@ export const DOCS: Record<
     sections: [
       {
         title: "2026-10-21 · Curated publishing",
-        body: "Added a private admin review queue, approve/publish, request changes, reject, unpublish and review history. New versions retain the previously approved public version while waiting. Legacy auto-published skills return to review. Removed catalog fixtures and illustrative dashboard activity.",
+        body: "Added a private admin review queue, approve/publish, request changes, reject, unpublish and review history. New versions retain the previously approved public version while waiting. Legacy auto-published recipes return to review. Removed catalog fixtures and illustrative dashboard activity.",
       },
       {
         title: "2026-10-21 · Community and discovery",
-        body: "Added optional GitHub source links for file uploads, Entertainment, recorded downloads, download-eligible skill reviews, marketplace ratings and moderation controls. Added documentation, public catalog endpoints, privacy and terms pages. No historical adoption numbers are synthesized.",
+        body: "Added optional GitHub source links for file uploads, Entertainment, recorded downloads, download-eligible recipe reviews, marketplace ratings and moderation controls. Added documentation, public catalog endpoints, privacy and terms pages. No historical adoption numbers are synthesized.",
       },
       {
         title: "Earlier beta",

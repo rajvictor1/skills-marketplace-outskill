@@ -4,10 +4,10 @@ const GROUPS = [
   {
     title: "Explore",
     links: [
-      ["Browse skills", "/skills"],
+      ["Browse recipes", "/skills"],
       ["All categories", "/categories"],
-      ["Search skills", "/search"],
-      ["Submit a skill", "/publish"],
+      ["Search recipes", "/search"],
+      ["Submit a recipe", "/publish"],
       ["Creator workspace", "/dashboard/skills"],
       ["Community reviews", "/reviews"],
     ],
@@ -39,7 +39,7 @@ export function SiteFooter() {
         <div>
           <Logo />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-            A curated home for useful AI skills. Scan the instructions. Review
+            A curated home for useful AI recipes. Scan the instructions. Review
             the details. Build something worthwhile.
           </p>
           <a

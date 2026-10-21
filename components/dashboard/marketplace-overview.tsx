@@ -54,7 +54,7 @@ export function MarketplaceOverview({
   const model = getOverviewDemo(data);
   const kpis = [
     {
-      label: "Active skills",
+      label: "Active recipes",
       value: number(model.activeSkills),
       note: "Published and available to agents",
       change: "+12.4%",
@@ -99,7 +99,7 @@ export function MarketplaceOverview({
       <header className="flex flex-col justify-between gap-5 xl:flex-row xl:items-end">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[.16em] text-primary">
-            Your skills ecosystem
+            Your recipes ecosystem
           </p>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-[28px]">
             Marketplace Overview
@@ -135,7 +135,7 @@ export function MarketplaceOverview({
             href="/publish"
             className="cta-primary inline-flex h-11 items-center gap-2 rounded-lg bg-[#6958ea] px-4 text-xs font-semibold text-white hover:bg-[#7969f1]"
           >
-            Publish a skill <ArrowUpRight className="size-3.5" aria-hidden />
+            Publish a recipe <ArrowUpRight className="size-3.5" aria-hidden />
           </Link>
         </div>
       </header>
@@ -147,7 +147,7 @@ export function MarketplaceOverview({
         <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
         <p>
           <strong className="text-foreground">Illustrative dashboard.</strong>{" "}
-          All operational KPIs, trends, skill rankings, creators and activity
+          All operational KPIs, trends, recipe rankings, creators and activity
           below are sample data for this design. Agent execution and payments
           are not connected. The separate catalog snapshot at the bottom uses
           real approved listings.
@@ -204,7 +204,7 @@ export function MarketplaceOverview({
         >
           <SectionHeading
             kicker="Discovery & quality"
-            title="Top skills this week"
+            title="Top recipes this week"
             id="top-skills-title"
           />
           <p className="mt-2 text-[11px] text-muted-foreground">
@@ -244,7 +244,7 @@ export function MarketplaceOverview({
                     </span>
                   </summary>
                   <p className="ml-10 mt-3 rounded-lg bg-background p-3 text-xs leading-relaxed text-muted-foreground">
-                    Illustrative skill, not a public listing.{" "}
+                    Illustrative recipe, not a public listing.{" "}
                     {skill.description} Reliability and outcomes are simulated;
                     this entry cannot be installed.
                   </p>
@@ -256,7 +256,7 @@ export function MarketplaceOverview({
             href="/skills"
             className="mt-5 inline-flex items-center gap-2 text-xs font-medium text-primary hover:underline"
           >
-            Browse real skills <ArrowRight className="size-3.5" aria-hidden />
+            Browse real recipes <ArrowRight className="size-3.5" aria-hidden />
           </Link>
         </section>
       </section>
@@ -285,7 +285,7 @@ export function MarketplaceOverview({
                 icon: Download,
                 value: number(model.installs),
                 label: "Agent installs",
-                detail: "Illustrative enabled skills; not file downloads",
+                detail: "Illustrative enabled recipes; not file downloads",
                 tone: "teal",
               },
               {
@@ -413,7 +413,7 @@ export function MarketplaceOverview({
         {catalog.available ? (
           <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
             <strong className="text-foreground">{catalog.count}</strong>{" "}
-            approved skills ·{" "}
+            approved recipes ·{" "}
             <strong className="text-foreground">{catalog.downloads}</strong>{" "}
             recorded downloads ·{" "}
             <strong className="text-foreground">

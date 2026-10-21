@@ -83,59 +83,59 @@ export const PUBLIC_PAGES: Record<
   { title: string; description: string }
 > = {
   "/": {
-    title: "Skillbuffet: Discover and Share Reviewed AI Agent Skills",
+    title: "Skillbuffet: Discover and Share Reviewed AI Agent Recipes",
     description:
-      "Explore AI agent skills by category, inspect instructions and review results, and download approved versions. Share your own SKILL.md for review.",
+      "Explore AI agent recipes by category, inspect instructions and review results, and download approved versions. Share your own SKILL.md for review.",
   },
   "/skills": {
-    title: "AI Agent Skills by Category and Use Case",
+    title: "AI Agent Recipes by Category and Use Case",
     description:
-      "Browse AI agent skills for marketing, development, research and more. Compare compatibility, declared permissions and review results before downloading.",
+      "Browse AI agent recipes for marketing, development, research and more. Compare compatibility, declared permissions and review results before downloading.",
   },
   "/categories": {
-    title: "AI Agent Skill Categories and Specialties",
+    title: "AI Agent Recipe Categories and Specialties",
     description:
-      "Explore Skillbuffet categories and specialties for marketing, software, research and everyday work. Find the right field for browsing or submitting a skill.",
+      "Explore Skillbuffet categories and specialties for marketing, software, research and everyday work. Find the right field for browsing or submitting a recipe.",
   },
   "/about": {
-    title: "About Skillbuffet and Its AI Agent Skill Review Process",
+    title: "About Skillbuffet and Its AI Agent Recipe Review Process",
     description:
-      "Learn what Skillbuffet does, who operates the beta, and how AI agent skills reach the public catalog through scanning and administrator review.",
+      "Learn what Skillbuffet does, who operates the beta, and how AI agent recipes reach the public catalog through scanning and administrator review.",
   },
   "/how-it-works": {
-    title: "How to Find and Use Reviewed AI Agent Skills",
+    title: "How to Find and Use Reviewed AI Agent Recipes",
     description:
       "Follow the Skillbuffet workflow: browse a category, inspect instructions and permissions, download an approved SKILL.md, and use it in your own agent.",
   },
   "/docs": {
-    title: "AI Skill Documentation and Publishing Guides",
+    title: "AI Recipe Documentation and Publishing Guides",
     description:
-      "Read Skillbuffet documentation for discovering, submitting and downloading AI agent skills. Find review standards, API endpoints and release notes.",
+      "Read Skillbuffet documentation for discovering, submitting and downloading AI agent recipes. Find review standards, API endpoints and release notes.",
   },
   "/security": {
-    title: "AI Skill Scanning and Administrator Review",
+    title: "AI Recipe Scanning and Administrator Review",
     description:
       "Understand Skillbuffet scanning for hidden text, dangerous instructions and script patterns. Learn what review checks cover and where their limits remain.",
   },
   "/reviews": {
     title: "Skillbuffet Community Reviews and Marketplace Feedback",
     description:
-      "Read real community feedback about Skillbuffet and share your experience. Marketplace ratings are separate from GitHub stars and skill security reviews.",
+      "Read real community feedback about Skillbuffet and share your experience. Marketplace ratings are separate from GitHub stars and recipe security reviews.",
   },
   "/privacy": {
     title: "Skillbuffet Privacy Policy and Beta Data Practices",
     description:
-      "Read how Skillbuffet handles accounts, submitted skills, download records and reviews. Understand public listing information and current beta privacy limits.",
+      "Read how Skillbuffet handles accounts, submitted recipes, download records and reviews. Understand public listing information and current beta privacy limits.",
   },
   "/terms": {
-    title: "Skillbuffet Terms of Use and Skill Publishing Rules",
+    title: "Skillbuffet Terms of Use and Recipe Publishing Rules",
     description:
-      "Review Skillbuffet beta terms for skill submissions, content rights, acceptable use and reviews. Understand your responsibilities before publishing or downloading.",
+      "Review Skillbuffet beta terms for recipe submissions, content rights, acceptable use and reviews. Understand your responsibilities before publishing or downloading.",
   },
   "/publish": {
-    title: "Submit AI Agent Skills for Administrator Review",
+    title: "Submit AI Agent Recipes for Administrator Review",
     description:
-      "Upload or paste SKILL.md, choose a category and declare permissions. GitHub is optional for file uploads; every new skill version needs administrator approval.",
+      "Upload or paste SKILL.md, choose a category and declare permissions. GitHub is optional for file uploads; every new recipe version needs administrator approval.",
   },
 };
 export function staticMetadata(path: string, indexable = true) {

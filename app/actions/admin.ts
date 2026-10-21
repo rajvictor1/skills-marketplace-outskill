@@ -43,7 +43,7 @@ export async function reviewSubmission(
         .where(eq(skill.id, target.skillId))
         .for("update")
         .limit(1);
-      if (!listing) throw new Error("Skill no longer exists.");
+      if (!listing) throw new Error("Recipe no longer exists.");
       const [row] = await tx
         .select({ review: skillSubmission, version: skillVersion })
         .from(skillSubmission)
@@ -135,7 +135,7 @@ export async function unpublishSkill(
         .for("update")
         .limit(1);
       if (!row || row.status !== "published")
-        throw new Error("This skill is not currently published.");
+        throw new Error("This recipe is not currently published.");
       await tx
         .update(skill)
         .set({ status: "draft", currentVersionId: null, updatedAt: new Date() })
@@ -161,7 +161,7 @@ export async function unpublishSkill(
     });
     revalidatePath("/", "layout");
     return {
-      message: "Skill removed from the public catalog and returned to review.",
+      message: "Recipe removed from the public catalog and returned to review.",
       ok: true,
     };
   } catch (error) {

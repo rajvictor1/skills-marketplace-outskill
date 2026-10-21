@@ -22,7 +22,7 @@ const ITEMS = [
   },
   {
     href: "/dashboard/skills",
-    label: "My skills",
+    label: "My recipes",
     icon: Package,
     exact: false,
   },
@@ -74,7 +74,7 @@ export function DashboardNav() {
           <ShieldCheck className="size-4 text-primary" aria-hidden />
           <p className="mt-3 text-sm font-medium">Security first</p>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-            Every submitted skill is scanned before it can be listed.
+            Every submitted recipe is scanned before it can be listed.
           </p>
           <Link
             href="/security"

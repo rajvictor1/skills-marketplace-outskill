@@ -53,10 +53,10 @@ export default function SecurityPage() {
             How vetting works
           </p>
           <h1 className="mt-4 text-balance text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-            How we vet every skill
+            How we vet every recipe
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
-            A skill is instructions and scripts that load straight into your
+            A recipe is instructions and scripts that load straight into your
             agent, so we read it before you do. Every submission runs through
             three automatic checks and an optional AI classifier. Each saved
             version then needs administrator approval before publication.
@@ -133,7 +133,7 @@ export default function SecurityPage() {
               Try the scanner yourself
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              This is the real engine, running on the server. Paste a skill and
+              This is the real engine, running on the server. Paste a recipe and
               run it, or start from the malicious example and watch it get
               blocked with the hidden payload decoded in front of you.
             </p>
@@ -155,7 +155,7 @@ export default function SecurityPage() {
           </h2>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
             Every scan resolves to one of three outcomes. The same badge and the
-            same words follow the skill across the catalog, its detail page, and
+            same words follow the recipe across the catalog, its detail page, and
             your install.
           </p>
         </div>
@@ -173,7 +173,7 @@ export default function SecurityPage() {
                 {tier === "caution" &&
                   "Published, but the scanner flagged findings worth a look, like a script that makes a network call. You see every finding before you install."}
                 {tier === "blocked" &&
-                  "A critical finding, like a hidden instruction payload or remote code execution. The skill is rejected and never reaches the public catalog."}
+                  "A critical finding, like a hidden instruction payload or remote code execution. The recipe is rejected and never reaches the public catalog."}
               </p>
             </div>
           ))}
@@ -203,19 +203,19 @@ export default function SecurityPage() {
             See the badges in the wild.
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">
-            Browse skills that passed the scan, or submit your own and watch it
+            Browse recipes that passed the scan, or submit your own and watch it
             run through the configured scan layers and then administrator
             review.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button size="lg" asChild>
               <Link href="/skills">
-                Browse skills
+                Browse recipes
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link href="/publish">Publish a skill</Link>
+              <Link href="/publish">Publish a recipe</Link>
             </Button>
           </div>
         </div>

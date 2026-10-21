@@ -43,8 +43,8 @@ export function InfoPage({
           aria-label="Related resources"
           className="mt-10 flex flex-wrap gap-5 text-primary underline"
         >
-          <Link href="/skills">Browse AI agent skills</Link>
-          <Link href="/docs/publishing">Skill publishing requirements</Link>
+          <Link href="/skills">Browse AI agent recipes</Link>
+          <Link href="/docs/publishing">Recipe publishing requirements</Link>
           <Link href="/security">Security review and limitations</Link>
         </nav>
       </article>

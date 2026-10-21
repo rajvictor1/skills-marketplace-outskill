@@ -42,7 +42,7 @@ export async function rateSkill(
         .where(and(eq(skill.id, target), eq(skill.status, "published")))
         .limit(1);
       if (!listing)
-        return { message: "This skill is not available for review." };
+        return { message: "This recipe is not available for review." };
       const [approval] = await db
         .select({ id: skillSubmission.id })
         .from(skillSubmission)
@@ -56,7 +56,7 @@ export async function rateSkill(
       if (!approval)
         return { message: "This version is not approved for review." };
       if (listing.authorId === session.user.id)
-        return { message: "Creators cannot rate their own skills." };
+        return { message: "Creators cannot rate their own recipes." };
       const [download] = await db
         .select({ id: skillDownload.id })
         .from(skillDownload)
@@ -70,7 +70,7 @@ export async function rateSkill(
       if (!download)
         return {
           message:
-            "Download the skill before reviewing it. This keeps reviews tied to real downloads.",
+            "Download the recipe before reviewing it. This keeps reviews tied to real downloads.",
         };
     }
     const [existing] = await db

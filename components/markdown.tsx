@@ -23,7 +23,7 @@ export function Markdown({ children }: { children: string }) {
             <div
               className="max-w-full overflow-x-auto"
               role="region"
-              aria-label="Skill content table"
+              aria-label="Recipe content table"
               tabIndex={0}
             >
               <table>{children}</table>

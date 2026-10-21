@@ -22,12 +22,12 @@ export default function NotFound() {
 
       <form action="/search" className="mt-6 flex w-full max-w-md gap-2">
         <label htmlFor="missing-search" className="sr-only">
-          Search AI agent skills
+          Search AI agent recipes
         </label>
         <input
           id="missing-search"
           name="q"
-          placeholder="Search AI agent skills"
+          placeholder="Search AI agent recipes"
           className="min-w-0 flex-1 rounded-xl border border-input bg-card px-4 py-3"
         />
         <button className="cta-primary px-5">Search</button>
@@ -48,7 +48,7 @@ export default function NotFound() {
         </Button>
         <Button size="lg" variant="outline" asChild>
           <Link href="/skills">
-            Browse skills
+            Browse recipes
             <ArrowRight className="size-4" aria-hidden />
           </Link>
         </Button>

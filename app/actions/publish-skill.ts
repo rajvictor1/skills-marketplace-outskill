@@ -237,7 +237,7 @@ async function readSubmission(formData: FormData): Promise<{
   }
 
   if (sourceType !== "paste")
-    throw new Error("Choose how you want to submit the skill.");
+    throw new Error("Choose how you want to submit the recipe.");
   const raw = field(formData, "skillMd");
   if (!raw) throw new Error("Paste the contents of your SKILL.md file.");
   if (Buffer.byteLength(raw, "utf8") > MAX_SKILL_BYTES) {
@@ -283,7 +283,7 @@ function validateDetails(formData: FormData) {
   }
 
   if (displayName.length < 3 || displayName.length > 80) {
-    issues.push("Skill title must be between 3 and 80 characters.");
+    issues.push("Recipe title must be between 3 and 80 characters.");
   }
   if (summary.length < 20 || summary.length > MAX_SUMMARY) {
     issues.push("Marketplace summary must be between 20 and 280 characters.");
@@ -327,7 +327,7 @@ function validateDetails(formData: FormData) {
   }
   if (formData.get("rightsConfirmed") !== "on") {
     issues.push(
-      "Confirm that you have the right to publish this skill and its files.",
+      "Confirm that you have the right to publish this recipe and its files.",
     );
   }
 
@@ -362,7 +362,7 @@ export async function publishSkill(
     return {
       status: "error",
       message:
-        "Publishing needs a Postgres database. Configure DATABASE_URL, then sign in to save a skill.",
+        "Publishing needs a Postgres database. Configure DATABASE_URL, then sign in to save a recipe.",
     };
   }
 
@@ -380,7 +380,7 @@ export async function publishSkill(
     return {
       status: "unauthorized",
       message:
-        "Sign in first. Your skill is not stored until you are signed in.",
+        "Sign in first. Your recipe is not stored until you are signed in.",
     };
   }
 

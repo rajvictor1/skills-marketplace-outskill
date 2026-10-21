@@ -41,11 +41,11 @@ const COMPATIBILITY = [
 ];
 
 const PLACEHOLDER = `---
-name: my-skill
-description: What the skill does and when an AI agent should use it.
+name: my-recipe
+description: What the recipe does and when an AI agent should use it.
 ---
 
-# My Skill
+# My Recipe
 
 Explain the workflow your agent should follow, step by step.
 Keep instructions concrete. Do not ask the agent to reveal secrets or run untrusted code.`;
@@ -83,7 +83,7 @@ export function PublishForm({
           </span>
           <div>
             <h2 className="text-base font-semibold text-foreground">
-              1. Add your skill instructions
+              1. Add your recipe instructions
             </h2>
             <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
               Submit a standalone <code className="font-mono">SKILL.md</code>{" "}
@@ -96,7 +96,7 @@ export function PublishForm({
         <div
           className="mt-6 flex flex-wrap gap-2"
           role="tablist"
-          aria-label="Skill source"
+          aria-label="Recipe source"
         >
           <SourceTab
             active={sourceType === "paste"}
@@ -215,7 +215,7 @@ export function PublishForm({
         <SectionIntro
           number="2"
           title="Describe it for the marketplace"
-          description="Help a person or agent decide when this skill is the right fit."
+          description="Help a person or agent decide when this recipe is the right fit."
         />
         <div className="mt-6 grid gap-5 sm:grid-cols-2">
           <Field
@@ -356,7 +356,7 @@ export function PublishForm({
         <SectionIntro
           number="3"
           title="Declare compatibility and access"
-          description="These declarations help people review the skill before installing it. They do not grant an agent access to these systems."
+          description="These declarations help people review the recipe before installing it. They do not grant an agent access to these systems."
         />
         <div className="mt-6 grid gap-7 sm:grid-cols-2">
           <fieldset className="grid gap-3">
@@ -379,7 +379,7 @@ export function PublishForm({
               Declared access needs
             </legend>
             <p className="-mt-2 text-xs text-muted-foreground">
-              Select every permission this skill may ask its user or agent to
+              Select every permission this recipe may ask its user or agent to
               use. Leave blank if no extra access is needed.
             </p>
             <div className="grid gap-2">
@@ -412,7 +412,7 @@ export function PublishForm({
           <Field
             label="Expected outputs"
             id="outputs"
-            hint="What useful result should the skill produce?"
+            hint="What useful result should the recipe produce?"
           >
             <Textarea
               id="outputs"
@@ -432,7 +432,7 @@ export function PublishForm({
             <Textarea
               id="data-handling"
               name="dataHandling"
-              placeholder="Describe data this skill reads, sends to external services, or stores. Do not include secrets."
+              placeholder="Describe data this recipe reads, sends to external services, or stores. Do not include secrets."
               className="min-h-24 rounded-xl bg-background/60"
               maxLength={1000}
               disabled={pending}
@@ -493,7 +493,7 @@ export function PublishForm({
         </div>
         <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
           Critical scanner findings block publication. Automated checks reduce
-          risk but cannot guarantee a skill is safe. The scanner reads submitted
+          risk but cannot guarantee a recipe is safe. The scanner reads submitted
           instructions; it does not execute them.
         </p>
       </section>
@@ -570,7 +570,7 @@ export function PublishForm({
           )}
           <Button className="mt-4" variant="outline" asChild>
             <Link href="/dashboard/skills">
-              Open My Skills
+              Open My Recipes
               <ArrowRight className="size-4" aria-hidden />
             </Link>
           </Button>

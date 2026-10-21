@@ -7,8 +7,8 @@ export default function RunsPage() {
         Execution tracking is coming later.
       </h1>
       <p className="mt-5 text-muted-foreground">
-        Skillbuffet distributes reviewed skill instructions. It does not execute
-        skills or measure agent task outcomes yet. There are no recorded runs to
+        Skillbuffet distributes reviewed recipe instructions. It does not execute
+        recipes or measure agent task outcomes yet. There are no recorded runs to
         show.
       </p>
       <Link

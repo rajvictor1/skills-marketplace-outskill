@@ -5,11 +5,11 @@ export default function HowItWorks() {
   return (
     <InfoPage
       path="/how-it-works"
-      heading="How AI agent skills work on Skillbuffet"
+      heading="How AI agent recipes work on Skillbuffet"
       intro="Use Skillbuffet to find a task-specific instruction file, inspect its review and access requirements, then download the approved SKILL.md. Your compatible agent runs those instructions in your own environment. Skillbuffet does not connect your accounts or execute an agent on your behalf."
       sections={[
         {
-          title: "1. Find a skill for your task",
+          title: "1. Find a recipe for your task",
           body: "Browse the category directory or search the catalog by name, use case, creator or tag. For example, a marketing team can start with Marketing and inspect its SEO & GEO specialty. Category membership describes the intended task; it does not certify quality.",
         },
         {
@@ -22,11 +22,11 @@ export default function HowItWorks() {
         },
         {
           title: "4. Check the result and share feedback",
-          body: "Use a non-sensitive example first. Check the output against your task and the skill’s stated limitations. A recorded downloader can leave a star rating and optional comment; creators cannot rate their own skill. Download counts record account activity and do not prove installation or successful execution.",
+          body: "Use a non-sensitive example first. Check the output against your task and the recipe’s stated limitations. A recorded downloader can leave a star rating and optional comment; creators cannot rate their own recipe. Download counts record account activity and do not prove installation or successful execution.",
         },
         {
           title: "5. Recheck changes before updating",
-          body: "Each new skill version requires another administrator review. An older approved version can remain public while its replacement is pending. Download and inspect the approved version you intend to use; a linked external GitHub repository may change independently of the saved review.",
+          body: "Each new recipe version requires another administrator review. An older approved version can remain public while its replacement is pending. Download and inspect the approved version you intend to use; a linked external GitHub repository may change independently of the saved review.",
         },
       ]}
     />

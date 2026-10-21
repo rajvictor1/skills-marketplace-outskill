@@ -79,7 +79,7 @@ export function AdminReviewForm({
             disabled={pending}
             className="min-h-11 rounded-xl border border-danger/30 px-5 py-2.5 text-sm font-semibold text-danger"
           >
-            {mode === "rating" ? "Hide review" : "Unpublish skill"}
+            {mode === "rating" ? "Hide review" : "Unpublish recipe"}
           </button>
         )}
       </div>

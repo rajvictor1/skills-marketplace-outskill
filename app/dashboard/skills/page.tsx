@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { skill, skillSubmission, skillVersion } from "@/lib/db/schema";
 import { TrustBadge } from "@/components/trust-badge";
 export const metadata: Metadata = {
-  title: "My skills",
+  title: "My recipes",
   robots: { index: false },
 };
 export default async function MySkillsPage() {
@@ -50,11 +50,11 @@ export default async function MySkillsPage() {
         <div>
           <p className="editorial-kicker text-primary">Creator workspace</p>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight">
-            Your skills, from draft to discovery.
+            Your recipes, from draft to discovery.
           </h1>
           <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
-            New skills and updates are private until an administrator approves
-            the exact version. For an update, upload the same skill ID with a
+            New recipes and updates are private until an administrator approves
+            the exact version. For an update, upload the same recipe ID with a
             new version number.
           </p>
         </div>
@@ -71,13 +71,13 @@ export default async function MySkillsPage() {
             href="/publish"
             className="cta-primary rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
           >
-            Submit a skill
+            Submit a recipe
           </Link>
         </div>
       </div>
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
         {[
-          [unique.length, "Skills"],
+          [unique.length, "Recipes"],
           [unique.filter((s) => s.status === "published").length, "Published"],
           [
             rows.filter((r) => r.submission?.status === "pending").length,
@@ -158,7 +158,7 @@ export default async function MySkillsPage() {
       {!rows.length && (
         <div className="mt-8 rounded-2xl border border-dashed border-border p-10">
           <h2 className="text-xl font-semibold">
-            Start with one useful skill.
+            Start with one useful recipe.
           </h2>
           <p className="mt-3 text-muted-foreground">
             Upload your SKILL.md, choose a category, and send it for review.

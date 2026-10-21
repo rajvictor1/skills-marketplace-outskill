@@ -32,8 +32,8 @@ export async function generateMetadata({
   );
   return pageMetadata(
     `/skills/categories/${slug}`,
-    `${match.category.name} AI Skills and Task Guides`,
-    `Explore ${match.category.name.toLowerCase()} AI agent skills. ${CATEGORY_DESCRIPTIONS[match.category.name]} Read the instructions before use.`,
+    `${match.category.name} AI Recipes and Task Guides`,
+    `Explore ${match.category.name.toLowerCase()} AI agent recipes. ${CATEGORY_DESCRIPTIONS[match.category.name]} Read the instructions before use.`,
     hasReal,
   );
 }
@@ -61,17 +61,17 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         <div className="mx-auto max-w-7xl">
           <PageSeo
             path={`/skills/categories/${slug}`}
-            title={`${match.category.name} AI skills`}
+            title={`${match.category.name} AI recipes`}
             description={CATEGORY_DESCRIPTIONS[match.category.name]}
             crumbs={[
-              { name: "All skills", path: "/skills" },
+              { name: "All recipes", path: "/skills" },
               { name: match.category.name, path: `/skills/categories/${slug}` },
             ]}
             faq={categoryFaq(match.category.name)}
           />
           <Breadcrumbs
             items={[
-              { name: "All skills", path: "/skills" },
+              { name: "All recipes", path: "/skills" },
               { name: match.category.name, path: `/skills/categories/${slug}` },
             ]}
           />
@@ -79,15 +79,15 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           <div className="mt-16 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
             <div>
               <p className="editorial-kicker text-primary">
-                {match.group.name} / Skills
+                {match.group.name} / Recipes
               </p>
               <h1 className="mt-5 max-w-4xl text-balance text-5xl font-semibold leading-[1.02] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
-                {match.category.name} skills
+                {match.category.name} recipes
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
                 {CATEGORY_DESCRIPTIONS[match.category.name]} Browse specialties
                 including {match.category.subcategories.join(", ")}. Compare
-                each skill’s declared inputs, outputs, compatible agents and
+                each recipe’s declared inputs, outputs, compatible agents and
                 requested access. Read its saved instructions and review before
                 using it with your own data.
               </p>
@@ -132,7 +132,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
             Download a workflow to import into your own n8n account. Workflows
-            have separate setup requirements and are not AI agent skills.
+            have separate setup requirements and are not AI agent recipes.
           </p>
           <div className="mt-8 grid gap-5">
             {workflowTemplates.map((template) => (
@@ -149,7 +149,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               Explore this category
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-foreground sm:text-4xl">
-              AI skills for {match.category.name.toLowerCase()}
+              AI recipes for {match.category.name.toLowerCase()}
             </h2>
           </div>
           <Link

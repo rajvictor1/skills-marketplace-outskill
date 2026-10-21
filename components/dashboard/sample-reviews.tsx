@@ -3,7 +3,7 @@ import { Star } from "lucide-react";
 const EXAMPLES = [
   {
     stars: 5,
-    text: "A clear place to discover a skill and read its instructions before trying it.",
+    text: "A clear place to discover a recipe and read its instructions before trying it.",
     name: "Example reviewer A",
   },
   {

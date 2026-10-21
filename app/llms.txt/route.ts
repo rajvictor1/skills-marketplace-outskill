@@ -4,7 +4,7 @@ import { CATEGORY_GROUPS, categorySlug } from "@/lib/skills/taxonomy";
 export function GET() {
   const text = [
     "# Skillbuffet",
-    "> A marketplace of reusable AI agent instructions, organized by category. Only administrator-approved saved versions reach the public catalog. Skillbuffet does not execute skills or guarantee their safety.",
+    "> A marketplace of reusable AI agent instructions, organized by category. Only administrator-approved saved versions reach the public catalog. Skillbuffet does not execute recipes or guarantee their safety.",
     "## Core pages",
     ...Object.entries(PUBLIC_PAGES)
       .filter(

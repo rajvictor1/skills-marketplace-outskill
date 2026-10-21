@@ -10,7 +10,7 @@ export default function TermsPage() {
       sections={[
         {
           title: "The service",
-          body: "Skillbuffet lets creators submit AI agent instructions for review and lets users discover and download approved versions. It does not run your agents, promise task outcomes or guarantee that a skill is secure, accurate or suitable for your situation. Availability and features may change during beta.",
+          body: "Skillbuffet lets creators submit AI agent instructions for review and lets users discover and download approved versions. It does not run your agents, promise task outcomes or guarantee that a recipe is secure, accurate or suitable for your situation. Availability and features may change during beta.",
         },
         {
           title: "Accounts and conduct",
@@ -18,14 +18,14 @@ export default function TermsPage() {
         },
         {
           title: "Creator rights and permission",
-          body: "You retain rights you hold in your content. By submitting a skill, you permit Skillbuffet to store it, scan it, review it, display approved versions and distribute them under the license you declare. Choose a license you are authorized to grant. Third-party code and assets may have additional obligations. A GitHub source link is optional for uploads and does not transfer ownership.",
+          body: "You retain rights you hold in your content. By submitting a recipe, you permit Skillbuffet to store it, scan it, review it, display approved versions and distribute them under the license you declare. Choose a license you are authorized to grant. Third-party code and assets may have additional obligations. A GitHub source link is optional for uploads and does not transfer ownership.",
         },
         {
           title: "Review and moderation",
-          body: "Every version requires administrator approval. The operator may request changes, reject or unpublish a skill, and may hide abusive, irrelevant or privacy-violating reviews. Review decisions and reasons are recorded. Security scanning and administrator approval are limited checks rather than endorsements or guarantees.",
+          body: "Every version requires administrator approval. The operator may request changes, reject or unpublish a recipe, and may hide abusive, irrelevant or privacy-violating reviews. Review decisions and reasons are recorded. Security scanning and administrator approval are limited checks rather than endorsements or guarantees.",
         },
         {
-          title: "Using downloaded skills",
+          title: "Using downloaded recipes",
           body: "Read the instructions and license before use. Grant only necessary tool permissions, keep backups and obtain appropriate human review for consequential actions. Your agent provider, connected tools and external services have separate terms. Publicly downloadable content can be copied outside Skillbuffet, so removing a listing cannot recall copies already downloaded.",
         },
         {
