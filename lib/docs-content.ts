@@ -55,7 +55,7 @@ export const DOCS: Record<
   publishing: {
     title: "Publish your expertise",
     intro:
-      "Every new recipe and every new version requires administrator approval before it becomes public.",
+      "This creator form accepts single-file SKILL.md instruction recipes. Structured recipe.yaml packages are currently handled in the private owner workbench. Every public recipe version requires administrator approval.",
     sections: [
       {
         title: "Prepare SKILL.md",

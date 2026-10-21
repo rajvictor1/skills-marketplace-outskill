@@ -1,4 +1,5 @@
 import { Breadcrumbs, PageSeo } from "@/components/seo/page-seo";
+import Link from "next/link";
 import { PUBLIC_PAGES } from "@/lib/seo/site";
 import { staticMetadata } from "@/lib/seo/site";
 
@@ -57,12 +58,34 @@ export default async function PublishPage({
           Publish a recipe
         </h1>
         <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-          Paste your SKILL.md, upload that file, or import a public repo. Every
-          submission is checked by the scanner and then reviewed by the
-          administrator. Your recipe stays private until the administrator
-          approves this version. Critical scanner findings block the submission.
+          This page submits a single-file instruction recipe in SKILL.md format.
+          It is scanned and sent to the administrator for review. The recipe
+          stays private until that version is approved. Critical scanner
+          findings block submission.
         </p>
       </div>
+
+      <section className="mt-8 rounded-2xl border border-primary/30 bg-primary/10 p-5 sm:p-6" aria-labelledby="recipe-format-heading">
+        <h2 id="recipe-format-heading" className="text-base font-semibold text-foreground">
+          Which recipe format do you have?
+        </h2>
+        <div className="mt-3 grid gap-4 text-sm leading-relaxed text-muted-foreground sm:grid-cols-2">
+          <p>
+            <strong className="text-foreground">One SKILL.md file:</strong> Use the
+            form below. This older format contains agent instructions in Markdown.
+            The lowercase ID and YAML header apply to this file only.
+          </p>
+          <p>
+            <strong className="text-foreground">A recipe.yaml package:</strong> This
+            may include JSON schemas, documentation, and other files. It is
+            currently inspected in the private owner workbench, not submitted
+            through the form below. See the{" "}
+            <Link href="/docs/recipe-packages" className="font-medium text-primary underline underline-offset-4">
+              package guide
+            </Link>.
+          </p>
+        </div>
+      </section>
 
       <div className="mt-10 grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:gap-10">
         <PublishForm

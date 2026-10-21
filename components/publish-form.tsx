@@ -83,12 +83,12 @@ export function PublishForm({
           </span>
           <div>
             <h2 className="text-base font-semibold text-foreground">
-              1. Add your recipe instructions
+              1. Add SKILL.md instructions
             </h2>
             <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-              Submit a standalone <code className="font-mono">SKILL.md</code>{" "}
-              file. It needs YAML frontmatter with a lowercase ID and a clear
-              description.
+              This form accepts one standalone <code className="font-mono">SKILL.md</code>{" "}
+              file. Its YAML header needs a lowercase ID and a clear description.
+              A structured recipe.yaml package uses the separate private workbench.
             </p>
           </div>
         </div>
@@ -110,7 +110,7 @@ export function PublishForm({
             onClick={() => setSourceType("upload")}
             icon={<UploadCloud className="size-4" aria-hidden />}
           >
-            Upload file
+            Upload SKILL.md
           </SourceTab>
           <SourceTab
             active={sourceType === "github"}
@@ -167,8 +167,8 @@ export function PublishForm({
               />
             </label>
             <p className="text-xs text-muted-foreground">
-              This first publishing flow scans and stores SKILL.md. ZIP bundles
-              and companion scripts are not accepted yet.
+              This uploader scans and stores a single SKILL.md. It does not
+              accept recipe.yaml, ZIP bundles, JSON schemas, or companion scripts.
             </p>
           </div>
         )}
