@@ -333,7 +333,7 @@ export default async function Home() {
           </Link>
         </div>
       </section>
-      <FaqSection items={HOME_FAQ} />
+      <FaqSection items={HOME_FAQ} groupName="home" />
     </main>
   );
 }

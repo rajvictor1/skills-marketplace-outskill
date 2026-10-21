@@ -114,7 +114,13 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
     </nav>
   );
 }
-export function FaqSection({ items }: { items: Faq[] }) {
+export function FaqSection({
+  items,
+  groupName,
+}: {
+  items: Faq[];
+  groupName: string;
+}) {
   return (
     <section
       className="mx-auto my-16 max-w-7xl px-5 sm:px-8"
@@ -128,7 +134,7 @@ export function FaqSection({ items }: { items: Faq[] }) {
           <details
             key={f.question}
             className="faq-row group"
-            name="skillbuffet-faq"
+            name={`skillbuffet-faq-${groupName}`}
             open={index === 0}
           >
             <summary className="flex min-h-20 cursor-pointer list-none items-start gap-4 py-6 marker:hidden sm:items-center sm:gap-5">

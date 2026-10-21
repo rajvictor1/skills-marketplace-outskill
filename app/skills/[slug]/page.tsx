@@ -459,7 +459,10 @@ export default async function SkillDetailPage({
           </div>
         </section>
       )}
-      <FaqSection items={skillFaq(skill.name)} />
+      <FaqSection
+        items={skillFaq(skill.name)}
+        groupName={`skill-${skill.slug}`}
+      />
     </main>
   );
 }

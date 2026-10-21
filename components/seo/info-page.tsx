@@ -48,7 +48,9 @@ export function InfoPage({
           <Link href="/security">Security review and limitations</Link>
         </nav>
       </article>
-      {path === "/how-it-works" && <FaqSection items={HOME_FAQ} />}
+      {path === "/how-it-works" && (
+        <FaqSection items={HOME_FAQ} groupName="how-it-works" />
+      )}
     </main>
   );
 }

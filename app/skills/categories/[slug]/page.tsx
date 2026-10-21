@@ -212,7 +212,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </div>
         </section>
       )}
-      <FaqSection items={categoryFaq(match.category.name)} />
+      <FaqSection
+        items={categoryFaq(match.category.name)}
+        groupName={`category-${slug}`}
+      />
     </main>
   );
 }
