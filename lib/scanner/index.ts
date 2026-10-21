@@ -58,7 +58,15 @@ export async function scanSkill(
   findings.push(...matchDangerousPatterns(bundle.skillMd.body, null));
   for (const f of bundle.files) {
     if (f.path === "SKILL.md" || f.isScript) continue;
-    findings.push(...matchDangerousPatterns(f.content, f.path));
+    // JSON Schema dialect identifiers describe a document format; they are not
+    // instructions to fetch a URL. Keep scanning every other byte of the file.
+    const patternText = f.path.endsWith(".schema.json")
+      ? f.content.replace(
+          /"\$schema"\s*:\s*"(?:https:\/\/json-schema\.org\/draft\/2020-12\/schema|http:\/\/json-schema\.org\/draft-07\/schema#)"/g,
+          '"$schema":"standard JSON Schema dialect"',
+        )
+      : f.content;
+    findings.push(...matchDangerousPatterns(patternText, f.path));
   }
 
   // ---- Layer 3: static script analysis ----

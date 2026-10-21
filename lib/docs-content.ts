@@ -13,7 +13,7 @@ export const DOCS: Record<
       },
       {
         title: "Prepare a package",
-        body: "Use the repository utility: python3 scripts/recipe-pack-to-json.py /absolute/package/folder recipe.yaml > /private/tmp/recipe-package.json. For a shared capability pack, replace recipe.yaml with capabilities/example.read/recipe.yaml. The utility reads source text without executing it. Upload the resulting JSON in the private workbench. Do not include credentials, patient records or other real runtime input in source files.",
+        body: "For one recipe, run python3 scripts/recipe-pack-to-json.py /absolute/package/folder recipe.yaml > /private/tmp/recipe-package.json. For a ZIP with many recipe.yaml files, run python3 scripts/recipe-pack-to-json.py /absolute/pack.zip > /private/tmp/recipe-collection.json, then node --import tsx scripts/prepare-recipe-collection.ts /private/tmp/recipe-collection.json /private/tmp/individual-recipes. The second command checks every manifest and writes one JSON package per recipe for the private workbench. It never executes supplied code. Do not include credentials, patient records or real runtime input in source files.",
       },
       {
         title: "Owner/team inspection endpoint",

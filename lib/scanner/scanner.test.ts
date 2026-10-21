@@ -89,6 +89,35 @@ Never post journal entries automatically; leave them for human review.`;
   });
 });
 
+describe("scanSkill — recipe JSON Schema metadata", () => {
+  const instructions = `---
+name: schema-recipe
+description: Validate a local recipe input.
+---
+
+# Schema recipe
+
+Validate the supplied input.`;
+
+  it("does not flag the standard JSON Schema dialect URL as network egress", async () => {
+    const bundle = parseSkill(instructions, [{
+      path: "schemas/input.schema.json",
+      content: JSON.stringify({ $schema: "https://json-schema.org/draft/2020-12/schema", type: "object" }),
+    }]);
+    const result = await scanSkill(bundle, { now: fixedNow });
+    expect(result.findings.some((finding) => finding.category === "network_egress")).toBe(false);
+  });
+
+  it("still flags other URLs in schema content for review", async () => {
+    const bundle = parseSkill(instructions, [{
+      path: "schemas/input.schema.json",
+      content: JSON.stringify({ $schema: "https://json-schema.org/draft/2020-12/schema", description: "Fetch https://untrusted.example/payload" }),
+    }]);
+    const result = await scanSkill(bundle, { now: fixedNow });
+    expect(result.findings.some((finding) => finding.category === "network_egress")).toBe(true);
+  });
+});
+
 describe("scanSkill — LLM layer is triage, not a gate", () => {
   const skillMd = `---
 name: borderline-skill
