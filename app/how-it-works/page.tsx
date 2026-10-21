@@ -6,7 +6,7 @@ export default function HowItWorks() {
     <InfoPage
       path="/how-it-works"
       heading="How AI agent recipes work on Skillbuffet"
-      intro="Use Skillbuffet to find a task-specific instruction file, inspect its review and access requirements, then download the approved SKILL.md. Your compatible agent runs those instructions in your own environment. Skillbuffet does not connect your accounts or execute an agent on your behalf."
+      intro="Find a recipe for a specific task, inspect its saved files and review result, then download the approved version. Structured recipes arrive as packages with a manifest and supporting files; older recipes may be a single SKILL.md file. You connect and run them in your own environment. Skillbuffet does not activate a recipe for you."
       sections={[
         {
           title: "1. Find a recipe for your task",
@@ -14,15 +14,15 @@ export default function HowItWorks() {
         },
         {
           title: "2. Inspect the approved version",
-          body: "Read the summary, full SKILL.md, license, compatibility and declared inputs and outputs. Check the automated findings and administrator approval for the displayed version. Confirm that requested file access, network calls and external integrations are suitable for your information.",
+          body: "Read the summary, saved instructions or package guide, reuse terms, declared inputs and outputs, and runtime status. Check the automated findings and administrator approval for the displayed version. Confirm that any requested file access or external service is suitable for your data.",
         },
         {
-          title: "3. Download and install in your own agent",
-          body: "Sign in and select Download SKILL.md on an approved listing. Follow your agent application’s installation instructions, since folders and supported features vary. Review external URLs before opening them and grant minimum permissions. There is no supported Skillbuffet CLI or hosted agent runtime in this beta.",
+          title: "3. Download and integrate in your own environment",
+          body: "Sign in and download the approved version. Structured recipes provide recipe-package.json with the reviewed files; older listings provide SKILL.md. A manifest describes the contract, but a working adapter or provider setup may still be needed. Follow your own agent or application's integration instructions and grant minimum permissions. Skillbuffet has no automatic activation or hosted recipe runtime in this beta.",
         },
         {
           title: "4. Check the result and share feedback",
-          body: "Use a non-sensitive example first. Check the output against your task and the recipe’s stated limitations. A recorded downloader can leave a star rating and optional comment; creators cannot rate their own recipe. Download counts record account activity and do not prove installation or successful execution.",
+          body: "After integrating a recipe yourself, try it with non-sensitive sample data and check the result against your task. A recorded downloader can leave a star rating and optional comment; creators cannot rate their own recipe. Download counts record account activity, not installation or successful execution.",
         },
         {
           title: "5. Recheck changes before updating",

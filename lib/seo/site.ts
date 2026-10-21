@@ -85,7 +85,7 @@ export const PUBLIC_PAGES: Record<
   "/": {
     title: "Skillbuffet: Discover and Share Reviewed AI Agent Recipes",
     description:
-      "Explore AI agent recipes by category, inspect instructions and review results, and download approved versions. Share your own SKILL.md for review.",
+      "Explore AI agent recipes by category, inspect saved files and review results, and download approved versions. Submit a recipe package for administrator review.",
   },
   "/skills": {
     title: "AI Agent Recipes by Category and Use Case",
@@ -105,7 +105,7 @@ export const PUBLIC_PAGES: Record<
   "/how-it-works": {
     title: "How to Find and Use Reviewed AI Agent Recipes",
     description:
-      "Follow the Skillbuffet workflow: browse a category, inspect instructions and permissions, download an approved SKILL.md, and use it in your own agent.",
+      "Browse recipes, inspect the saved files and review results, then download an approved package or instruction file for your own environment.",
   },
   "/docs": {
     title: "AI Recipe Documentation and Publishing Guides",
@@ -135,7 +135,7 @@ export const PUBLIC_PAGES: Record<
   "/publish": {
     title: "Submit AI Agent Recipes for Administrator Review",
     description:
-      "Upload or paste SKILL.md, choose a category and declare permissions. GitHub is optional for file uploads; every new recipe version needs administrator approval.",
+      "Upload a recipe ZIP, choose one recipe and category, and submit it for administrator review. A legacy SKILL.md option is also available.",
   },
 };
 export function staticMetadata(path: string, indexable = true) {

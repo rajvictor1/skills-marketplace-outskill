@@ -10,7 +10,7 @@ export default function PrivacyPage() {
       sections={[
         {
           title: "What we collect",
-          body: "Account name, email, a password hash managed by the authentication service, session records, submitted SKILL.md instructions and listing metadata, scan reports, review decisions, ratings and recorded download events. Session records can include IP address and browser information. Hosting providers may retain operational request logs.",
+          body: "Account name, email, a password hash managed by the authentication service, session records, submitted recipe packages or SKILL.md instructions, listing metadata, scan reports, review decisions, ratings and recorded download events. Session records can include IP address and browser information. Hosting providers may retain operational request logs.",
         },
         {
           title: "How data is used",
@@ -18,7 +18,7 @@ export default function PrivacyPage() {
         },
         {
           title: "What becomes public",
-          body: "Approved recipe instructions, creator display name, declared metadata, source links, security summaries, ratings and public review comments are visible to visitors. Pending, rejected and blocked submissions are restricted to the creator and administrators. Administrator review notes may be shown privately to the creator. Account email addresses are not part of the public catalog API.",
+          body: "Approved recipe instructions or package guides, creator display name, declared metadata, source links, security summaries, ratings and public review comments are visible to visitors. Approved package files are available to signed-in downloaders. Pending, rejected and blocked submissions are restricted to the creator and administrators. Administrator review notes may be shown privately to the creator. Account email addresses are not part of the public catalog API.",
         },
         {
           title: "Providers and automated review",

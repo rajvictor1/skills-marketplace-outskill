@@ -10,7 +10,7 @@ export default function TermsPage() {
       sections={[
         {
           title: "The service",
-          body: "Skillbuffet lets creators submit AI agent instructions for review and lets users discover and download approved versions. It does not run your agents, promise task outcomes or guarantee that a recipe is secure, accurate or suitable for your situation. Availability and features may change during beta.",
+          body: "Skillbuffet lets creators submit AI agent recipe packages or instruction files for review and lets users discover and download approved versions. It does not install or run recipes, promise task outcomes or guarantee that a recipe is secure, accurate or suitable for your situation. Availability and features may change during beta.",
         },
         {
           title: "Accounts and conduct",
@@ -26,7 +26,7 @@ export default function TermsPage() {
         },
         {
           title: "Using downloaded recipes",
-          body: "Read the instructions and license before use. Grant only necessary tool permissions, keep backups and obtain appropriate human review for consequential actions. Your agent provider, connected tools and external services have separate terms. Publicly downloadable content can be copied outside Skillbuffet, so removing a listing cannot recall copies already downloaded.",
+          body: "Read the package files or instructions and reuse terms before use. A structured manifest may still need an adapter and provider connection before it can run. Grant only necessary tool permissions, keep backups and obtain appropriate human review for consequential actions. Your agent provider, connected tools and external services have separate terms. Removing a listing cannot recall copies already downloaded.",
         },
         {
           title: "Feedback, payments and legal details",

@@ -27,7 +27,7 @@ export function GET() {
     "## Data and boundaries",
     "- Read-only approved catalog: " + absoluteUrl("/api/v1/skills"),
     "- Pending, rejected, blocked and unpublished submissions are private.",
-    "- Workflow JSON templates are distinct from SKILL.md agent instructions.",
+    "- Structured recipe.yaml packages and legacy SKILL.md instructions are distinct formats; workflow JSON templates are a separate format.",
     "- Download counts do not prove installation or successful use. Ratings are not security certifications.",
     "- Preview environments are not intended for indexing.",
     "- This file is a discovery aid, not a guarantee of search ranking or AI citation.",

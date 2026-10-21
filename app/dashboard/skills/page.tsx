@@ -161,7 +161,7 @@ export default async function MySkillsPage() {
             Start with one useful recipe.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Upload your SKILL.md, choose a category, and send it for review.
+            Upload a recipe ZIP, choose one recipe and a category, then send it for review.
           </p>
         </div>
       )}

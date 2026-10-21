@@ -5,7 +5,7 @@ import { Breadcrumbs, PageSeo } from "@/components/seo/page-seo";
 export const metadata = pageMetadata(
   "/search",
   "Search AI Agent Recipes by Task, Creator or Category",
-  "Search the Skillbuffet catalog by task, recipe name, creator or tag. Compare approved listings, declared permissions and supported agents before downloading.",
+  "Search Skillbuffet by task, recipe name, creator or tag. Compare reviewed files, requirements and runtime status before downloading.",
   false,
 );
 export const dynamic = "force-dynamic";

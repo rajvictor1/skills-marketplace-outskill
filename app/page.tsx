@@ -65,11 +65,12 @@ export default async function Home() {
               <span className="text-primary">Know what&apos;s inside.</span>
             </h1>
             <p className="mx-auto mt-8 max-w-2xl text-balance text-lg leading-relaxed text-muted-foreground sm:text-xl">
-              Skillbuffet is a marketplace of reusable AI agent instructions.
-              Browse by category, read each SKILL.md and its review results, and
-              download an approved version for your own agent. Creators can
-              submit recipes for administrator review; approval reduces risk but
-              does not guarantee safety.
+              Skillbuffet is a marketplace for reusable AI agent recipes.
+              Browse by category, inspect the saved files and review results,
+              then download an approved version to use in your own environment.
+              Creators can submit one recipe from a ZIP pack at a time for
+              administrator review. Approval does not guarantee safety or
+              working integrations.
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
@@ -128,8 +129,8 @@ export default async function Home() {
           <div className="lg:pt-9">
             <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
               Skillbuffet brings discovery, review, and publishing together.
-              Find a recipe by the work it helps you do, read its instructions,
-              and inspect its security result before you install it.
+              Find a recipe by the work it helps you do, inspect its files and
+              review result, then decide whether it fits your own system.
             </p>
             <Link
               href="#categories"
@@ -166,12 +167,12 @@ export default async function Home() {
               [
                 "02",
                 "Inspect",
-                "Read the recipe and its scan findings before deciding whether it belongs in your agent.",
+                "Check the saved files, requirements, scan findings, and runtime status before downloading.",
               ],
               [
                 "03",
                 "Publish",
-                "Submit your recipe for scanning and administrator review. It becomes public only after approval.",
+                "Upload a ZIP, choose one recipe and a category, then submit it for administrator review.",
               ],
             ].map(([number, title, description]) => (
               <div
@@ -203,10 +204,11 @@ export default async function Home() {
               </h2>
             </div>
             <p className="max-w-xl text-base leading-relaxed text-muted-foreground lg:pb-2">
-              Every submission is scanned for hidden instructions, risky
-              patterns and scripts. An optional AI classifier adds another
-              check. An administrator reviews each version before it becomes
-              public.
+              Recipe files are checked for hidden instructions, risky patterns
+              and scripts. An optional AI classifier can review legacy
+              instruction files when configured; it is not used for ZIP
+              packages in this Preview. An administrator reviews each submitted
+              version before it becomes public.
             </p>
           </div>
           <div className="mt-14 grid gap-px overflow-hidden rounded-[1.8rem] border border-border bg-primary/10 md:grid-cols-2 lg:grid-cols-4">
@@ -232,7 +234,8 @@ export default async function Home() {
           </div>
           <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground">
             Automated scanning reduces risk; it cannot guarantee that every
-            recipe is safe. Always review permissions and code before installing.
+            recipe is safe or ready to run. Review the files, permissions and
+            runtime status before integrating a recipe.
           </p>
           <Link
             href="/security"

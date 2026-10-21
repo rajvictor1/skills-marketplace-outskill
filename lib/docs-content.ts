@@ -63,7 +63,7 @@ export const DOCS: Record<
       },
       {
         title: "Complete your listing",
-        body: "Sign in, open Submit a recipe, choose the ZIP and click Inspect ZIP. Select one valid recipe, then give it a display title, category and subcategory. Choose reuse terms and confirm your right to submit its files. Repeat for another recipe. The legacy SKILL.md form still supports paste, file upload and optional GitHub import.",
+        body: "Sign in, open Submit a recipe, choose the ZIP and click Find recipes. Select one valid recipe, then give it a display title, category and subcategory. Choose reuse terms and confirm your right to submit its files. Repeat for another recipe. The legacy SKILL.md form still supports paste, file upload and optional GitHub import.",
       },
       {
         title: "Scan and submit",

@@ -6,7 +6,7 @@ export default function About() {
     <InfoPage
       path="/about"
       heading="About Skillbuffet"
-      intro="Skillbuffet is a marketplace for reusable AI agent instructions. It helps people browse by category, inspect a saved SKILL.md and its review results, and download approved versions for use in their own agents. The beta is operated by Rajesh Kumar."
+      intro="Skillbuffet is a marketplace for reusable AI agent recipes. Browse by category, inspect the saved package or instruction file and its review results, then download an approved version for your own environment. The beta is operated by Rajesh Kumar."
       sections={[
         {
           title: "Why this marketplace exists",
@@ -14,7 +14,7 @@ export default function About() {
         },
         {
           title: "How a recipe reaches the public catalog",
-          body: "Creators submit a SKILL.md file with a category, version, license and access declarations. Automated checks look for suspicious patterns. An administrator then reviews that saved version. Pending, rejected and blocked submissions stay private; an approved version can become public.",
+          body: "Creators upload a ZIP containing recipe.yaml and its local files, choose one recipe and category, and submit it with reuse terms. The older single-file SKILL.md form remains available. File checks and static security scanning run before an administrator reviews the saved version. Pending, rejected and blocked submissions stay private; approval makes the reviewed version public.",
         },
         {
           title: "What we can and cannot verify",

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: null },
   title: "Create your account",
   description:
-    "Create an account to publish and install security-scanned AI agent recipes.",
+    "Create an account to discover, download and submit AI agent recipes for review.",
 };
 
 export default async function SignUpPage({ searchParams }: {
