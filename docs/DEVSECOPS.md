@@ -108,3 +108,7 @@ The pipeline is on the implementation branch until its pull request is merged in
 `.github/workflows/codeql.yml` adds GitHub CodeQL analysis for JavaScript/TypeScript using an official action pinned to immutable commit `f051dc808ef3645eb0d08647ec751634ec2304ac`. Its first run must be checked before describing source analysis as passed. The existing DevSecOps workflow also runs the scanner and authorization regression suite.
 
 A repository API read on 21 October 2026 confirmed **Secret scanning enabled** and **Secret scanning push protection enabled**. Dependabot security updates were disabled at that read. These are account settings, so verify again before release. Do not describe them as enabled by the application code.
+
+## Security finding addressed in this release
+
+The first CodeQL analysis identified executable frontmatter parsing in the inherited `lib/skills/parse.ts` implementation. This release removes `gray-matter` from parsing and rendering, accepts only a plain `---` YAML block, parses with js-yaml's data-only FAILSAFE schema, bounds metadata to 16 KB and strips unknown object graphs. Regression tests reject JavaScript engine selectors and custom JavaScript YAML tags without executing them. Check the latest CodeQL result for the fixing commit rather than the earlier failing run.

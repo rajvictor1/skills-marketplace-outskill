@@ -1,4 +1,4 @@
-import matter from "gray-matter";
+import { load, FAILSAFE_SCHEMA } from "js-yaml";
 import { z } from "zod";
 
 import type { ParsedSkillBundle, ParsedSkillFile } from "@/lib/scanner/types";
@@ -24,7 +24,7 @@ export const frontmatterSchema = z
       .min(1, "description is required")
       .max(1024, "description must be 1024 characters or fewer"),
   })
-  .passthrough();
+  .strip();
 
 export type SkillFrontmatter = z.infer<typeof frontmatterSchema>;
 
@@ -75,20 +75,40 @@ export function parseSkill(
     source: "upload",
   },
 ): ParsedSkillBundle {
-  let parsed: matter.GrayMatterFile<string>;
-  try {
-    parsed = matter(skillMdRaw);
-  } catch {
+  // Treat frontmatter as data only. Engine selectors such as ---javascript
+  // are rejected before parsing; no executable frontmatter library is used.
+  const normalized = skillMdRaw.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
+  const lines = normalized.split("\n");
+  if (lines[0]?.trimEnd() !== "---") {
     throw new SkillParseError(
-      "Could not parse the YAML frontmatter. Check the --- block at the top.",
+      "SKILL.md must begin with a plain --- YAML frontmatter block. Executable frontmatter is not supported.",
     );
   }
+  const closing = lines.findIndex(
+    (line, index) => index > 0 && /^---[ \t]*$/.test(line),
+  );
+  if (closing < 0)
+    throw new SkillParseError("Close the YAML frontmatter with a --- line.");
+  const yaml = lines.slice(1, closing).join("\n");
+  if (Buffer.byteLength(yaml, "utf8") > 16 * 1024)
+    throw new SkillParseError("Frontmatter must be smaller than 16 KB.");
+  let data: unknown;
+  try {
+    data = load(yaml, { schema: FAILSAFE_SCHEMA });
+  } catch {
+    throw new SkillParseError(
+      "Could not parse the YAML frontmatter. Use plain YAML data without custom tags.",
+    );
+  }
+  const parsed = { data, content: lines.slice(closing + 1).join("\n") };
 
   const result = frontmatterSchema.safeParse(parsed.data);
   if (!result.success) {
     throw new SkillParseError(
       "SKILL.md frontmatter is invalid.",
-      result.error.issues.map((i) => `${i.path.join(".") || "frontmatter"}: ${i.message}`),
+      result.error.issues.map(
+        (i) => `${i.path.join(".") || "frontmatter"}: ${i.message}`,
+      ),
     );
   }
 

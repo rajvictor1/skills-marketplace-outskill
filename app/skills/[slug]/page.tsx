@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
-import matter from "gray-matter";
 import {
   ArrowLeft,
   Download,
@@ -255,7 +254,7 @@ export default async function SkillDetailPage({
                 : "The full instructions that load into your agent. Read them before installing."}
             </p>
             <div className="mt-4 rounded-2xl border border-border bg-card p-6">
-              <Markdown>{matter(skill.skillMd).content}</Markdown>
+              <Markdown>{skill.skillMd}</Markdown>
             </div>
           </section>
         </div>
