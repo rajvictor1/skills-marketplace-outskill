@@ -5,10 +5,10 @@ import { TrustBadge } from "@/components/trust-badge";
 import type { SampleSkill } from "@/lib/sample-data";
 import { SKILL_CATEGORY_NAMES } from "@/lib/skills/taxonomy";
 const TONES = [
-  "bg-[#eee8ff] text-[#514095]",
-  "bg-[#e1f2eb] text-[#285f4c]",
-  "bg-[#ffeadb] text-[#88502e]",
-  "bg-[#e4eefb] text-[#365c89]",
+  "bg-category-violet text-primary",
+  "bg-category-teal text-safe",
+  "bg-category-peach text-peach",
+  "bg-category-blue text-blue",
 ];
 export function SkillCard({ skill }: { skill: SampleSkill }) {
   const tone =
@@ -21,7 +21,7 @@ export function SkillCard({ skill }: { skill: SampleSkill }) {
   return (
     <Link
       href={`/skills/${skill.slug}`}
-      className="group flex min-h-80 flex-col overflow-hidden rounded-3xl border border-border bg-white transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary motion-reduce:hover:translate-y-0"
+      className="group flex min-h-80 flex-col overflow-hidden rounded-3xl border border-border bg-card transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary motion-reduce:hover:translate-y-0"
     >
       <div
         className={`flex min-h-28 items-center justify-between gap-3 p-6 ${tone}`}
@@ -30,7 +30,7 @@ export function SkillCard({ skill }: { skill: SampleSkill }) {
           <p className="text-xs font-semibold uppercase tracking-widest">
             {skill.category}
           </p>
-          <span className="mt-3 flex size-10 items-center justify-center rounded-xl bg-white/60">
+          <span className="mt-3 flex size-10 items-center justify-center rounded-xl bg-primary/10">
             <Sparkles className="size-5" aria-hidden />
           </span>
         </div>
@@ -43,7 +43,7 @@ export function SkillCard({ skill }: { skill: SampleSkill }) {
         <div className="flex flex-wrap items-center gap-2">
           <TrustBadge tier={skill.trustTier} />
           {skill.adminApproved && (
-            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#285f4c]">
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-safe">
               <BadgeCheck className="size-3.5" aria-hidden />
               Admin approved
             </span>

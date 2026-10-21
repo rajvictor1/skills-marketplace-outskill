@@ -21,3 +21,8 @@ These checks do not establish antivirus coverage, guaranteed safety, independent
 The owner clarified that `ai_skills_marketplace_dashboard_build_specification.md` governs dashboard structure. The later compact creator-dashboard draft is superseded. The Overview retains the original KPI row, Agent activity, Top skills, creator/adoption pulse and activity feed, with a scoped dark slate palette and smaller headings. Its simulated operations are visibly labeled illustrative and never inserted into the catalog or included in actual ratings. A separate live catalog snapshot uses only approved records. Period filters update simulated chart and outcome totals together. The home page includes three explicitly labeled review examples, separate from authentic community ratings.
 
 This is a visual dashboard prototype, not evidence that agent execution, installs, payments, savings or reliability measurement are integrated. My Skills and submission authorization remain backed by the real existing workflow. No database migration is needed for this styling refresh.
+
+
+## Shared website design rollout
+
+The approved dashboard palette is now the global dark design system. Public marketplace, category and skill templates, sign-in/sign-up, publishing, creator workspace, administrator review UI, documentation, reviews, privacy/terms, errors and loading surfaces use shared dark tokens. Hard-coded white and pastel card backgrounds were replaced with dark category surfaces. Primary CTAs share violet styling and visible focus; approval/rejection actions retain semantic colors. No authentication, authorization, scanner, API or database behavior was changed. Dashboard structure and illustrative-data disclosures remain intact.

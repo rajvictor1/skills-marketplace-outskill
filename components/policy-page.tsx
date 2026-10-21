@@ -25,7 +25,7 @@ export function PolicyPage({
           <p className="mt-3 leading-8 text-muted-foreground">{item.body}</p>
         </section>
       ))}
-      <section className="mt-9 rounded-2xl bg-[#eee8ff] p-6">
+      <section className="mt-9 rounded-2xl bg-category-violet p-6">
         <h2 className="text-xl font-semibold">Contact the operator</h2>
         {contact ? (
           <a

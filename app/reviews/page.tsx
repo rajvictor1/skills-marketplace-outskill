@@ -20,7 +20,7 @@ export default async function ReviewsPage() {
         reviews of this marketplace, separate from GitHub stars and skill
         security checks.
       </p>
-      <section className="mt-9 rounded-3xl border border-border bg-[#f2eaff] p-7">
+      <section className="mt-9 rounded-3xl border border-border bg-category-violet p-7">
         <RatingSummary average={data.average} count={data.count} />
         <p className="mt-3 text-sm">
           {data.available
@@ -35,7 +35,7 @@ export default async function ReviewsPage() {
         {data.reviews.map((review) => (
           <article
             key={review.id}
-            className="rounded-2xl border border-border bg-white p-6"
+            className="rounded-2xl border border-border bg-card p-6"
           >
             <p className="font-semibold">
               {review.name} · {review.stars}/5

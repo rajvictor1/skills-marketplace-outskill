@@ -21,7 +21,7 @@ export function SampleReviews() {
   return (
     <section
       aria-labelledby="sample-reviews-title"
-      className="border-y border-border bg-[#efecff]/50 px-5 py-12 sm:px-8"
+      className="border-y border-border bg-primary/10 px-5 py-12 sm:px-8"
     >
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-wrap items-end justify-between gap-3">
@@ -36,7 +36,7 @@ export function SampleReviews() {
               How community reviews will look
             </h2>
           </div>
-          <span className="rounded-full border border-primary/20 bg-white px-3 py-1.5 text-xs font-semibold text-primary">
+          <span className="rounded-full border border-primary/20 bg-card px-3 py-1.5 text-xs font-semibold text-primary">
             Sample reviews · not real endorsements
           </span>
         </div>
@@ -44,10 +44,10 @@ export function SampleReviews() {
           {EXAMPLES.map((review) => (
             <figure
               key={review.name}
-              className="rounded-xl border border-border bg-white p-5"
+              className="rounded-xl border border-border bg-card p-5"
             >
               <div
-                className="flex gap-1 text-[#a86516]"
+                className="flex gap-1 text-caution"
                 role="img"
                 aria-label={`${review.stars} out of 5 example stars`}
               >

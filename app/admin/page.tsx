@@ -105,7 +105,7 @@ export default async function AdminPage({
     : [[], []];
   return (
     <main className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
-      <div className="rounded-3xl bg-[#20244b] p-8 text-white">
+      <div className="rounded-3xl bg-category-violet p-8 text-white">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#b7d9cf]">
           Skillbuffet / Admin
         </p>
@@ -138,7 +138,7 @@ export default async function AdminPage({
           approved.
         </p>
         {!pending.length && (
-          <p className="mt-5 rounded-2xl border border-border bg-white p-7">
+          <p className="mt-5 rounded-2xl border border-border bg-card p-7">
             Your queue is clear. New submissions will appear here.
           </p>
         )}
@@ -166,7 +166,7 @@ export default async function AdminPage({
           <Link href={`/admin?page=${page + 1}`}>Next page →</Link>
         )}
       </div>
-      <section className="mt-10 rounded-2xl bg-[#fff0e8] p-6">
+      <section className="mt-10 rounded-2xl bg-category-peach p-6">
         <h2 className="text-xl font-semibold">Scanner-blocked submissions</h2>
         <p className="mt-2 text-sm">
           These versions cannot be approved. Creators must correct the findings
@@ -191,7 +191,7 @@ export default async function AdminPage({
           {published.map((item) => (
             <article
               key={item.id}
-              className="rounded-2xl border border-border bg-white p-6"
+              className="rounded-2xl border border-border bg-card p-6"
             >
               <Link
                 href={`/skills/${item.slug}`}
@@ -217,7 +217,7 @@ export default async function AdminPage({
           {ratings.map(({ rating, name }) => (
             <article
               key={rating.id}
-              className="rounded-2xl border border-border bg-white p-6"
+              className="rounded-2xl border border-border bg-card p-6"
             >
               <p className="font-semibold">
                 {name} · {rating.stars}/5
@@ -235,7 +235,7 @@ export default async function AdminPage({
       </section>
       <section className="mt-12">
         <h2 className="text-2xl font-semibold">Review history</h2>
-        <div className="mt-5 overflow-x-auto rounded-2xl border border-border bg-white">
+        <div className="mt-5 overflow-x-auto rounded-2xl border border-border bg-card">
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-border">
@@ -288,7 +288,7 @@ function ReviewCard({
 }) {
   const data = row.review.snapshot;
   return (
-    <article className="rounded-3xl border border-border bg-white p-6 sm:p-8">
+    <article className="rounded-3xl border border-border bg-card p-6 sm:p-8">
       <div className="flex flex-wrap justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-primary">
@@ -307,7 +307,7 @@ function ReviewCard({
             {data.category} / {data.subcategory}
           </p>
         </div>
-        <div className="rounded-xl bg-[#e9f4ef] p-4 text-sm">
+        <div className="rounded-xl bg-category-teal p-4 text-sm">
           <p className="font-semibold">
             Risk {row.version.riskScore}/100 ·{" "}
             {row.version.trustTier.replaceAll("_", " ")}
@@ -318,7 +318,7 @@ function ReviewCard({
         </div>
       </div>
       <p className="mt-5 text-sm">{data.summary}</p>
-      <dl className="mt-5 grid gap-4 rounded-xl bg-[#f5f4fb] p-5 text-sm sm:grid-cols-2">
+      <dl className="mt-5 grid gap-4 rounded-xl bg-background/70 p-5 text-sm sm:grid-cols-2">
         <div>
           <dt className="font-semibold">Compatibility</dt>
           <dd>{data.metadata.compatibility?.join(", ") || "Not specified"}</dd>
@@ -357,7 +357,7 @@ function ReviewCard({
         <summary className="cursor-pointer text-sm font-semibold">
           Scanner layers and {findings.length} findings
         </summary>
-        <pre className="mt-3 overflow-auto rounded-xl bg-[#f7f6fb] p-4 text-xs">
+        <pre className="mt-3 overflow-auto rounded-xl bg-background/70 p-4 text-xs">
           {JSON.stringify(row.scan?.layerStatus, null, 2)}
         </pre>
         {findings.map((item) => (

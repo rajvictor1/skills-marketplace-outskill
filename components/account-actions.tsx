@@ -30,7 +30,7 @@ export function AccountActions() {
         <Button
           variant="ghost"
           size="sm"
-          className="hidden rounded-full px-4 text-foreground hover:bg-white/10 sm:inline-flex"
+          className="hidden rounded-full px-4 text-foreground hover:bg-primary/10 sm:inline-flex"
           asChild
         >
           <Link href="/auth/sign-in">Sign in</Link>
@@ -40,7 +40,10 @@ export function AccountActions() {
           className="brand-button h-9 rounded-full px-5"
           asChild
         >
-          <Link href="/auth/sign-up">Get started</Link>
+          <Link href="/auth/sign-up">
+            <span className="sm:hidden">Join</span>
+            <span className="hidden sm:inline">Get started</span>
+          </Link>
         </Button>
       </div>
     );
@@ -61,24 +64,24 @@ export function AccountActions() {
         >
           Account
         </summary>
-        <div className="absolute right-0 top-11 z-50 grid w-48 gap-1 rounded-2xl border border-white/15 bg-[#191a42] p-2 shadow-xl">
+        <div className="absolute right-0 top-11 z-50 grid w-48 gap-1 rounded-2xl border border-white/15 bg-popover p-2 shadow-xl">
           {admin && (
             <Link
               href="/admin"
-              className="rounded-xl px-4 py-3 text-sm hover:bg-white/10"
+              className="rounded-xl px-4 py-3 text-sm hover:bg-primary/10"
             >
               Admin review desk
             </Link>
           )}
           <Link
             href="/dashboard/skills"
-            className="rounded-xl px-4 py-3 text-sm hover:bg-white/10"
+            className="rounded-xl px-4 py-3 text-sm hover:bg-primary/10"
           >
             My skills
           </Link>
           <button
             onClick={logout}
-            className="rounded-xl px-4 py-3 text-left text-sm hover:bg-white/10"
+            className="rounded-xl px-4 py-3 text-left text-sm hover:bg-primary/10"
           >
             Sign out
           </button>
@@ -95,7 +98,7 @@ export function AccountActions() {
         {admin && (
           <Link
             href="/admin"
-            className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white"
+            className="rounded-full bg-primary/10 px-3 py-2 text-xs font-semibold text-white"
           >
             Admin
           </Link>
@@ -103,7 +106,7 @@ export function AccountActions() {
         <Button
           variant="ghost"
           size="sm"
-          className="rounded-full px-4 text-foreground hover:bg-white/10"
+          className="rounded-full px-4 text-foreground hover:bg-primary/10"
           asChild
         >
           <Link href="/dashboard/skills">My skills</Link>
@@ -111,7 +114,7 @@ export function AccountActions() {
         <Button
           variant="outline"
           size="sm"
-          className="rounded-full border-white/30 bg-transparent px-4 text-foreground hover:bg-white/10"
+          className="rounded-full border-white/30 bg-transparent px-4 text-foreground hover:bg-primary/10"
           onClick={logout}
         >
           Sign out

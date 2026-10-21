@@ -44,7 +44,7 @@ export function AdminReviewForm({
         maxLength={2000}
         rows={3}
         required={mode !== "review"}
-        className="w-full rounded-xl border border-border bg-white p-3 text-sm"
+        className="w-full rounded-xl border border-border bg-card p-3 text-sm"
       />
       <div className="flex flex-wrap gap-2">
         {mode === "review" ? (
@@ -53,7 +53,7 @@ export function AdminReviewForm({
               name="decision"
               value="approved"
               disabled={pending}
-              className="rounded-full bg-[#24604b] px-5 py-2.5 text-sm font-semibold text-white"
+              className="min-h-11 rounded-xl cta-success px-5 py-2.5 text-sm font-semibold text-white"
             >
               Approve and publish
             </button>
@@ -61,7 +61,7 @@ export function AdminReviewForm({
               name="decision"
               value="changes_requested"
               disabled={pending}
-              className="rounded-full border border-border bg-[#fff1db] px-5 py-2.5 text-sm font-semibold"
+              className="min-h-11 rounded-xl border border-border bg-caution/10 text-caution px-5 py-2.5 text-sm font-semibold"
             >
               Request changes
             </button>
@@ -69,7 +69,7 @@ export function AdminReviewForm({
               name="decision"
               value="rejected"
               disabled={pending}
-              className="rounded-full border border-danger/30 px-5 py-2.5 text-sm font-semibold text-danger"
+              className="min-h-11 rounded-xl border border-danger/30 px-5 py-2.5 text-sm font-semibold text-danger"
             >
               Reject
             </button>
@@ -77,7 +77,7 @@ export function AdminReviewForm({
         ) : (
           <button
             disabled={pending}
-            className="rounded-full border border-danger/30 px-5 py-2.5 text-sm font-semibold text-danger"
+            className="min-h-11 rounded-xl border border-danger/30 px-5 py-2.5 text-sm font-semibold text-danger"
           >
             {mode === "rating" ? "Hide review" : "Unpublish skill"}
           </button>

@@ -22,7 +22,7 @@ export default function DocsPage() {
           <Link
             key={slug}
             href={`/docs/${slug}`}
-            className="rounded-3xl border border-border bg-white p-7 transition-colors hover:bg-[#f0eaff]"
+            className="rounded-3xl border border-border bg-card p-7 transition-colors hover:bg-primary/10"
           >
             <h2 className="text-2xl font-semibold">{doc.title} ↗</h2>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -31,7 +31,7 @@ export default function DocsPage() {
           </Link>
         ))}
       </div>
-      <section className="mt-10 rounded-2xl bg-[#e3f1eb] p-7">
+      <section className="mt-10 rounded-2xl bg-category-teal p-7">
         <h2 className="text-xl font-semibold">Source and support</h2>
         <p className="mt-3 text-sm">
           Report non-sensitive issues or contribute through the project

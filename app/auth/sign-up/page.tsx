@@ -12,8 +12,11 @@ export const metadata: Metadata = {
 export default async function SignUpPage() {
   await headers();
   return (
-    <main className="bg-[#f3f5fb] px-5 py-12 sm:px-8 sm:py-20">
-      <AuthCard mode="sign-up" databaseConfigured={Boolean(process.env.DATABASE_URL)} />
+    <main className="bg-background px-5 py-12 sm:px-8 sm:py-20">
+      <AuthCard
+        mode="sign-up"
+        databaseConfigured={Boolean(process.env.DATABASE_URL)}
+      />
     </main>
   );
 }

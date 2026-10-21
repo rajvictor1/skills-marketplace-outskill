@@ -62,7 +62,7 @@ export default async function SubmissionPage({
       </div>
       <Link
         href="/publish"
-        className="mt-7 inline-block rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
+        className="cta-primary mt-7 inline-block rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
       >
         Submit a revised version
       </Link>

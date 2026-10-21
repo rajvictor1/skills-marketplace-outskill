@@ -70,10 +70,10 @@ export function AuthCard({
   }
 
   return (
-    <div className="mx-auto grid max-w-6xl overflow-hidden rounded-[2rem] border border-border bg-white shadow-[0_24px_80px_#151b3b18] lg:min-h-[640px] lg:grid-cols-[1.02fr_0.98fr]">
+    <div className="mx-auto grid max-w-6xl overflow-hidden rounded-[2rem] border border-border bg-card shadow-[0_24px_80px_#151b3b18] lg:min-h-[640px] lg:grid-cols-[1.02fr_0.98fr]">
       <div className="brand-hero dark-surface relative flex flex-col justify-between px-8 py-12 text-foreground sm:px-12 sm:py-14 lg:px-16">
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-medium text-white/90">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-primary/10 px-4 py-2 text-xs font-medium text-white/90">
             <ShieldCheck className="size-4 text-[#a9ead2]" aria-hidden />
             Skills with a closer look
           </span>
@@ -129,7 +129,7 @@ export function AuthCard({
                 required
                 minLength={2}
                 maxLength={80}
-                className="h-12 rounded-xl border-border bg-[#f8f8fb] px-4"
+                className="h-12 rounded-xl border-border bg-background px-4"
               />
             </div>
           )}
@@ -142,7 +142,7 @@ export function AuthCard({
               autoComplete="email"
               placeholder="you@company.com"
               required
-              className="h-12 rounded-xl border-border bg-[#f8f8fb] px-4"
+              className="h-12 rounded-xl border-border bg-background px-4"
             />
           </div>
           <div className="grid gap-2">
@@ -156,7 +156,7 @@ export function AuthCard({
               required
               minLength={8}
               maxLength={128}
-              className="h-12 rounded-xl border-border bg-[#f8f8fb] px-4"
+              className="h-12 rounded-xl border-border bg-background px-4"
             />
           </div>
           {error && (
@@ -216,7 +216,7 @@ export function AuthCard({
             </>
           )}
         </p>
-        <p className="mt-8 flex items-start gap-2 rounded-xl bg-[#f4f5fb] px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+        <p className="mt-8 flex items-start gap-2 rounded-xl bg-secondary/60 px-4 py-3 text-xs leading-relaxed text-muted-foreground">
           <LockKeyhole
             className="mt-0.5 size-3.5 shrink-0 text-primary"
             aria-hidden

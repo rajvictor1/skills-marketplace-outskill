@@ -1,15 +1,23 @@
-# Skillbuffet design system
+# Skillbuffet shared dark design system
 
-Skillbuffet helps business users and AI builders discover, inspect and publish reusable AI agent instructions. The public marketplace is human moderated; admin approval and automated scanning are separate trust signals. No invented adoption, download, review or security claims.
+The owner approved the existing colorful dashboard and requested its colors, controls and typography across all website pages. This implementation rollout preserves page layouts, dashboard sections and application behavior. It supersedes the earlier ivory marketplace direction and the unimplemented compact creator-dashboard draft.
 
-## Existing brand
-Geist Sans and Geist Mono. Navy #10112f, ink #14152b, violet #4034d4, lavender #aebcff. Light backgrounds #f8f8fb and white cards, muted text #62657d, border #e2e3ed. Safe green #167957, caution amber #a8601a, danger rose #b52e45. Preserve real shield-check wordmark from components/logo.tsx.
+## Shared tokens
 
-## Colorful extension for proposed refresh
-Violet family: pale #efecff, solid #4034d4, ink #3026a7. Teal family: pale #e5f5ef, solid #148261, ink #125541. Peach family: pale #fff0e8, solid #c46f59, ink #854737. Lemon family: pale #fff7d8, solid #a8601a, ink #75480f. Use these as purposeful category identifiers, section backgrounds and border accents. Keep long reading surfaces near-white and high contrast. No random decorative gradients or glass effects.
+- Canvas #101522; cards/popovers #1a2132; sidebar/header #151c2b.
+- Text #eef0f7; supporting text #abb5ca; borders #30394e; input borders #414b65.
+- Primary action #6958ea, hover #7969f1, white label; 44px minimum height, 12px radius, consistent alignment and visible keyboard focus. Shared Button and native primary actions use cta-primary; brand-button follows the same style.
+- Links/focus violet #b8adff. Teal #7dd3b2 for successful or approved states; amber #f3bf72 for attention; pink #fb8999 for failures/rejection.
+- Category surfaces violet #25243b, teal #193334, peach #352b2c and blue #1c2e46 with matching light accents. No opaque white or pastel page/card surfaces.
+- Geist Sans and Geist Mono, compact readable forms, main page headings 28–40px, dashboard 24–28px. Home hero retains its larger display scale.
+- Existing 80rem content widths, responsive gutters and mobile navigation. Forms/actions wrap at narrow widths. Long prose and code remain readable on dark surfaces. Honor reduced motion.
 
-## Layout
-80rem max width. Spacious 1.25rem mobile / 2rem desktop gutters. Large clear editorial headings, compact readable metrics and visible labels. Rounded 1–1.5rem surfaces; pill CTAs. Responsive grid: one column on mobile, two at medium, three at desktop. Categories grouped by work and discoverable with strong labels. Subtle 180ms hover behavior; honor reduced motion.
+## Dashboard reference
 
-## Required flows
-Browse → inspect → download. Submit → scan → pending admin review → approve and publish/request changes/reject. Public versions remain stable during replacement review. A real rating summary shows no reviews yet until authentic ratings exist. Ratings are separate from GitHub repository stars. Footer includes privacy, terms, docs, API reference and changelog.
+Preserve its four KPI cards, Agent activity / Top skills and creator pulse / activity panels. KPI cards have stable color accents, gradient-filled sparklines and endpoint markers. Runs uses violet/blue/teal with semantic amber/pink status segments; Outcomes teal/amber/pink; Cost peach/gold; Latency blue/cyan. Data is prominently illustrative; real approved catalog counts are separate.
+
+## Product flows and evidence
+
+Submit → scan → private admin review → approve and publish / request changes / reject. An approved version remains stable while an update is reviewed. No change to authentication, authorization, scanning, APIs or database schema as part of the visual rollout. Keep synthetic data/reviews labeled illustrative, preserve upstream MIT credit, and never invent adoption or security claims.
+
+Applies to public pages, catalog/categories, skills, auth, publishing, creator workspace, admin, docs/policies, errors/loading and all shared controls.

@@ -21,7 +21,7 @@ export default async function DocPage({
     <main className="mx-auto max-w-6xl px-5 py-12 lg:grid lg:grid-cols-[15rem_1fr] lg:gap-12">
       <nav
         aria-label="Documentation"
-        className="mb-8 h-fit rounded-2xl bg-[#eee8ff] p-5"
+        className="mb-8 h-fit rounded-2xl bg-category-violet p-5"
       >
         <Link href="/docs" className="text-sm font-semibold">
           Documentation

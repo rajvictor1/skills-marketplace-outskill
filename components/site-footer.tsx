@@ -30,7 +30,7 @@ const GROUPS = [
 ];
 export function SiteFooter() {
   return (
-    <footer className="dark-surface border-t border-white/10 bg-[#141733] text-foreground">
+    <footer className="dark-surface border-t border-white/10 bg-sidebar text-foreground">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Logo />

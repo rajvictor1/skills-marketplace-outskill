@@ -19,10 +19,10 @@ export default function ErrorPage({
         confirmed by this message. Check your workspace before submitting the
         same version again.
       </p>
-      <div className="mt-7 flex gap-4">
+      <div className="mt-7 flex flex-wrap gap-4">
         <button
           onClick={reset}
-          className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
+          className="cta-primary rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
         >
           Try again
         </button>

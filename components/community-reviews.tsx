@@ -11,7 +11,7 @@ export function RatingSummary({
 }) {
   return (
     <span className="inline-flex flex-wrap items-center gap-2 text-sm">
-      <span className="inline-flex text-[#a86516]" aria-hidden>
+      <span className="inline-flex text-caution" aria-hidden>
         {[1, 2, 3, 4, 5].map((n) => (
           <Star
             key={n}
@@ -41,7 +41,7 @@ export function ReviewForm({ target }: { target: string }) {
           {[1, 2, 3, 4, 5].map((n) => (
             <label
               key={n}
-              className="cursor-pointer rounded-lg border border-border bg-white px-3 py-2 text-sm has-checked:border-primary has-checked:bg-primary/10"
+              className="cursor-pointer rounded-lg border border-border bg-card px-3 py-2 text-sm has-checked:border-primary has-checked:bg-primary/10"
             >
               <input
                 type="radio"
@@ -64,13 +64,13 @@ export function ReviewForm({ target }: { target: string }) {
           name="comment"
           maxLength={800}
           rows={3}
-          className="mt-2 w-full rounded-xl border border-border bg-white p-3 text-sm"
+          className="mt-2 w-full rounded-xl border border-border bg-card p-3 text-sm"
           placeholder="What worked well? What could be improved?"
         />
       </fieldset>
       <button
         disabled={pending}
-        className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+        className="cta-primary rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
       >
         {pending ? "Saving…" : "Submit review"}
       </button>

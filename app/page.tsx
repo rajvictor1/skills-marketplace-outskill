@@ -50,7 +50,7 @@ export default async function Home() {
       <section className="brand-hero dark-surface relative px-5 pb-24 pt-20 text-foreground sm:px-8 sm:pt-28 lg:pb-32">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-5xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-medium text-white/90 backdrop-blur-md">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-primary/10 px-4 py-2 text-xs font-medium text-white/90 backdrop-blur-md">
               <ShieldCheck className="size-4 text-[#a9ead2]" aria-hidden />A
               more thoughtful home for AI agent skills
             </span>
@@ -72,12 +72,12 @@ export default async function Home() {
               </Link>
               <Link
                 href="/publish"
-                className="inline-flex h-13 min-w-44 items-center justify-center gap-2 rounded-full border border-white/50 px-7 text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                className="inline-flex h-13 min-w-44 items-center justify-center gap-2 rounded-full border border-white/50 px-7 text-sm font-semibold text-white transition-colors hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               >
                 Publish a skill <ArrowUpRight className="size-4" aria-hidden />
               </Link>
             </div>
-            <div className="mx-auto mt-9 flex max-w-xl flex-wrap items-center justify-center gap-4 rounded-2xl border border-white/20 bg-white/10 p-5 text-white">
+            <div className="mx-auto mt-9 flex max-w-xl flex-wrap items-center justify-center gap-4 rounded-2xl border border-white/20 bg-primary/10 p-5 text-white">
               <RatingSummary average={reviews.average} count={reviews.count} />
               <Link
                 href="/reviews"
@@ -93,7 +93,7 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="relative mx-auto mt-12 max-w-5xl rounded-[2rem] border border-white/20 bg-white/10 p-2 shadow-[0_32px_100px_#06091f99] sm:mt-16 sm:p-3">
+          <div className="relative mx-auto mt-12 max-w-5xl rounded-[2rem] border border-white/20 bg-primary/10 p-2 shadow-[0_32px_100px_#06091f99] sm:mt-16 sm:p-3">
             <div
               className="absolute inset-x-16 -top-12 -z-10 h-36 rounded-full bg-[#5875ff]/30 blur-3xl"
               aria-hidden
@@ -107,7 +107,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="bg-[#faf7ef] px-5 py-24 text-foreground sm:px-8 lg:py-32">
+      <section className="bg-background px-5 py-24 text-foreground sm:px-8 lg:py-32">
         <div className="mx-auto grid max-w-7xl items-start gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-24">
           <div>
             <p className="editorial-kicker text-primary">
@@ -138,7 +138,7 @@ export default async function Home() {
 
       <SampleReviews />
 
-      <section className="bg-[#f3f5fb] px-5 py-24 sm:px-8 lg:py-32">
+      <section className="bg-background px-5 py-24 sm:px-8 lg:py-32">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="editorial-kicker text-primary">
@@ -185,7 +185,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="dark-surface bg-[#111236] px-5 py-24 text-foreground sm:px-8 lg:py-32">
+      <section className="dark-surface bg-background px-5 py-24 text-foreground sm:px-8 lg:py-32">
         <div className="mx-auto max-w-7xl">
           <div className="grid items-end gap-8 lg:grid-cols-[1fr_0.9fr]">
             <div>
@@ -203,11 +203,11 @@ export default async function Home() {
               public.
             </p>
           </div>
-          <div className="mt-14 grid gap-px overflow-hidden rounded-[1.8rem] border border-white/15 bg-white/15 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-14 grid gap-px overflow-hidden rounded-[1.8rem] border border-white/15 bg-primary/10 md:grid-cols-2 lg:grid-cols-4">
             {SCAN_LAYERS.map((layer, index) => {
               const Icon = LAYER_ICONS[layer.key];
               return (
-                <div key={layer.key} className="bg-[#1b1d49] p-7 sm:p-8">
+                <div key={layer.key} className="bg-card p-7 sm:p-8">
                   <span className="flex size-11 items-center justify-center rounded-full bg-[#aebcff]/15 text-[#b9c6ff]">
                     <Icon className="size-5" aria-hidden />
                   </span>
@@ -237,7 +237,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="bg-[#faf7ef] px-5 py-24 sm:px-8 lg:py-32">
+      <section className="bg-background px-5 py-24 sm:px-8 lg:py-32">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
             <div>
@@ -279,7 +279,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="bg-[#f3f5fb] px-5 py-20 sm:px-8">
+      <section className="bg-background px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
           {exampleCount > 0 && (
             <div className="mb-5 max-w-3xl">

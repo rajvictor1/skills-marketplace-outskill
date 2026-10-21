@@ -11,13 +11,13 @@ export function ScanPreview() {
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-black/40">
       {/* window chrome */}
       <div className="flex items-center gap-2 border-b border-border bg-background/60 px-4 py-3">
-        <span className="size-2.5 rounded-full bg-danger/70" />
-        <span className="size-2.5 rounded-full bg-caution/70" />
-        <span className="size-2.5 rounded-full bg-safe/70" />
-        <span className="ml-2 font-mono text-xs text-muted-foreground">
+        <span className="size-2.5 shrink-0 rounded-full bg-danger/70" />
+        <span className="size-2.5 shrink-0 rounded-full bg-caution/70" />
+        <span className="size-2.5 shrink-0 rounded-full bg-safe/70" />
+        <span className="ml-2 min-w-0 flex-1 truncate font-mono text-xs text-muted-foreground">
           scanning growth-autopilot@0.0.1
         </span>
-        <span className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-danger/10 px-2.5 py-0.5 text-xs font-medium text-danger ring-1 ring-inset ring-danger/25">
+        <span className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full bg-danger/10 px-2.5 py-0.5 text-xs font-medium text-danger ring-1 ring-inset ring-danger/25">
           <ShieldX className="size-3.5" aria-hidden />
           Blocked
         </span>

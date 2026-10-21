@@ -156,8 +156,8 @@ export default async function SkillDetailPage({
         </div>
       )}
 
-      <div className="mt-6 flex flex-wrap items-center gap-4 rounded-2xl border border-[#c9dfd5] bg-[#eaf4ee] px-5 py-4">
-        <span className="text-sm font-semibold text-[#285f4c]">
+      <div className="mt-6 flex flex-wrap items-center gap-4 rounded-2xl border border-safe/25 bg-category-teal px-5 py-4">
+        <span className="text-sm font-semibold text-safe">
           ✓ Admin approved version {skill.version}
         </span>
         <RatingSummary average={ratings.average} count={ratings.count} />
@@ -215,7 +215,7 @@ export default async function SkillDetailPage({
 
           <section
             id="reviews"
-            className="rounded-2xl border border-border bg-[#faf4e9] p-6"
+            className="rounded-2xl border border-border bg-caution/10 p-6"
           >
             <h2 className="text-xl font-semibold">Community reviews</h2>
             <div className="mt-3">
@@ -292,7 +292,7 @@ export default async function SkillDetailPage({
                 method="post"
                 className="mt-5"
               >
-                <button className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">
+                <button className="cta-primary inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">
                   <Download className="size-4" aria-hidden />
                   Download SKILL.md
                 </button>
