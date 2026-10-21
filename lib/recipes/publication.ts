@@ -60,6 +60,8 @@ export async function prepareRecipePublication(id: string, raw: unknown) {
     `## Package identity\nRecipe: ${source.recipe_id}\n\nVersion: ${source.version}\n\nManifest: ${source.manifest_path}`,
     `## Runtime status\nThis package is available for inspection and integration work. Runtime execution, provider connections, installation and activation have not been verified.`,
     `## Required inputs\n${report.inputFields.map((f) => `- ${f.name}${f.required ? " (required)" : " (optional)"}`).join("\n") || "Consult the bundled input schema."}`,
+    `## Declared permissions\n${report.permissions.map((p) => `- ${p}`).join("\n") || "None declared."}`,
+    `## Dependencies\n${report.dependencies.map((d) => `- ${d}`).join("\n") || "None declared."}`,
     `## Integration steps\n1. Download recipe-package.json.\n2. Inspect its files and the selected recipe.yaml manifest.\n3. Resolve the declared dependencies, permissions and runtime adapter with your implementation team.\n4. Validate inputs and outputs against the bundled schemas in an isolated environment.\n5. Confirm provider consent and runtime readiness before activation.`,
     `## Known runtime blockers\n${report.runtimeBlockers.map((b) => `- ${b}`).join("\n")}`,
     `## License\n${details.license}`,
@@ -75,6 +77,7 @@ export async function prepareRecipePublication(id: string, raw: unknown) {
     source: "upload",
     metadata: {
       license: details.license,
+      requestedPermissions: report.permissions,
       format: "recipe_package",
       recipeId: source.recipe_id,
       packageVersionId: id,
@@ -133,32 +136,28 @@ export async function prepareRecipePublication(id: string, raw: unknown) {
           .limit(1)
       : [];
     if (!existing)
-      await tx
-        .insert(skill)
-        .values({
-          id: skillId,
-          slug,
-          authorId: admin.id,
-          ...snapshot,
-          status: "draft",
-          latestTrustTier: "caution",
-        });
-    await tx
-      .insert(skillVersion)
-      .values({
-        id: versionId,
-        skillId,
-        version: (last?.version ?? 0) + 1,
-        versionLabel: source.version,
-        contentHash: report.packageHash,
-        frontmatterName: source.recipe_id,
-        frontmatterDescription: details.summary,
-        skillMdBody: readme,
-        trustTier: "caution",
-        riskScore: report.riskScore,
-        scannerVersion: report.security.scannerVersion,
-        scanResultId: scanId,
+      await tx.insert(skill).values({
+        id: skillId,
+        slug,
+        authorId: admin.id,
+        ...snapshot,
+        status: "draft",
+        latestTrustTier: "caution",
       });
+    await tx.insert(skillVersion).values({
+      id: versionId,
+      skillId,
+      version: (last?.version ?? 0) + 1,
+      versionLabel: source.version,
+      contentHash: report.packageHash,
+      frontmatterName: source.recipe_id,
+      frontmatterDescription: details.summary,
+      skillMdBody: readme,
+      trustTier: "caution",
+      riskScore: report.riskScore,
+      scannerVersion: report.security.scannerVersion,
+      scanResultId: scanId,
+    });
     const files = [
       {
         path: "recipe-package.json",
@@ -167,64 +166,54 @@ export async function prepareRecipePublication(id: string, raw: unknown) {
       },
       { path: "README.md", content: readme, contentType: "text/markdown" },
     ];
-    await tx
-      .insert(skillFile)
-      .values(
-        files.map((f) => ({
+    await tx.insert(skillFile).values(
+      files.map((f) => ({
+        id: createId(),
+        skillVersionId: versionId,
+        ...f,
+        sizeBytes: Buffer.byteLength(f.content),
+        sha256: createHash("sha256").update(f.content).digest("hex"),
+        isExecutable: false,
+      })),
+    );
+    await tx.insert(scanResult).values({
+      id: scanId,
+      skillVersionId: versionId,
+      overallRiskScore: report.riskScore,
+      trustTier: "caution",
+      scannerVersion: report.security.scannerVersion,
+      status: "completed",
+      finishedAt: new Date(),
+      layerStatus: report.security.layers,
+      summary: {
+        findings: report.security.findings.length,
+        scope: "Static source inspection; runtime not verified",
+      },
+    });
+    if (report.security.findings.length)
+      await tx.insert(finding).values(
+        report.security.findings.map((f) => ({
           id: createId(),
-          skillVersionId: versionId,
+          scanResultId: scanId,
           ...f,
-          sizeBytes: Buffer.byteLength(f.content),
-          sha256: createHash("sha256").update(f.content).digest("hex"),
-          isExecutable: false,
+          description: f.title,
+          source: "deterministic" as const,
         })),
       );
-    await tx
-      .insert(scanResult)
-      .values({
-        id: scanId,
-        skillVersionId: versionId,
-        overallRiskScore: report.riskScore,
-        trustTier: "caution",
-        scannerVersion: report.security.scannerVersion,
-        status: "completed",
-        finishedAt: new Date(),
-        layerStatus: report.security.layers,
-        summary: {
-          findings: report.security.findings.length,
-          scope: "Static source inspection; runtime not verified",
-        },
-      });
-    if (report.security.findings.length)
-      await tx
-        .insert(finding)
-        .values(
-          report.security.findings.map((f) => ({
-            id: createId(),
-            scanResultId: scanId,
-            ...f,
-            description: f.title,
-            source: "deterministic" as const,
-          })),
-        );
-    await tx
-      .insert(skillSubmission)
-      .values({
-        id: createId(),
-        skillId,
-        versionId,
-        status: "pending",
-        snapshot,
-      });
-    await tx
-      .insert(reviewEvent)
-      .values({
-        id: createId(),
-        actorId: admin.id,
-        skillId,
-        action: "recipe_package_submitted",
-        note: `Private package ${id}, v${source.version}, hash ${report.packageHash}; redistribution rights confirmed by publisher. Awaiting public publication review.`,
-      });
+    await tx.insert(skillSubmission).values({
+      id: createId(),
+      skillId,
+      versionId,
+      status: "pending",
+      snapshot,
+    });
+    await tx.insert(reviewEvent).values({
+      id: createId(),
+      actorId: admin.id,
+      skillId,
+      action: "recipe_package_submitted",
+      note: `Private package ${id}, v${source.version}, hash ${report.packageHash}; redistribution rights confirmed by publisher. Awaiting public publication review.`,
+    });
     return { slug, existing: false };
   });
 }

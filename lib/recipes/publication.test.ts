@@ -78,3 +78,75 @@ describe("recipe publication access and integrity gates", () => {
     expect(mocks.transaction).not.toHaveBeenCalled();
   });
 });
+
+it("stages original files for review without publishing or asserting runtime readiness", async () => {
+  vi.resetAllMocks();
+  mocks.admin.mockResolvedValue({ id: "admin" });
+  const payload = {
+    manifestPath: "recipe.yaml",
+    files: [{ path: "recipe.yaml", content: "id: research.question.frame" }],
+  };
+  mocks.source.mockResolvedValue({
+    id: "private-version",
+    status: "approved",
+    recipe_id: "research.question.frame",
+    version: "1.0.0",
+    manifest_path: "recipe.yaml",
+    package_hash: "hash",
+    payload,
+  });
+  mocks.inspect.mockResolvedValue({
+    valid: true,
+    packageHash: "hash",
+    inputFields: [],
+    permissions: ["research.analyze"],
+    dependencies: [],
+    runtimeBlockers: ["Adapter unimplemented"],
+    riskScore: 0,
+    security: { scannerVersion: "current", layers: {}, findings: [] },
+  });
+  const writes: { table: unknown; value: unknown }[] = [];
+  const select = {
+    from: () => select,
+    where: () => select,
+    for: () => select,
+    limit: async () => [],
+  };
+  mocks.transaction.mockImplementation(async (fn) =>
+    fn({
+      execute: vi.fn(),
+      select: () => select,
+      insert: (table: unknown) => ({
+        values: async (value: unknown) => {
+          writes.push({ table, value });
+        },
+      }),
+    }),
+  );
+  const schema = await import("@/lib/db/schema");
+  await prepareRecipePublication("private-version", details);
+  expect(writes.find((w) => w.table === schema.skill)?.value).toMatchObject({
+    status: "draft",
+    latestTrustTier: "caution",
+  });
+  expect(
+    writes.find((w) => w.table === schema.skillSubmission)?.value,
+  ).toMatchObject({
+    status: "pending",
+    snapshot: {
+      metadata: {
+        format: "recipe_package",
+        runtimeVerified: false,
+        requestedPermissions: ["research.analyze"],
+      },
+    },
+  });
+  const files = writes.find((w) => w.table === schema.skillFile)?.value as {
+    path: string;
+    content: string;
+  }[];
+  expect(
+    JSON.parse(files.find((f) => f.path === "recipe-package.json")!.content),
+  ).toEqual(payload);
+  expect(files.some((f) => f.path === "SKILL.md")).toBe(false);
+});
