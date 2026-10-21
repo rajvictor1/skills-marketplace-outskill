@@ -64,7 +64,7 @@ export async function getPrivateRecipeVersion(id: string) {
     (PrivateRecipeVersion & { payload: PackageEnvelope })[]
   >`
     select v.*, r.status, r.review_note,
-      case when d.version_id is null then null else jsonb_build_object('title',d.title,'summary',d.summary,'category',d.category,'subcategory') end as listing_draft
+      case when d.version_id is null then null else jsonb_build_object('title',d.title,'summary',d.summary,'category',d.category,'subcategory',d.subcategory) end as listing_draft
     from recipe_private.package_versions v
     join recipe_private.package_reviews r on r.version_id=v.id
     left join recipe_private.package_listing_drafts d on d.version_id=v.id where v.id=${id}`;
