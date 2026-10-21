@@ -18,14 +18,19 @@ import { signIn, signUp } from "@/lib/auth-client";
 export function AuthCard({
   mode,
   databaseConfigured,
+  inviteToken,
 }: {
   mode: "sign-in" | "sign-up";
   databaseConfigured: boolean;
+  inviteToken?: string;
 }) {
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const isSignUp = mode === "sign-up";
+  const invitePath = inviteToken
+    ? `/admin/invite?token=${encodeURIComponent(inviteToken)}`
+    : null;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -42,12 +47,12 @@ export function AuthCard({
             name,
             email,
             password,
-            callbackURL: "/dashboard/skills",
+            callbackURL: invitePath ?? "/dashboard/skills",
           })
         : await signIn.email({
             email,
             password,
-            callbackURL: "/dashboard/skills",
+            callbackURL: invitePath ?? "/dashboard/skills",
           });
       if (result.error) {
         setError(
@@ -58,7 +63,7 @@ export function AuthCard({
         );
         return;
       }
-      router.push("/dashboard/skills");
+      router.push(invitePath ?? "/dashboard/skills");
       router.refresh();
     } catch {
       setError(
@@ -198,7 +203,7 @@ export function AuthCard({
             <>
               Already have an account?{" "}
               <Link
-                href="/auth/sign-in"
+                href={inviteToken ? `/auth/sign-in?invite=${inviteToken}` : "/auth/sign-in"}
                 className="font-semibold text-primary underline-offset-4 hover:underline"
               >
                 Sign in
@@ -208,7 +213,7 @@ export function AuthCard({
             <>
               New here?{" "}
               <Link
-                href="/auth/sign-up"
+                href={inviteToken ? `/auth/sign-up?invite=${inviteToken}` : "/auth/sign-up"}
                 className="font-semibold text-primary underline-offset-4 hover:underline"
               >
                 Create an account

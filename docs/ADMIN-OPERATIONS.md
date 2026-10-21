@@ -8,6 +8,8 @@ INSERT INTO marketplace_admin (user_id) VALUES ('<existing-owner-user-id>') ON C
 
 Grant this role only after independently confirming the account owner. An authenticated `/api/me` reports whether the session is an administrator. `/admin` checks the session and database role on the server; every mutation repeats authorization.
 
+For a reviewer whose email is not yet known, an operator may issue a single-use, seven-day admin invitation after applying `0003_admin_invites.sql`. Run `INVITE_ENV_FILE=<gitignored-preview-env-file> pnpm exec tsx scripts/create-admin-invite.ts <existing-admin-email>` against the intended Preview database and keep the printed token private. The recipient opens `/admin/invite?token=<token>`, signs in or creates an account, checks the displayed account email, and clicks **Accept admin access**. Redemption atomically marks the token used and grants that account admin rights. The token is stored as a SHA-256 hash; possession of the full URL is sufficient to claim it once. Revoke an unredeemed invitation by deleting its hash from `marketplace_admin_invite`. A Vercel shareable Preview link only bypasses Vercel's Preview gate and never grants an application role by itself.
+
 ## Workflow
 
 1. Open `/admin`. New submissions appear as Pending. Inspect the full saved instructions, hash, source, category, license, permissions, data handling, scan layers and findings.

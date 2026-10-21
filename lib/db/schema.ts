@@ -264,6 +264,18 @@ export const marketplaceAdmin = pgTable("marketplace_admin", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Bearer invitations are stored only as hashes and can be redeemed once.
+export const marketplaceAdminInvite = pgTable("marketplace_admin_invite", {
+  tokenHash: text("token_hash").primaryKey(),
+  createdBy: text("created_by")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  expiresAt: timestamp("expires_at").notNull(),
+  usedAt: timestamp("used_at"),
+  usedBy: text("used_by").references(() => user.id, { onDelete: "set null" }),
+});
+
 export const skillSubmission = pgTable("skill_submission", {
   id: text("id").primaryKey(),
   skillId: text("skill_id")

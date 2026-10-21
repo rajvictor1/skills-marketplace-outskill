@@ -12,13 +12,17 @@ export const metadata: Metadata = {
     "Create an account to publish and install security-scanned AI agent recipes.",
 };
 
-export default async function SignUpPage() {
+export default async function SignUpPage({ searchParams }: {
+  searchParams: Promise<{ invite?: string }>;
+}) {
   await headers();
+  const invite = (await searchParams).invite;
   return (
     <main className="bg-background px-5 py-12 sm:px-8 sm:py-20">
       <AuthCard
         mode="sign-up"
         databaseConfigured={Boolean(process.env.DATABASE_URL)}
+        inviteToken={invite && /^[a-f0-9]{64}$/.test(invite) ? invite : undefined}
       />
     </main>
   );
