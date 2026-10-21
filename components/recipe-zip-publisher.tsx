@@ -45,7 +45,7 @@ export function RecipeZipPublisher({ initialCategory = "Marketing" }: { initialC
         return [row.manifestPath, { selected: validRows.length === 1 && row.valid, title: row.title, category,
           subcategory: getSubcategories(category)[0] ?? "" }];
       })));
-      setMessage(`Found ${response.recipes.length} ${response.recipes.length === 1 ? "recipe" : "recipes"}. ${validRows.length} ${validRows.length === 1 ? "passes" : "pass"} file checks. Choose one recipe for this submission.`);
+      setMessage(`Found ${response.recipes.length} ${response.recipes.length === 1 ? "recipe" : "recipes"}. ${validRows.length} ${validRows.length === 1 ? "recipe passes" : "recipes pass"} file checks. Choose one recipe for this submission.`);
     } catch { setMessage("The ZIP could not be inspected. Please try again."); }
     finally { setBusy(false); }
   }
