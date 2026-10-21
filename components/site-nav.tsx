@@ -1,3 +1,4 @@
+import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 
@@ -13,8 +14,8 @@ const NAV_LINKS = [
 
 export function SiteNav() {
   return (
-    <header className="dark-surface sticky top-0 z-40 border-b border-white/10 bg-sidebar/95 text-foreground backdrop-blur-xl">
-      <nav className="mx-auto flex h-[4.5rem] max-w-7xl items-center gap-3 px-5 sm:gap-8 sm:px-8">
+    <header className="dark-surface sticky top-0 z-40 border-b border-border bg-sidebar/95 text-foreground backdrop-blur-xl">
+      <nav className="mx-auto flex h-[4.5rem] max-w-7xl items-center gap-2 px-3 sm:gap-3 sm:px-8 xl:gap-6">
         <Link href="/" className="shrink-0" aria-label="Skillbuffet home">
           <Logo />
         </Link>
@@ -32,14 +33,15 @@ export function SiteNav() {
         </div>
 
         <AccountActions />
+        <ThemeToggle />
         <details className="group relative xl:hidden">
           <summary
-            className="flex size-10 cursor-pointer list-none items-center justify-center rounded-full border border-white/30 text-foreground marker:hidden hover:bg-primary/10"
+            className="flex size-11 cursor-pointer list-none items-center justify-center rounded-full border border-border text-foreground marker:hidden hover:bg-primary/10"
             aria-label="Open navigation menu"
           >
             <Menu className="size-5" aria-hidden />
           </summary>
-          <div className="absolute right-0 top-12 w-56 rounded-2xl border border-white/15 bg-popover p-2 shadow-2xl">
+          <div className="absolute right-0 top-12 w-56 rounded-2xl border border-border bg-popover p-2 shadow-2xl">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}

@@ -40,14 +40,20 @@ const PALETTES: Record<
   ChartMetric,
   { colors: [string, string, string]; label: string }
 > = {
-  runs: { colors: ["#b39bff", "#79b9fa", "#68d9cc"], label: "Run volume" },
+  runs: {
+    colors: ["var(--plot-violet)", "var(--plot-blue)", "var(--plot-cyan)"],
+    label: "Run volume",
+  },
   success: {
-    colors: ["#55d6ab", "#f3bf72", "#fb8999"],
+    colors: ["var(--plot-teal)", "var(--plot-amber)", "var(--plot-pink)"],
     label: "Outcome distribution",
   },
-  cost: { colors: ["#f4a58a", "#f0ba7b", "#f5d47b"], label: "Execution cost" },
+  cost: {
+    colors: ["var(--plot-coral)", "var(--plot-orange)", "var(--plot-gold)"],
+    label: "Execution cost",
+  },
   latency: {
-    colors: ["#89a8ff", "#6ac9f0", "#74ded2"],
+    colors: ["var(--plot-indigo)", "var(--plot-sky)", "var(--plot-mint)"],
     label: "Response time",
   },
 };

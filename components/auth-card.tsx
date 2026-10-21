@@ -73,30 +73,30 @@ export function AuthCard({
     <div className="mx-auto grid max-w-6xl overflow-hidden rounded-[2rem] border border-border bg-card shadow-[0_24px_80px_#151b3b18] lg:min-h-[640px] lg:grid-cols-[1.02fr_0.98fr]">
       <div className="brand-hero dark-surface relative flex flex-col justify-between px-8 py-12 text-foreground sm:px-12 sm:py-14 lg:px-16">
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-primary/10 px-4 py-2 text-xs font-medium text-white/90">
-            <ShieldCheck className="size-4 text-[#a9ead2]" aria-hidden />
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-primary/10 px-4 py-2 text-xs font-medium text-foreground/90">
+            <ShieldCheck className="size-4 text-safe" aria-hidden />
             Skills with a closer look
           </span>
-          <p className="mt-14 max-w-md text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.055em] text-white sm:text-5xl">
+          <p className="mt-14 max-w-md text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.055em] text-foreground sm:text-5xl">
             {isSignUp
               ? "A better place to build with AI skills."
               : "Welcome back to your skills."}
           </p>
-          <p className="mt-5 max-w-md text-base leading-relaxed text-[#d4d6eb]">
+          <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
             {isSignUp
               ? "Join Skillbuffet to publish your expertise and explore skills with visible security reviews."
               : "Sign in to manage your submissions, explore the marketplace, and keep building."}
           </p>
         </div>
-        <div className="mt-14 border-t border-white/20 pt-6 text-sm leading-relaxed text-[#c6c9e3]">
-          <p className="font-semibold text-white">What happens next?</p>
+        <div className="mt-14 border-t border-border pt-6 text-sm leading-relaxed text-muted-foreground">
+          <p className="font-semibold text-foreground">What happens next?</p>
           <p className="mt-2">
             Explore the catalog, read a skill&apos;s review result, or submit
             your own skill for scanning.
           </p>
           <Link
             href="/skills"
-            className="mt-4 inline-flex items-center gap-2 font-semibold text-[#c2cdff] hover:underline"
+            className="mt-4 inline-flex items-center gap-2 font-semibold text-primary hover:underline"
           >
             Browse skills <ArrowRight className="size-4" aria-hidden />
           </Link>

@@ -63,7 +63,8 @@
 }
 
 /* Shared Skillbuffet system, promoted from the approved dashboard palette. */
-:root {
+:root,
+:root.dark {
   color-scheme: dark;
   --background: #101522;
   --foreground: #eef0f7;
@@ -90,6 +91,20 @@
   --chart-3: #f3bf72;
   --chart-4: #7dd3b2;
   --chart-5: #d09ee9;
+  --code-surface: #0d1220;
+  --placeholder: #8996af;
+  --plot-violet: #b39bff;
+  --plot-blue: #79b9fa;
+  --plot-cyan: #68d9cc;
+  --plot-teal: #55d6ab;
+  --plot-amber: #f3bf72;
+  --plot-pink: #fb8999;
+  --plot-coral: #f4a58a;
+  --plot-orange: #f0ba7b;
+  --plot-gold: #f5d47b;
+  --plot-indigo: #89a8ff;
+  --plot-sky: #6ac9f0;
+  --plot-mint: #74ded2;
   --radius: 0.9rem;
   --safe: #7dd3b2;
   --safe-foreground: #10291f;
@@ -117,7 +132,7 @@
   --peach: #efbb98;
 }
 .dark-surface {
-  color-scheme: dark;
+  color-scheme: inherit;
 }
 
 .brand-hero {
@@ -347,37 +362,16 @@
 
 /* Original marketplace dashboard structure, with its own operational palette. */
 .dashboard-workspace {
-  color-scheme: dark;
-  --background: #101522;
-  --foreground: #eef0f7;
-  --card: #1a2132;
-  --card-foreground: #eef0f7;
-  --primary: #b8adff;
-  --primary-foreground: #19132f;
-  --secondary: #252e43;
-  --secondary-foreground: #e8e8f4;
-  --muted: #252e43;
-  --muted-foreground: #abb5ca;
-  --border: #30394e;
-  --input: #414b65;
-  --ring: #b8adff;
-  --safe: #7dd3b2;
-  --caution: #f3bf72;
-  --danger: #fb8999;
-  --chart-1: #a798ff;
-  --chart-2: #80b8f8;
-  --chart-3: #f3bf72;
-  --chart-4: #7dd3b2;
-  --chart-5: #d09ee9;
   background: var(--background);
   color: var(--foreground);
 }
+
 .dashboard-workspace h1 {
   font-size: 1.75rem;
   line-height: 1.25;
 }
 .dashboard-workspace > nav {
-  background: #151c2b;
+  background: var(--sidebar);
 }
 .dashboard-workspace a:focus-visible,
 .dashboard-workspace button:focus-visible,
@@ -458,7 +452,7 @@ body {
   accent-color: var(--primary);
 }
 :where(input, textarea)::placeholder {
-  color: #8996af;
+  color: var(--placeholder);
   opacity: 1;
 }
 input:-webkit-autofill {
@@ -480,7 +474,7 @@ main h1 {
   min-height: 2.75rem;
 }
 .prose-skill pre {
-  background: #0d1220;
+  background: var(--code-surface);
 }
 @media (prefers-reduced-motion: reduce) {
   .cta-primary,
@@ -541,4 +535,99 @@ main article {
 }
 .skip-link:focus {
   transform: translateY(0);
+}
+
+/* The light palette uses ivory canvas, crisp cards and deeper readable accents.
+   It changes presentation only; security states keep their labels and meanings. */
+:root.light {
+  color-scheme: light;
+  --background: #f6f7fb;
+  --foreground: #20263b;
+  --card: #ffffff;
+  --card-foreground: #20263b;
+  --popover: #ffffff;
+  --popover-foreground: #20263b;
+  --primary: #5b46c5;
+  --primary-foreground: #ffffff;
+  --action: #604bd6;
+  --action-hover: #4c37b8;
+  --secondary: #eaeef6;
+  --secondary-foreground: #313b56;
+  --muted: #edf0f7;
+  --muted-foreground: #59647a;
+  --accent: #ece6fc;
+  --accent-foreground: #543bb3;
+  --destructive: #b92f50;
+  --border: #d8deeb;
+  --input: #a9b4c9;
+  --ring: #604bd6;
+  --safe: #146e55;
+  --safe-foreground: #ffffff;
+  --caution: #8c5710;
+  --caution-foreground: #ffffff;
+  --danger: #b92f50;
+  --danger-foreground: #ffffff;
+  --sidebar: #eef0f8;
+  --sidebar-foreground: #20263b;
+  --sidebar-primary: #5b46c5;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e4e8f3;
+  --sidebar-accent-foreground: #313b56;
+  --sidebar-border: #d8deeb;
+  --sidebar-ring: #604bd6;
+  --surface-ivory: #f6f7fb;
+  --category-violet: #eee8fc;
+  --category-violet-ink: #5b3eb3;
+  --category-teal: #e0f2ec;
+  --category-teal-ink: #16634f;
+  --category-peach: #fff0e5;
+  --category-peach-ink: #945023;
+  --category-blue: #e7effd;
+  --blue: #2d5da7;
+  --peach: #945023;
+  --code-surface: #edf0f7;
+  --placeholder: #657187;
+  --chart-1: #7454cb;
+  --chart-2: #3475b9;
+  --chart-3: #a56a13;
+  --chart-4: #16866b;
+  --chart-5: #9652b0;
+  --plot-violet: #8863d2;
+  --plot-blue: #448ac9;
+  --plot-cyan: #219c95;
+  --plot-teal: #16866b;
+  --plot-amber: #b3781b;
+  --plot-pink: #c64c70;
+  --plot-coral: #c8674c;
+  --plot-orange: #be7d26;
+  --plot-gold: #a98718;
+  --plot-indigo: #5a73c8;
+  --plot-sky: #2787b1;
+  --plot-mint: #158d84;
+}
+.light .dashboard-metric {
+  --metric-color: #6547be;
+  --metric-surface: #7454cb12;
+  --metric-end: #a148a9;
+}
+.light .dashboard-metric[data-tone="teal"] {
+  --metric-color: #146e55;
+  --metric-surface: #16866b10;
+  --metric-end: #128289;
+}
+.light .dashboard-metric[data-tone="blue"] {
+  --metric-color: #2d5da7;
+  --metric-surface: #3475b912;
+  --metric-end: #6b59c0;
+}
+.light .dashboard-metric[data-tone="peach"] {
+  --metric-color: #945023;
+  --metric-surface: #be7d2612;
+  --metric-end: #a17c0c;
+}
+.light .brand-hero {
+  background:
+    radial-gradient(ellipse 42rem 28rem at 12% 0%, #b9a6f52b, transparent 72%),
+    radial-gradient(ellipse 34rem 26rem at 95% 24%, #98dace20, transparent 75%),
+    var(--background);
 }

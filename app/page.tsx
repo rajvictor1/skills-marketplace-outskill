@@ -55,16 +55,16 @@ export default async function Home() {
       <section className="brand-hero dark-surface relative px-5 pb-24 pt-20 text-foreground sm:px-8 sm:pt-28 lg:pb-32">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-5xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-primary/10 px-4 py-2 text-xs font-medium text-white/90 backdrop-blur-md">
-              <ShieldCheck className="size-4 text-[#a9ead2]" aria-hidden />A
-              more thoughtful home for AI agent skills
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-primary/10 px-4 py-2 text-xs font-medium text-foreground/90 backdrop-blur-md">
+              <ShieldCheck className="size-4 text-safe" aria-hidden />A more
+              thoughtful home for AI agent skills
             </span>
-            <h1 className="mt-9 text-balance text-[clamp(2.4rem,5.5vw,4.8rem)] font-semibold leading-[0.99] tracking-[-0.065em] text-white">
+            <h1 className="mt-9 text-balance text-[clamp(2.4rem,5.5vw,4.8rem)] font-semibold leading-[0.99] tracking-[-0.065em] text-foreground">
               Discover AI agent skills.
               <br />
-              <span className="text-[#b9c6ff]">Know what&apos;s inside.</span>
+              <span className="text-primary">Know what&apos;s inside.</span>
             </h1>
-            <p className="mx-auto mt-8 max-w-2xl text-balance text-lg leading-relaxed text-[#d9dbf0] sm:text-xl">
+            <p className="mx-auto mt-8 max-w-2xl text-balance text-lg leading-relaxed text-muted-foreground sm:text-xl">
               Skillbuffet is a marketplace of reusable AI agent instructions.
               Browse by category, read each SKILL.md and its review results, and
               download an approved version for your own agent. Creators can
@@ -80,35 +80,35 @@ export default async function Home() {
               </Link>
               <Link
                 href="/publish"
-                className="cta-secondary inline-flex h-13 min-w-44 items-center justify-center gap-2 rounded-full border border-white/50 px-7 text-sm font-semibold text-white transition-colors hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                className="cta-secondary inline-flex h-13 min-w-44 items-center justify-center gap-2 rounded-full border border-border px-7 text-sm font-semibold text-foreground transition-colors hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
               >
                 Publish a skill <ArrowUpRight className="size-4" aria-hidden />
               </Link>
             </div>
-            <div className="mx-auto mt-9 flex max-w-xl flex-wrap items-center justify-center gap-4 rounded-2xl border border-white/20 bg-primary/10 p-5 text-white">
+            <div className="mx-auto mt-9 flex max-w-xl flex-wrap items-center justify-center gap-4 rounded-2xl border border-border bg-primary/10 p-5 text-foreground">
               <RatingSummary average={reviews.average} count={reviews.count} />
               <Link
                 href="/reviews"
-                className="text-sm font-semibold text-[#d6d0ff] underline underline-offset-4"
+                className="text-sm font-semibold text-primary underline underline-offset-4"
               >
                 {reviews.count
                   ? "Read community reviews"
                   : "Be the first to review Skillbuffet"}
               </Link>
             </div>
-            <p className="mt-12 text-xs font-medium uppercase tracking-[0.2em] text-[#aeb1d2]">
+            <p className="mt-12 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
               Built for creators · teams · AI builders
             </p>
           </div>
 
-          <div className="relative mx-auto mt-12 max-w-5xl rounded-[2rem] border border-white/20 bg-primary/10 p-2 shadow-[0_32px_100px_#06091f99] sm:mt-16 sm:p-3">
+          <div className="relative mx-auto mt-12 max-w-5xl rounded-[2rem] border border-border bg-primary/10 p-2 shadow-[0_32px_100px_#06091f99] sm:mt-16 sm:p-3">
             <div
               className="absolute inset-x-16 -top-12 -z-10 h-36 rounded-full bg-[#5875ff]/30 blur-3xl"
               aria-hidden
             />
             <ScanPreview />
           </div>
-          <p className="mt-5 text-center text-xs text-[#b6b9d2]">
+          <p className="mt-5 text-center text-xs text-muted-foreground">
             An illustrative scanner example showing how a dangerous submission
             is blocked.
           </p>
@@ -197,48 +197,46 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="grid items-end gap-8 lg:grid-cols-[1fr_0.9fr]">
             <div>
-              <p className="editorial-kicker text-[#aebcff]">
-                The review layer
-              </p>
+              <p className="editorial-kicker text-primary">The review layer</p>
               <h2 className="mt-4 max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.05em] sm:text-5xl lg:text-6xl">
                 Good skills deserve a closer look.
               </h2>
             </div>
-            <p className="max-w-xl text-base leading-relaxed text-[#c8cae1] lg:pb-2">
+            <p className="max-w-xl text-base leading-relaxed text-muted-foreground lg:pb-2">
               Every submission is scanned for hidden instructions, risky
               patterns and scripts. An optional AI classifier adds another
               check. An administrator reviews each version before it becomes
               public.
             </p>
           </div>
-          <div className="mt-14 grid gap-px overflow-hidden rounded-[1.8rem] border border-white/15 bg-primary/10 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-14 grid gap-px overflow-hidden rounded-[1.8rem] border border-border bg-primary/10 md:grid-cols-2 lg:grid-cols-4">
             {SCAN_LAYERS.map((layer, index) => {
               const Icon = LAYER_ICONS[layer.key];
               return (
                 <div key={layer.key} className="bg-card p-7 sm:p-8">
-                  <span className="flex size-11 items-center justify-center rounded-full bg-[#aebcff]/15 text-[#b9c6ff]">
+                  <span className="flex size-11 items-center justify-center rounded-full bg-[#aebcff]/15 text-primary">
                     <Icon className="size-5" aria-hidden />
                   </span>
-                  <span className="mt-8 block font-mono text-xs text-[#aeb1d2]">
+                  <span className="mt-8 block font-mono text-xs text-muted-foreground">
                     0{index + 1} / 04
                   </span>
                   <h3 className="mt-2 text-xl font-semibold tracking-[-0.035em]">
                     {layer.name}
                   </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-[#bfc1d7]">
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                     {layer.blurb}
                   </p>
                 </div>
               );
             })}
           </div>
-          <p className="mt-6 max-w-3xl text-sm leading-relaxed text-[#bfc1d7]">
+          <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground">
             Automated scanning reduces risk; it cannot guarantee that every
             skill is safe. Always review permissions and code before installing.
           </p>
           <Link
             href="/security"
-            className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#c2cdff] hover:underline"
+            className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
           >
             See how vetting works <ArrowRight className="size-4" aria-hidden />
           </Link>
@@ -319,11 +317,11 @@ export default async function Home() {
 
       <section className="brand-hero dark-surface px-5 py-24 text-center text-foreground sm:px-8 lg:py-32">
         <div className="mx-auto max-w-3xl">
-          <BadgeCheck className="mx-auto size-11 text-[#b7c7ff]" aria-hidden />
+          <BadgeCheck className="mx-auto size-11 text-primary" aria-hidden />
           <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.05em] sm:text-6xl">
             Your expertise deserves a better home.
           </h2>
-          <p className="mx-auto mt-5 max-w-xl text-lg text-[#d8daef]">
+          <p className="mx-auto mt-5 max-w-xl text-lg text-muted-foreground">
             Publish an AI agent skill, see its review result, and make it
             discoverable to the people who need it.
           </p>

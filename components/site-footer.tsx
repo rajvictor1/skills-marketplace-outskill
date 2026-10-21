@@ -34,7 +34,7 @@ const GROUPS = [
 ];
 export function SiteFooter() {
   return (
-    <footer className="dark-surface border-t border-white/10 bg-sidebar text-foreground">
+    <footer className="dark-surface border-t border-border bg-sidebar text-foreground">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Logo />
@@ -46,7 +46,7 @@ export function SiteFooter() {
             href="https://github.com/rajvictor1/skills-marketplace-outskill"
             target="_blank"
             rel="noreferrer"
-            className="mt-5 inline-block text-sm text-[#c5bcff] underline"
+            className="mt-5 inline-block text-sm text-primary underline"
           >
             Project repository ↗
           </a>
@@ -57,7 +57,7 @@ export function SiteFooter() {
             <ul className="mt-4 grid gap-3 text-sm text-muted-foreground">
               {group.links.map(([label, href]) => (
                 <li key={href}>
-                  <Link href={href} className="hover:text-white">
+                  <Link href={href} className="hover:text-foreground">
                     {label}
                   </Link>
                 </li>
@@ -66,7 +66,7 @@ export function SiteFooter() {
           </div>
         ))}
       </div>
-      <div className="border-t border-white/10">
+      <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-3 px-5 py-6 text-xs text-muted-foreground sm:px-8">
           <p>
             © {new Date().getFullYear()} Skillbuffet. Built on the upstream

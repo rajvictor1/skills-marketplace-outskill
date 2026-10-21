@@ -26,13 +26,13 @@ export default async function SkillsPage() {
       </div>
       <section className="brand-hero dark-surface px-5 py-20 text-foreground sm:px-8 sm:py-24">
         <div className="mx-auto max-w-7xl">
-          <p className="editorial-kicker text-[#bbc7ff]">
+          <p className="editorial-kicker text-primary">
             The Skillbuffet marketplace
           </p>
           <h1 className="mt-5 max-w-4xl text-balance text-5xl font-semibold leading-[1.04] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
             Find a skill for what comes next.
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#d4d6eb]">
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
             Browse AI agent skills by use case, inspect each review result, and
             decide what belongs in your workflow. Blocked submissions never
             appear here.

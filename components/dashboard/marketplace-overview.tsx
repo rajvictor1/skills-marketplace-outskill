@@ -179,7 +179,7 @@ export function MarketplaceOverview({
             <div className="mt-4 h-10">
               <Sparkline values={item.values} />
             </div>
-            <p className="mt-3 text-xs font-medium text-[#7dd3b2]">
+            <p className="mt-3 text-xs font-medium text-safe">
               {item.change}{" "}
               <span className="font-normal text-muted-foreground">
                 sample comparison
@@ -227,13 +227,13 @@ export function MarketplaceOverview({
                         {number(Math.round(model.successful * skill.share))}{" "}
                         outcomes
                       </p>
-                      <p className="mt-1.5 text-[11px] text-[#7dd3b2]">
+                      <p className="mt-1.5 text-[11px] text-safe">
                         {skill.reliability}% reliability{" "}
                         <span className="text-muted-foreground">· sample</span>
                       </p>
                     </div>
                     <span
-                      className={`inline-flex shrink-0 items-center text-[11px] ${skill.trend < 0 ? "text-caution" : "text-[#7dd3b2]"}`}
+                      className={`inline-flex shrink-0 items-center text-[11px] ${skill.trend < 0 ? "text-caution" : "text-safe"}`}
                     >
                       {skill.trend < 0 ? (
                         <ArrowDownRight className="size-3" aria-hidden />
@@ -396,7 +396,7 @@ export function MarketplaceOverview({
         </section>
       </div>
       <section
-        className="mt-5 rounded-xl border border-[#7dd3b2]/25 bg-[#7dd3b2]/5 px-5 py-4"
+        className="mt-5 rounded-xl border border-safe/25 bg-safe/5 px-5 py-4"
         aria-labelledby="real-catalog-title"
       >
         <div className="flex flex-wrap items-center justify-between gap-3">

@@ -78,13 +78,13 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
           <div className="mt-16 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
             <div>
-              <p className="editorial-kicker text-[#bbc7ff]">
+              <p className="editorial-kicker text-primary">
                 {match.group.name} / Skills
               </p>
               <h1 className="mt-5 max-w-4xl text-balance text-5xl font-semibold leading-[1.02] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
                 {match.category.name} skills
               </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#d4d6eb]">
+              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
                 {CATEGORY_DESCRIPTIONS[match.category.name]} Browse specialties
                 including {match.category.subcategories.join(", ")}. Compare
                 each skill’s declared inputs, outputs, compatible agents and
@@ -94,7 +94,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             </div>
             <Link
               href={`/publish?category=${slug}`}
-              className="cta-secondary inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-white/50 px-6 text-sm font-semibold text-white transition-colors hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              className="cta-secondary inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-border px-6 text-sm font-semibold text-foreground transition-colors hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
             >
               Publish in this field{" "}
               <ArrowUpRight className="size-4" aria-hidden />

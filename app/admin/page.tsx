@@ -107,14 +107,14 @@ export default async function AdminPage({
     : [[], []];
   return (
     <main className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
-      <div className="rounded-3xl bg-category-violet p-8 text-white">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#b7d9cf]">
+      <div className="rounded-3xl bg-category-violet p-8 text-foreground">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-safe">
           Skillbuffet / Admin
         </p>
         <h1 className="mt-3 text-4xl font-semibold tracking-tight">
           Your review desk.
         </h1>
-        <p className="mt-4 max-w-2xl text-[#d4d8ed]">
+        <p className="mt-4 max-w-2xl text-muted-foreground">
           Inspect the exact version, review the scan and publisher declarations,
           then decide what reaches the public catalog.
         </p>

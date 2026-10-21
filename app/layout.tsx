@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata, Viewport } from "next";
 import { SITE_ORIGIN, staticMetadata } from "@/lib/seo/site";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -46,18 +47,21 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <a href="#main-content" className="skip-link">
-          Skip to content
-        </a>
-        <SiteNav />
-        <div id="main-content" tabIndex={-1} className="flex-1">
-          {children}
-        </div>
-        <SiteFooter />
-        <Toaster />
+        <ThemeProvider>
+          <a href="#main-content" className="skip-link">
+            Skip to content
+          </a>
+          <SiteNav />
+          <div id="main-content" tabIndex={-1} className="flex-1">
+            {children}
+          </div>
+          <SiteFooter />
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

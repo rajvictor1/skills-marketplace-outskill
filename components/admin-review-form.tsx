@@ -53,7 +53,7 @@ export function AdminReviewForm({
               name="decision"
               value="approved"
               disabled={pending}
-              className="min-h-11 rounded-xl cta-success px-5 py-2.5 text-sm font-semibold text-white"
+              className="min-h-11 rounded-xl cta-success px-5 py-2.5 text-sm font-semibold"
             >
               Approve and publish
             </button>

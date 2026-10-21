@@ -1,4 +1,4 @@
-# Skillbuffet shared dark design system
+# Skillbuffet shared light and dark design system
 
 The owner approved the existing colorful dashboard and requested its colors, controls and typography across all website pages. This implementation rollout preserves page layouts, dashboard sections and application behavior. It supersedes the earlier ivory marketplace direction and the unimplemented compact creator-dashboard draft.
 
@@ -21,3 +21,7 @@ Preserve its four KPI cards, Agent activity / Top skills and creator pulse / act
 Submit → scan → private admin review → approve and publish / request changes / reject. An approved version remains stable while an update is reviewed. No change to authentication, authorization, scanning, APIs or database schema as part of the visual rollout. Keep synthetic data/reviews labeled illustrative, preserve upstream MIT credit, and never invent adoption or security claims.
 
 Applies to public pages, catalog/categories, skills, auth, publishing, creator workspace, admin, docs/policies, errors/loading and all shared controls.
+
+## Light mode extension
+
+The owner requested a header toggle with light/dark modes and persistence. Dark remains the default. Light uses ivory #f6f7fb canvas, white cards, slate #20263b text, violet #5b46c5 links and #604bd6 actions. Category surfaces retain violet, teal, peach and blue hues with deeper ink colors. Dashboard charts and KPI accents keep their multicolor meaning with stronger light-mode contrast. All pages inherit the chosen palette, including admin, auth, code, docs and native controls. Primary action labels remain white. Theme choice is stored locally as `skillbuffet-theme` and applies before hydration through the existing next-themes dependency. No layout redesign, catalog mutation or permission change is part of this extension.
