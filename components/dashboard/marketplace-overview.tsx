@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useId, useState } from "react";
 import {
   Activity,
   ArrowDownRight,
@@ -19,6 +19,7 @@ import {
 import { TrendChart } from "@/components/dashboard/trend-chart";
 import {
   getOverviewDemo,
+  getActiveSkillSparkline,
   type RangeKey,
   type TrendPoint,
   OVERVIEW_SKILLS,
@@ -60,7 +61,7 @@ export function MarketplaceOverview({
       icon: ShieldCheck,
       tone: "violet",
       href: "#top-skills",
-      values: data.map((p, i) => 1130 + i * 4 + p.review),
+      values: getActiveSkillSparkline(data, model.activeSkills),
     },
     {
       label: "Successful agent runs",
@@ -161,7 +162,7 @@ export function MarketplaceOverview({
           <a
             key={item.label}
             href={item.href}
-            className="dashboard-metric group relative min-w-0 overflow-hidden rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/60 sm:p-5"
+            className="dashboard-metric dashboard-kpi group relative min-w-0 overflow-hidden rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/60 sm:p-5"
             data-tone={item.tone}
           >
             <div className="flex items-start justify-between gap-2">
@@ -175,7 +176,7 @@ export function MarketplaceOverview({
             <p className="mt-4 text-[clamp(1.35rem,2.3vw,1.9rem)] font-semibold leading-none tracking-tight tabular-nums">
               {item.value}
             </p>
-            <div className="mt-4 h-7">
+            <div className="mt-4 h-10">
               <Sparkline values={item.values} />
             </div>
             <p className="mt-3 text-xs font-medium text-[#7dd3b2]">
@@ -458,32 +459,49 @@ function SectionHeading({
   );
 }
 function Sparkline({ values }: { values: number[] }) {
+  const id = useId().replace(/:/g, "");
   const min = Math.min(...values);
   const span = Math.max(...values) - min || 1;
-  const points =
+  const coordinates =
     values.length === 1
-      ? "0,16 160,16"
-      : values
-          .map(
-            (v, i) =>
-              `${(i / (values.length - 1)) * 160},${25 - ((v - min) / span) * 22}`,
-          )
-          .join(" ");
+      ? [
+          [2, 23],
+          [158, 23],
+        ]
+      : values.map((v, i) => [
+          2 + (i / (values.length - 1)) * 156,
+          33 - ((v - min) / span) * 28,
+        ]);
+  const points = coordinates.map((point) => point.join(",")).join(" ");
+  const last = coordinates.at(-1) ?? [158, 23];
   return (
     <svg
       aria-hidden
-      viewBox="0 0 160 28"
+      viewBox="0 0 160 40"
       preserveAspectRatio="none"
       className="dashboard-sparkline h-full w-full"
     >
+      <defs>
+        <linearGradient id={`${id}-line`}>
+          <stop stopColor="var(--metric-color)" />
+          <stop offset="1" stopColor="var(--metric-end)" />
+        </linearGradient>
+        <linearGradient id={`${id}-area`} x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="var(--metric-color)" stopOpacity=".3" />
+          <stop offset="1" stopColor="var(--metric-end)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <polygon points={`2,40 ${points} 158,40`} fill={`url(#${id}-area)`} />
       <polyline
         points={points}
         fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
+        stroke={`url(#${id}-line)`}
+        strokeWidth="2.5"
         vectorEffect="non-scaling-stroke"
         strokeLinejoin="round"
+        strokeLinecap="round"
       />
+      <circle cx={last[0]} cy={last[1]} r="2.5" fill="var(--metric-end)" />
     </svg>
   );
 }

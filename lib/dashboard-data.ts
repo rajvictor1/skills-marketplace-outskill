@@ -216,3 +216,16 @@ export function getOverviewDemo(points: TrendPoint[]) {
     hours: Math.round(successful * 0.198),
   };
 }
+
+/** Simulated listing changes with additions/removals; ends at the displayed sample total. */
+export function getActiveSkillSparkline(points: TrendPoint[], latest: number) {
+  const raw = points.map(
+    (point, index) =>
+      index * 1.8 +
+      Math.sin(index * 0.83) * 17 +
+      Math.cos(index * 1.41) * 7 +
+      (point.runs % 17),
+  );
+  const end = raw.at(-1) ?? 0;
+  return raw.map((value) => Math.max(0, Math.round(latest + value - end)));
+}

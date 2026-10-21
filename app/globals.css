@@ -398,3 +398,28 @@
     font-size: 1.5rem;
   }
 }
+
+/* Metric colors remain stable across cards and their miniature charts. */
+.dashboard-metric {
+  --metric-end: #d49ef5;
+}
+.dashboard-metric[data-tone="teal"] {
+  --metric-end: #6ddce3;
+}
+.dashboard-metric[data-tone="blue"] {
+  --metric-end: #a5b4fc;
+}
+.dashboard-metric[data-tone="peach"] {
+  --metric-end: #f5d47b;
+}
+.dashboard-kpi {
+  border-top: 2px solid var(--metric-color);
+  background:
+    linear-gradient(150deg, var(--metric-surface), transparent 75%), var(--card);
+}
+.dashboard-kpi .dashboard-metric-icon {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--metric-color) 22%, transparent);
+}
+.dashboard-kpi:hover {
+  border-color: var(--metric-color);
+}
