@@ -76,3 +76,33 @@ export async function reviewRecipePackage(
     return failure(error);
   }
 }
+
+export async function stageRecipePublication(
+  _state: RecipeActionState,
+  form: FormData,
+): Promise<RecipeActionState> {
+  try {
+    const admin = await requireAdmin();
+    if (!(await consumeRecipeInspectionLimit(admin.id)))
+      throw new RecipePackageError(
+        "Inspection limit reached. Try again in one minute.",
+      );
+    const { prepareRecipePublication } = await import(
+      "@/lib/recipes/publication"
+    );
+    const result = await prepareRecipePublication(
+      String(form.get("versionId") ?? ""),
+      Object.fromEntries(form),
+    );
+    revalidatePath("/admin");
+    revalidatePath("/admin/recipes");
+    return {
+      ok: true,
+      message: result.existing
+        ? "This version already has a marketplace submission. Open the admin review desk to view its status."
+        : "Marketplace submission prepared. Open the admin review desk to inspect the files and approve publication. It is not public yet.",
+    };
+  } catch (error) {
+    return failure(error);
+  }
+}

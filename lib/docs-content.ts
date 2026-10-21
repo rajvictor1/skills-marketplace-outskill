@@ -25,7 +25,7 @@ export const DOCS: Record<
       },
       {
         title: "Private upload and review",
-        body: "On the configured Preview, platform administrators can open /admin/recipes, upload a prepared JSON package, save a private draft and submit it for review. The private Supabase registry preserves source files, hashes and inspection reports. Approval records a private registry decision; public catalog publishing, registered agent access, installation and runtime activation are separate and remain pending. Current accounts still use Better Auth and Neon. The existing SKILL.md publishing flow remains available. The schema profile permits bundled local references and reviewed patterns; remote schemas, executable custom validators and arbitrary code execution are unsupported.",
+        body: "On the configured Preview, platform administrators can open /admin/recipes, upload a prepared JSON package, save a private draft and submit it for review. The private Supabase registry preserves source files, hashes and inspection reports. After private approval, choose a category, subcategory, title, summary and license and confirm redistribution rights. Send the package to the existing admin review desk for final publication. Published packages offer a signed-in JSON download containing the original files. Registered agent access, installation and runtime activation remain pending. Current accounts still use Better Auth and Neon. The existing SKILL.md publishing flow remains available. The schema profile permits bundled local references and reviewed patterns; remote schemas, executable custom validators and arbitrary code execution are unsupported.",
       },
     ],
   },
@@ -132,7 +132,7 @@ export const DOCS: Record<
     sections: [
       {
         title: "2026-10-21 · Recipe package inspection",
-        body: "Added owner/team-only inspection for standalone recipe folders and capability packages with shared JSON Schemas. Reports distinguish contract validation, static scanning and runtime readiness. Source files are preserved; no recipe is automatically published or executed. Private structured-package storage and an administrator upload/review workbench have been added on Preview. Current accounts remain on Better Auth and Neon; auth migration and runtime activation are pending.",
+        body: "Added owner/team-only inspection for standalone recipe folders and capability packages with shared JSON Schemas. Reports distinguish contract validation, static scanning and runtime readiness. Source files are preserved; no recipe is automatically published or executed. Private structured-package storage, an administrator upload/review workbench and a marketplace submission handoff have been added on Preview. Full package downloads preserve the original files and share the existing authenticated download counters. Current accounts remain on Better Auth and Neon; auth migration and runtime activation are pending.",
       },
       {
         title: "2026-10-21 · Curated publishing",

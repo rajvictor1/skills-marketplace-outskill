@@ -389,7 +389,7 @@ function ReviewCard({
       </details>
       <details className="mt-5">
         <summary className="cursor-pointer text-sm font-semibold">
-          Inspect complete SKILL.md and content hash
+          Inspect instructions and content hash
         </summary>
         <p className="mt-2 break-all font-mono text-xs">
           SHA-256 {row.version.contentHash}
@@ -398,6 +398,21 @@ function ReviewCard({
           <Markdown>{raw}</Markdown>
         </div>
       </details>
+      {data.metadata.format === "recipe_package" && (
+        <div className="mt-5 rounded-xl bg-category-teal p-4 text-sm">
+          <p>
+            This is a structured recipe package. Approval publishes the listing
+            and enables authenticated download of all bundled files. Runtime is
+            not verified.
+          </p>
+          <a
+            className="mt-2 inline-block font-semibold text-primary underline"
+            href={`/api/v1/recipes/packages/${data.metadata.packageVersionId}`}
+          >
+            Inspect original private package and full validation report
+          </a>
+        </div>
+      )}
       <AdminReviewForm id={row.review.id} />
     </article>
   );

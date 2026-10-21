@@ -14,6 +14,12 @@ import {
 import { user } from "./auth-schema";
 
 export interface SkillMetadata {
+  format?: "recipe_package";
+  recipeId?: string;
+  packageVersionId?: string;
+  packageHash?: string;
+  manifestPath?: string;
+  runtimeVerified?: false;
   /** Internal marker for catalog fixtures inserted by the optional seed script. */
   isSample?: boolean;
   license?: string;

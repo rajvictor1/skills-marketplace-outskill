@@ -583,6 +583,7 @@ export async function inspectRecipePackage(raw: unknown) {
     );
   return {
     contractVersion: "skillbuffet-recipe-inspection-v1",
+    riskScore: scan.riskScore,
     recipeId: manifestId,
     version: typeof manifest.version === "string" ? manifest.version : null,
     valid: issues.length === 0 && scan.trustTier !== "blocked",

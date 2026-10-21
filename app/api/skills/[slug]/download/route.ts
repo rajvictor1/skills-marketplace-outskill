@@ -52,7 +52,12 @@ export async function POST(
         .where(
           and(
             eq(skillFile.skillVersionId, listing.currentVersionId),
-            eq(skillFile.path, "SKILL.md"),
+            eq(
+              skillFile.path,
+              listing.metadata.format === "recipe_package"
+                ? "recipe-package.json"
+                : "SKILL.md",
+            ),
           ),
         )
         .limit(1);
@@ -75,17 +80,24 @@ export async function POST(
             .set({ downloadCount: sql`${skill.downloadCount} + 1` })
             .where(eq(skill.id, listing.id));
       }
-      return file.content;
+      return {
+        content: file.content,
+        package: listing.metadata.format === "recipe_package",
+      };
     });
     if (result === null)
       return Response.json(
         { error: "Approved recipe not found." },
         { status: 404 },
       );
-    return new Response(result, {
+    return new Response(result.content, {
       headers: {
-        "Content-Type": "text/markdown; charset=utf-8",
-        "Content-Disposition": 'attachment; filename="SKILL.md"',
+        "Content-Type": result.package
+          ? "application/json; charset=utf-8"
+          : "text/markdown; charset=utf-8",
+        "Content-Disposition": result.package
+          ? 'attachment; filename="recipe-package.json"'
+          : 'attachment; filename="SKILL.md"',
         "Cache-Control": "private, no-store",
         "X-Content-Type-Options": "nosniff",
       },

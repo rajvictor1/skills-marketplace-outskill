@@ -71,6 +71,7 @@ export default async function SkillDetailPage({
       </main>
     );
   const { skill } = lookup;
+  const isPackage = skill.metadata?.format === "recipe_package";
   const [ratings, catalog] = await Promise.all([
     getRatings(skill.id),
     getCatalogState(),
@@ -168,6 +169,11 @@ export default async function SkillDetailPage({
             ) : (
               <TrustBadge tier={skill.trustTier} />
             )}
+            {isPackage && (
+              <span className="rounded-md bg-caution/10 px-2 py-1 text-xs font-semibold text-caution">
+                Package reviewed · Runtime not verified
+              </span>
+            )}
             <span className="font-mono text-xs text-muted-foreground">
               v{skill.version}
             </span>
@@ -248,7 +254,9 @@ export default async function SkillDetailPage({
               <li>
                 {isExample
                   ? "Download the example SKILL.md for inspection. Review and adapt it in an isolated environment before use."
-                  : "Sign in and download the approved SKILL.md. Follow your agent application’s instructions for loading SKILL.md."}
+                  : isPackage
+                    ? "Sign in and download the reviewed recipe package. Inspect its manifest and bundled schemas before integration."
+                    : "Sign in and download the approved SKILL.md. Follow your agent application’s instructions for loading SKILL.md."}
               </li>
               <li>
                 Use the creator’s declared inputs, check the result, and keep
@@ -360,11 +368,15 @@ export default async function SkillDetailPage({
           )}
           {/* SKILL.md */}
           <section>
-            <h2 className="text-lg font-semibold text-foreground">SKILL.md</h2>
+            <h2 className="text-lg font-semibold text-foreground">
+              {isPackage ? "Recipe integration guide" : "SKILL.md"}
+            </h2>
             <p className="mt-1 text-sm text-muted-foreground">
               {isExample
                 ? "Illustrative instructions for this preview listing. Adapt and review them before submitting a real recipe."
-                : "The full instructions that load into your agent. Read them before installing."}
+                : isPackage
+                  ? "A guide to the reviewed source package. Runtime execution and activation have not been verified."
+                  : "The full instructions that load into your agent. Read them before installing."}
             </p>
             <div className="mt-4 rounded-2xl border border-border bg-card p-6">
               <Markdown>
@@ -408,8 +420,9 @@ export default async function SkillDetailPage({
                 Make it part of your toolkit.
               </h2>
               <p className="mt-3 text-sm text-muted-foreground">
-                Download the approved SKILL.md, read its instructions, and add
-                it to your agent&apos;s skills folder.
+                {isPackage
+                  ? "Download the original multi-file recipe package as JSON. Runtime adapter implementation and provider setup are still required."
+                  : "Download the approved SKILL.md, read its instructions, and add it to your agent’s skills folder."}
               </p>
               <form
                 action={`/api/skills/${skill.slug}/download`}
@@ -418,7 +431,7 @@ export default async function SkillDetailPage({
               >
                 <button className="cta-primary inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">
                   <Download className="size-4" aria-hidden />
-                  Download SKILL.md
+                  {isPackage ? "Download recipe package" : "Download SKILL.md"}
                 </button>
               </form>
               <p className="mt-3 text-xs text-muted-foreground">

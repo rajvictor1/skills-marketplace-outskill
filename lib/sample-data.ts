@@ -50,6 +50,12 @@ export type SampleSkill = {
 };
 
 export type SkillMarketplaceMetadata = {
+  format?: "recipe_package";
+  recipeId?: string;
+  packageVersionId?: string;
+  packageHash?: string;
+  manifestPath?: string;
+  runtimeVerified?: false;
   isSample?: boolean;
   license?: string;
   compatibility?: string[];
