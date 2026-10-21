@@ -129,7 +129,10 @@ export function FaqSection({
       <h2 id="faq-heading" className="text-2xl font-semibold tracking-tight">
         Frequently asked questions
       </h2>
-      <div className="faq-list mt-8 divide-y divide-border border-y border-border">
+      <div
+        key={groupName}
+        className="faq-list mt-8 divide-y divide-border border-y border-border"
+      >
         {items.map((f, index) => (
           <details
             key={f.question}

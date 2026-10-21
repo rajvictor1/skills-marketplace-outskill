@@ -367,7 +367,11 @@ export default async function SkillDetailPage({
                 : "The full instructions that load into your agent. Read them before installing."}
             </p>
             <div className="mt-4 rounded-2xl border border-border bg-card p-6">
-              <Markdown>{skill.skillMd}</Markdown>
+              <Markdown>
+                {isExample
+                  ? skill.skillMd.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, "")
+                  : skill.skillMd}
+              </Markdown>
             </div>
           </section>
         </div>
