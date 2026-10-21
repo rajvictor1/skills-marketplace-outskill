@@ -133,6 +133,11 @@ export async function checkRecipeSampleInput(
       issues: result.issues,
     };
   } catch (error) {
+    if (!(error instanceof RecipePackageError))
+      console.error("Recipe sample validation failed", {
+        type: error instanceof Error ? error.name : "unknown",
+        message: error instanceof Error ? error.message : "unknown",
+      });
     return {
       message:
         error instanceof RecipePackageError
