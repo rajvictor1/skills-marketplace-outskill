@@ -5,11 +5,15 @@ export const DOCS: Record<
   "recipe-packages": {
     title: "Structured recipe packages",
     intro:
-      "The recipe backend now supports private owner/team package inspection. A package may contain recipe.yaml, shared JSON Schemas, optional SKILL.md documentation and adapter source files. Inspection does not publish, install or execute a recipe.",
+      "The recipe backend supports private owner/team package inspection, immutable version storage and review. A package may contain recipe.yaml, shared JSON Schemas, optional SKILL.md documentation and adapter source files. Inspection does not publish, install or execute a recipe.",
     sections: [
       {
         title: "Supported package layouts",
         body: "Inspect a standalone recipe folder or select one capabilities/<id>/recipe.yaml inside a shared schema package. Original IDs and source files are preserved. Adapter and test code is read as text and never executed.",
+      },
+      {
+        title: "Prepare a package",
+        body: "Use the repository utility: python3 scripts/recipe-pack-to-json.py /absolute/package/folder recipe.yaml > /private/tmp/recipe-package.json. For a shared capability pack, replace recipe.yaml with capabilities/example.read/recipe.yaml. The utility reads source text without executing it. Upload the resulting JSON in the private workbench. Do not include credentials, patient records or other real runtime input in source files.",
       },
       {
         title: "Owner/team inspection endpoint",
@@ -20,8 +24,8 @@ export const DOCS: Record<
         body: "The report contains file integrity information, structural issues, required input fields, optional input validation, static scanner findings and runtime blockers. A contract can be structurally valid while its adapter remains unimplemented. Report readiness flags stay false; successful validation is not evidence of a live integration.",
       },
       {
-        title: "Current limits and next stage",
-        body: "Structured-package persistence, the upload interface, Supabase migration, registered agent access, installation and runtime activation are pending. The existing SKILL.md publishing flow remains available. The schema profile permits bundled local references and reviewed patterns; remote schemas, executable custom validators and arbitrary code execution are unsupported.",
+        title: "Private upload and review",
+        body: "On the configured Preview, platform administrators can open /admin/recipes, upload a prepared JSON package, save a private draft and submit it for review. The private Supabase registry preserves source files, hashes and inspection reports. Approval records a private registry decision; public catalog publishing, registered agent access, installation and runtime activation are separate and remain pending. Current accounts still use Better Auth and Neon. The existing SKILL.md publishing flow remains available. The schema profile permits bundled local references and reviewed patterns; remote schemas, executable custom validators and arbitrary code execution are unsupported.",
       },
     ],
   },
@@ -128,7 +132,7 @@ export const DOCS: Record<
     sections: [
       {
         title: "2026-10-21 · Recipe package inspection",
-        body: "Added owner/team-only inspection for standalone recipe folders and capability packages with shared JSON Schemas. Reports distinguish contract validation, static scanning and runtime readiness. Source files are preserved; no recipe is automatically published or executed. Supabase migration and runtime activation remain pending.",
+        body: "Added owner/team-only inspection for standalone recipe folders and capability packages with shared JSON Schemas. Reports distinguish contract validation, static scanning and runtime readiness. Source files are preserved; no recipe is automatically published or executed. Private structured-package storage and an administrator upload/review workbench have been added on Preview. Current accounts remain on Better Auth and Neon; auth migration and runtime activation are pending.",
       },
       {
         title: "2026-10-21 · Curated publishing",

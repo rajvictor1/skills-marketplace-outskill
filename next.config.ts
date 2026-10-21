@@ -19,6 +19,7 @@ const csp = [
   "frame-ancestors 'none'",
 ].join("; ");
 const nextConfig: NextConfig = {
+  experimental: { serverActions: { bodySizeLimit: "2mb" } },
   // Keep established slashless URLs. Next permanently normalizes slash variants.
   trailingSlash: false,
   async redirects() {

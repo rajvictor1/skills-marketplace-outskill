@@ -133,6 +133,14 @@ export default async function AdminPage({
           </span>
         </div>
       </div>
+      <div className="mt-6">
+        <Link
+          href="/admin/recipes"
+          className="inline-flex min-h-11 items-center rounded-xl bg-category-teal px-5 py-3 text-sm font-semibold"
+        >
+          Open private recipe workbench →
+        </Link>
+      </div>
       <section className="mt-10">
         <h2 className="text-2xl font-semibold">Review queue</h2>
         <p className="mt-2 text-sm text-muted-foreground">

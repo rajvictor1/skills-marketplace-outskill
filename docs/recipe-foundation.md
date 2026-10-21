@@ -1,22 +1,22 @@
 # Recipe backend foundation
 
-Status: first implementation slice, 21 October 2026. Existing catalog and publishing remain operational. This is package inspection, not installation or execution.
+Status: first implementation slice, 21 October 2026. Existing catalog and publishing remain operational. Includes package inspection, private immutable storage and owner/team review. Installation and execution are not implemented.
 
 ## Architecture inventory
 
-| Requirement                             | Existing implementation                                           | Current work / gap                                                                                                          |
-| --------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Human accounts                          | Better Auth, Neon/Postgres                                        | Free Supabase development resource provisioned separately; app connection and migration are pending                         |
-| Catalog, categories, search, ratings    | Existing marketplace and controlled taxonomy                      | Reuse presentation; move taxonomy to data when schema migration is agreed                                                   |
-| Publishing and immutable saved versions | Existing listing/version/file/submission records and admin review | Existing uploader accepts SKILL.md; structured-package persistence remains pending                                          |
-| Recipe package contract                 | New lib/recipes/package.ts                                        | Reads original recipe.yaml, local schemas, optional SKILL.md and text adapters                                              |
-| Security inspection                     | Existing static scanner reused                                    | All submitted text files scanned; no adapter execution, external LLM call or antivirus certification                        |
-| Input requirements                      | New inputFields and optional inputValidation report               | Nested schema fields remain complex; no generated forms UI yet                                                              |
-| API protection                          | Existing sessions and marketplace_admin role reused               | New owner/team-only POST /api/v1/recipes/validate, same-origin check, bounded body, database-backed request limit and audit |
-| Registered machine clients / MCP        | Not implemented                                                   | Requires scoped client identity and a separate authorization contract                                                       |
-| Installation, consent and providers     | Not implemented                                                   | Separate records and explicit state transitions required                                                                    |
-| Runtime and activation                  | Not connected                                                     | Readiness stays false; adapter names and source test logs do not establish readiness                                        |
-| Operational metrics                     | Existing illustrative dashboard and real catalog totals           | Execution metrics require authenticated runtime events                                                                      |
+| Requirement                             | Existing implementation                                           | Current work / gap                                                                                                              |
+| --------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Human accounts                          | Better Auth, Neon/Postgres                                        | Free Supabase development resource connected to Preview only with RECIPE_DEV credentials; existing accounts remain unchanged    |
+| Catalog, categories, search, ratings    | Existing marketplace and controlled taxonomy                      | Reuse presentation; move taxonomy to data when schema migration is agreed                                                       |
+| Publishing and immutable saved versions | Existing listing/version/file/submission records and admin review | Structured-package immutable versions and private review are added through /admin/recipes; public listing conversion is pending |
+| Recipe package contract                 | New lib/recipes/package.ts                                        | Reads original recipe.yaml, local schemas, optional SKILL.md and text adapters                                                  |
+| Security inspection                     | Existing static scanner reused                                    | All submitted text files scanned; no adapter execution, external LLM call or antivirus certification                            |
+| Input requirements                      | New inputFields and optional inputValidation report               | Nested schema fields remain complex; no generated forms UI yet                                                                  |
+| API protection                          | Existing sessions and marketplace_admin role reused               | New owner/team-only POST /api/v1/recipes/validate, same-origin check, bounded body, database-backed request limit and audit     |
+| Registered machine clients / MCP        | Not implemented                                                   | Requires scoped client identity and a separate authorization contract                                                           |
+| Installation, consent and providers     | Not implemented                                                   | Separate records and explicit state transitions required                                                                        |
+| Runtime and activation                  | Not connected                                                     | Readiness stays false; adapter names and source test logs do not establish readiness                                            |
+| Operational metrics                     | Existing illustrative dashboard and real catalog totals           | Execution metrics require authenticated runtime events                                                                          |
 
 ## Supported source layouts
 
@@ -64,7 +64,7 @@ node --import tsx scripts/inspect-recipe-package.ts /private/tmp/recipe-package.
 
 ## Minimum next migration and runtime handoff
 
-1. Connect the separately provisioned free Supabase development resource to Preview using isolated configuration; retain the working Preview until authentication and data migration are reviewed. Map existing opaque IDs, accounts, versions, ratings and reviews before any migration. Do not silently replace authentication providers.
+1. Preview is connected through isolated RECIPE_DEV configuration. Map existing opaque IDs, accounts, versions, ratings and reviews before any future authentication migration. Better Auth remains authoritative; owner IDs in the private schema are explicit opaque Better Auth IDs, not Supabase auth.uid() identities.
 2. Introduce only the normalized catalog/version/capability/recipe records needed for one selected capability, with profiles and ownership policies. Keep immutable package files and hashes attached to a version. Public discovery policy remains an explicit decision.
 3. Add installations, consents, provider-connection references and runtime bindings with owner scope. No provider secrets in manifests or public metadata.
 4. Agree a versioned execution request/result contract with the runtime engineer. Include canonical capability/function/version, actor scope, input schema, idempotency and correlation IDs.
@@ -75,4 +75,17 @@ node --import tsx scripts/inspect-recipe-package.ts /private/tmp/recipe-package.
 
 TypeScript and lint checks are required for this slice. Source package inspection reports are generated separately; no supplied adapter/test code is executed. Live authenticated endpoint behavior and runtime activation need verification once the review environment and runtime are connected. Automated tests have not been added or run in this slice.
 
-This change uses no database migration. Removing the new endpoint and inspection modules reverses it; request audit entries may remain in the existing review_event table under normal retention policy. No existing catalog entries or accounts are modified.
+Migration supabase/migrations/20261021124104_recipe_package_versions.sql adds recipe_private.package_versions, package_reviews and append-only review_events. The private schema is not exposed to PostgREST. RLS is enabled and all public/anon/authenticated grants are revoked. Server operations enforce the existing admin role; Preview-only server credentials access this isolated store. Immutable file payloads and reports cannot be updated or deleted through normal SQL operations; corrections require a new semantic version. Mutable review status is separate and transitions are locked in a transaction.
+
+To roll back application access, remove the workbench/actions/download route or disconnect its RECIPE_DEV configuration. Retain the private records until the owner agrees a data retention/deletion policy; do not drop them as an automatic rollback. Existing catalog and accounts are unchanged.
+
+## Private workbench
+
+- Open /admin/recipes as a platform administrator on the configured Preview.
+- Upload the prepared JSON envelope (up to 1 MB). The server inspects files without executing scripts and discards optional runtime input before storage. Source files themselves must not contain secrets or real patient/customer input.
+- Save a private draft to inspect schema/security issues, or select submit for review when the report is valid.
+- Draft → pending_review → approved/rejected. Review decisions require a 10–2,000 character note. Approval requires a valid report and the current scanner version. A rejected version needs a new version number for corrections.
+- Same ID/version/hash/manifest retries return the existing version. Different files under an existing version are rejected.
+- GET /api/v1/recipes/packages/<UUID> returns the private package and report as an attachment only to signed-in administrators. No anonymous package API is provided.
+- Registry approval does not make a public marketplace listing and never installs or activates code. Public presentation and runtime handoff are subsequent stages.
+- Supabase Auth migration, provider connections, machine-client scopes, runtime readiness and execution metrics remain pending.

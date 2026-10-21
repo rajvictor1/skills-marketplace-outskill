@@ -27,6 +27,16 @@ export async function recipeInspectionAccess(request: Request) {
   // Cookie-authenticated mutations must originate from this app.
   if (request.headers.get("origin") !== new URL(request.url).origin)
     return { status: 403, error: "Use a same-origin request." } as const;
+  const allowed = await consumeRecipeInspectionLimit(session.user.id);
+  if (!allowed)
+    return {
+      status: 429,
+      error: "Recipe inspection limit reached. Try again in one minute.",
+    } as const;
+  return { userId: session.user.id } as const;
+}
+
+export async function consumeRecipeInspectionLimit(userId: string) {
   const configured = Number(process.env.RECIPE_VALIDATIONS_PER_MINUTE ?? 6);
   const limit =
     Number.isInteger(configured) && configured >= 1 && configured <= 60
@@ -35,14 +45,14 @@ export async function recipeInspectionAccess(request: Request) {
   const allowed = await db.transaction(async (tx) => {
     // Database lock makes the limit consistent across Vercel instances.
     await tx.execute(
-      sql`select pg_advisory_xact_lock(hashtext(${`recipe-inspect:${session.user.id}`}))`,
+      sql`select pg_advisory_xact_lock(hashtext(${`recipe-inspect:${userId}`}))`,
     );
     const [usage] = await tx
       .select({ count: count() })
       .from(reviewEvent)
       .where(
         and(
-          eq(reviewEvent.actorId, session.user.id),
+          eq(reviewEvent.actorId, userId),
           eq(reviewEvent.action, "recipe_inspection_requested"),
           gte(reviewEvent.createdAt, new Date(Date.now() - 60000)),
         ),
@@ -50,16 +60,11 @@ export async function recipeInspectionAccess(request: Request) {
     if ((usage?.count ?? 0) >= limit) return false;
     await tx.insert(reviewEvent).values({
       id: createId(),
-      actorId: session.user.id,
+      actorId: userId,
       action: "recipe_inspection_requested",
       note: "Private static package inspection requested; content and inputs are not logged.",
     });
     return true;
   });
-  if (!allowed)
-    return {
-      status: 429,
-      error: "Recipe inspection limit reached. Try again in one minute.",
-    } as const;
-  return { userId: session.user.id } as const;
+  return allowed;
 }
