@@ -113,12 +113,20 @@ export default async function RecipeWorkbench() {
                   {JSON.stringify(v.inspection, null, 2)}
                 </pre>
               </details>
-              <a
-                href={`/api/v1/recipes/packages/${v.id}`}
-                className="mt-4 inline-block text-sm font-semibold text-primary underline"
-              >
-                Download private package and report
-              </a>
+              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+                <Link
+                  href={`/admin/recipes/${v.id}`}
+                  className="text-sm font-semibold text-primary underline"
+                >
+                  Explore {v.inspection.files.length} files
+                </Link>
+                <a
+                  href={`/api/v1/recipes/packages/${v.id}`}
+                  className="text-sm font-semibold text-primary underline"
+                >
+                  Download private package and report
+                </a>
+              </div>
               {v.review_note && (
                 <p className="mt-3 whitespace-pre-wrap break-words text-sm">
                   Review: {v.review_note}

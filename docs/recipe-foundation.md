@@ -105,3 +105,5 @@ An approved private package can have an owner-only listing draft with an editabl
 ## Private sample input preview
 
 The owner/team workbench builds guided fields from the bundled JSON Schema and provides a JSON mode for nested values. A server action converts typed values, applies a 32 KB input limit and reuses the static package inspector for schema validation. Only validation status and issue locations return to the browser. Sample values are not persisted in Supabase, Neon or audit events; use fictional values. This checks the contract only and never calls a runtime adapter or provider.
+
+The owner/team file viewer at `/admin/recipes/<version-id>` lists every saved source file and opens one at a time. JSON is formatted for reading, while the immutable package download retains the original file content. The same sample input check is available beside the source. The viewer uses the existing administrator session check, remains out of search indexing and does not execute source files.
