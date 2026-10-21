@@ -51,9 +51,9 @@ export default async function SkillsPage() {
         {catalog.hasSampleContent && (
           <div className="mb-6 max-w-3xl">
             <DemoDataNotice>
-              Example skills fill the preview categories. They are code
-              fixtures, not creator submissions; they have not been scanned or
-              installed.
+              A curated Markdown example is included for preview review. It is
+              labeled untested and is separate from approved creator
+              submissions.
             </DemoDataNotice>
           </div>
         )}

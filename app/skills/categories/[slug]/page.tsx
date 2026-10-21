@@ -160,11 +160,12 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </Link>
         </div>
 
-        {catalog.hasSampleContent && (
+        {skills.some((item) => item.metadata?.isSample) && (
           <div className="mt-7 max-w-3xl">
             <DemoDataNotice>
-              These example skills are preview fixtures. They are not real
-              submissions, scanned listings, or install activity.
+              Try the curated Markdown example below. It includes instructions
+              and source credit, but has not been security scanned or execution
+              tested.
             </DemoDataNotice>
           </div>
         )}
