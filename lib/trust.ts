@@ -42,7 +42,7 @@ export const TRUST_META: Record<
   caution: {
     label: "Caution",
     short: "Caution",
-    blurb: "Published, but the scanner flagged findings worth reviewing.",
+    blurb: "Review the scan report and recipe requirements. This badge does not prove runtime safety or compatibility.",
     icon: ShieldAlert,
     dot: "bg-caution",
     text: "text-caution",

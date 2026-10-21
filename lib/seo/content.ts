@@ -3,7 +3,7 @@ export const HOME_FAQ: Faq[] = [
   {
     question: "What is an AI agent recipe?",
     answer:
-      "On Skillbuffet, an AI agent recipe is a reusable set of instructions that guides an agent through a specific task. Recipes currently use the SKILL.md file format. Skillbuffet lets you inspect those instructions and the creator’s declared requirements before downloading. Your chosen agent runs the recipe; Skillbuffet does not run it for you.",
+      "On Skillbuffet, an AI agent recipe describes a reusable task. New structured recipes use a recipe.yaml manifest with bundled schemas and files; older instruction-only recipes use SKILL.md. Skillbuffet lets you inspect the saved package and creator declarations before downloading. It does not install or run a recipe for you.",
   },
   {
     question: "Does approval guarantee a recipe is safe?",
@@ -13,12 +13,12 @@ export const HOME_FAQ: Faq[] = [
   {
     question: "Can I publish without a GitHub repository?",
     answer:
-      "Yes. Sign in and upload or paste a SKILL.md file, then complete its category, version, license, compatibility and access declarations. A GitHub link is optional for file submissions. New recipes and new versions stay private until an administrator approves the submitted version.",
+      "Yes. Sign in and upload a ZIP containing recipe.yaml and its required local schemas and files. Choose one recipe, category, subcategory and reuse terms, then submit it for administrator review. A GitHub link is not required. Older SKILL.md instructions remain available through the legacy form. New versions stay private until approved.",
   },
   {
     question: "Are n8n templates the same as AI agent recipes?",
     answer:
-      "No. An n8n template is a JSON workflow that you import into your own n8n instance and configure with the required credentials. A SKILL.md file contains instructions for a compatible AI agent. Skillbuffet presents workflow templates separately because their installation, execution and security requirements differ.",
+      "No. An n8n template is a JSON workflow for an n8n instance. A structured Skillbuffet recipe has a recipe.yaml manifest and declared input and output schemas. Neither format is automatically installed or executed by the marketplace.",
   },
 ];
 export function categoryFaq(name: string): Faq[] {
@@ -34,16 +34,18 @@ export function categoryFaq(name: string): Faq[] {
     },
     {
       question: `Can I contribute a recipe in ${name}?`,
-      answer: `Yes. Sign in, choose ${name} and the closest specialty in the publishing form, and provide one SKILL.md file with a clear name and description. Explain its inputs, outputs, compatibility, license, access needs and limitations. The administrator reviews the submission before it becomes publicly available.`,
+      answer: `Yes. Sign in, upload a ZIP with recipe.yaml and its required local files, then choose one recipe, ${name} and the closest specialty in the publishing form. Declare reuse terms and confirm publishing rights. The administrator reviews that saved version before it becomes public. The older SKILL.md form remains available for instruction-only recipes.`,
     },
   ];
 }
 
-export function skillFaq(name: string): Faq[] {
+export function skillFaq(name: string, isStructuredPackage = false): Faq[] {
   return [
     {
       question: `Where does ${name} run?`,
-      answer: `${name} runs in your own compatible AI agent environment. Skillbuffet distributes its saved instruction file and shows the creator’s declarations and review results. The marketplace does not execute the agent, connect your accounts or verify every possible output. Follow your agent application's installation instructions and check the recipe's stated requirements.`,
+      answer: isStructuredPackage
+        ? `${name} is currently a downloadable recipe package. Its manifest and schemas describe a contract, but an adapter and provider setup are still required before it can run. Skillbuffet does not install or execute it, and administrator approval does not verify a runtime result.`
+        : `${name} uses instructions intended for a compatible AI agent environment. Skillbuffet distributes the saved instructions and shows the creator’s declarations and review results. It does not execute the agent, connect your accounts or verify every output. Check your agent application's installation instructions and the recipe's stated requirements.`,
     },
     {
       question: "What does administrator approval mean?",

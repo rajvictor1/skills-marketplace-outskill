@@ -111,7 +111,7 @@ export default async function SkillDetailPage({
         title={skill.name}
         description={skill.summary}
         crumbs={crumbs}
-        faq={skillFaq(skill.name)}
+        faq={skillFaq(skill.name, isPackage)}
         entities={
           isExample
             ? []
@@ -259,8 +259,9 @@ export default async function SkillDetailPage({
                     : "Sign in and download the approved SKILL.md. Follow your agent application’s instructions for loading SKILL.md."}
               </li>
               <li>
-                Use the creator’s declared inputs, check the result, and keep
-                sensitive data out until you understand the workflow.
+                {isPackage
+                  ? "Arrange a compatible adapter and provider access before attempting execution. The downloaded contract does not activate itself."
+                  : "Use the creator’s declared inputs, check the result, and keep sensitive data out until you understand the workflow."}
               </li>
             </ol>
             <p className="mt-4 leading-7 text-muted-foreground">
@@ -491,7 +492,7 @@ export default async function SkillDetailPage({
         </section>
       )}
       <FaqSection
-        items={skillFaq(skill.name)}
+        items={skillFaq(skill.name, isPackage)}
         groupName={`skill-${skill.slug}`}
       />
     </main>
