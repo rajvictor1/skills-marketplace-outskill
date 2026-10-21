@@ -45,7 +45,7 @@ export function RecipeZipPublisher({ initialCategory = "Marketing" }: { initialC
         return [row.manifestPath, { selected: validRows.length === 1 && row.valid, title: row.title, category,
           subcategory: getSubcategories(category)[0] ?? "" }];
       })));
-      setMessage(`Found ${response.recipes.length} recipes. ${validRows.length} pass file checks. Choose one recipe for this submission.`);
+      setMessage(`Found ${response.recipes.length} ${response.recipes.length === 1 ? "recipe" : "recipes"}. ${validRows.length} ${validRows.length === 1 ? "passes" : "pass"} file checks. Choose one recipe for this submission.`);
     } catch { setMessage("The ZIP could not be inspected. Please try again."); }
     finally { setBusy(false); }
   }
@@ -130,7 +130,7 @@ export function RecipeZipPublisher({ initialCategory = "Marketing" }: { initialC
                   {row.warnings.map((warning) => <p key={warning} className="mt-2 text-xs text-caution">{warning}</p>)}
                   {!row.valid && <ul className="mt-3 list-disc space-y-1 pl-4 text-xs text-danger">
                     {row.issues.map((issue, index) => <li key={`${issue}-${index}`}>{issue}</li>)}
-                    {row.issueCount > row.issues.length && <li>More findings are available in the full QC report.</li>}
+                    {row.issueCount > row.issues.length && <li>Additional findings may remain. Correct these and inspect the pack again.</li>}
                   </ul>}
                   {row.valid && choice.selected && <div className="mt-4 grid gap-3 sm:grid-cols-[1.5fr_1fr_1fr]">
                     <label className="text-xs font-medium">Display title
