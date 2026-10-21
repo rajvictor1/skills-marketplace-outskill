@@ -59,8 +59,8 @@ export default async function PublishPage({
           Publish a recipe
         </h1>
         <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-          Upload a recipe ZIP, inspect every recipe.yaml inside it, then submit
-          selected recipes to the administrator. Each version stays private
+          Upload your recipe pack and choose one recipe inside it.
+          Pick a category and submit it to the administrator. Each version stays private
           until approved. Uploading does not install or run a recipe.
         </p>
       </div>
@@ -72,8 +72,8 @@ export default async function PublishPage({
         <div className="mt-3 grid gap-4 text-sm leading-relaxed text-muted-foreground sm:grid-cols-2">
           <p>
             <strong className="text-foreground">A recipe.yaml package:</strong> Use
-            the ZIP publisher below. It can find several recipes in one archive
-            and check each manifest with its own schemas and source files.
+            the ZIP publisher below. It checks one recipe with its schemas and
+            source files. If an archive contains several, choose one to submit.
           </p>
           <p>
             <strong className="text-foreground">One SKILL.md file:</strong> The

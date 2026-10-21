@@ -21,9 +21,10 @@ installed, activated, or executed by this QC.
   all categories. Category selection is listing metadata and does not change
   manifest rules.
 - The `/publish` ZIP form discovers each `recipe.yaml`, shows its QC result,
-  and lets a signed-in creator submit up to 10 valid recipes at a time. Each
-  selected recipe gets its own title, category and subcategory. It enters the
-  admin review queue privately; approval is a separate action.
+  and lets a signed-in creator submit one valid recipe at a time. The creator
+  gives it a title, category and subcategory. It enters the admin review queue
+  privately; approval is a separate action. A larger ZIP may be used as a
+  source collection, but never as a single recipe listing.
 - The private owner workbench still stores drafts in Preview Supabase. The
   creator ZIP flow saves submissions in the Neon-backed catalog review queue.
   They share the inspector but do not yet share storage.

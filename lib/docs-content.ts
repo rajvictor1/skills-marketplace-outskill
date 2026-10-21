@@ -5,7 +5,7 @@ export const DOCS: Record<
   "recipe-packages": {
     title: "Structured recipe packages",
     intro:
-      "Upload a ZIP containing one or more recipe.yaml files on the publishing page. Each recipe is inspected separately, with its local JSON Schemas, optional documentation and adapter source. Inspection does not publish, install or execute a recipe.",
+      "A standard recipe has one recipe.yaml with its local JSON Schemas, optional documentation and adapter source. Upload a pack containing one or many recipes, then choose one to submit. Inspection does not publish, install or execute it.",
     sections: [
       {
         title: "Supported package layouts",
@@ -13,7 +13,7 @@ export const DOCS: Record<
       },
       {
         title: "Prepare a ZIP",
-        body: "Keep each recipe.yaml with its local source files and schemas in the ZIP. A collection can contain several recipes. Sign in and upload the ZIP at /publish; choose which valid recipes to submit and assign a category and subcategory to each. The current ZIP limit is 1.5 MB, with at most 10 selected recipes per submission. Remove credentials, patient records and real runtime input. The offline recipe-pack-to-json.py and prepare-recipe-collection.ts tools remain available for owner QC.",
+        body: "Keep recipe.yaml with its local source files and schemas in a ZIP. Sign in and upload it at /publish. If the ZIP contains several recipes, choose one valid recipe to submit. Assign its category and subcategory; the same VDX-style contract applies across categories. The current ZIP limit is 1.5 MB. Remove credentials, patient records and real runtime input. The offline recipe-pack-to-json.py and prepare-recipe-collection.ts tools remain available for owner QC.",
       },
       {
         title: "Owner/team inspection endpoint",
@@ -55,7 +55,7 @@ export const DOCS: Record<
   publishing: {
     title: "Publish your expertise",
     intro:
-      "Use the ZIP publisher for structured recipe.yaml packages, including archives with multiple recipes. The older single-file SKILL.md form is available under Legacy format. Every public recipe version requires administrator approval.",
+      "Upload your recipe pack and choose one recipe.yaml package to submit at a time. A larger archive can be inspected, but each submission selects one recipe. The older single-file SKILL.md form is under Legacy format. Every public recipe version requires administrator approval.",
     sections: [
       {
         title: "Prepare your recipe archive",
@@ -63,7 +63,7 @@ export const DOCS: Record<
       },
       {
         title: "Complete your listing",
-        body: "Sign in, open Submit a recipe, choose the ZIP and click Inspect ZIP. Review the report for every recipe, select up to 10 valid recipes, and give each a display title, category and subcategory. Choose reuse terms and confirm your right to submit the selected files. The legacy SKILL.md form still supports paste, file upload and optional GitHub import.",
+        body: "Sign in, open Submit a recipe, choose the ZIP and click Inspect ZIP. Select one valid recipe, then give it a display title, category and subcategory. Choose reuse terms and confirm your right to submit its files. Repeat for another recipe. The legacy SKILL.md form still supports paste, file upload and optional GitHub import.",
       },
       {
         title: "Scan and submit",
@@ -132,7 +132,7 @@ export const DOCS: Record<
     sections: [
       {
         title: "2026-10-21 · ZIP recipe submissions",
-        body: "Creators can inspect a ZIP containing multiple recipe.yaml manifests, select valid recipes, assign each a category and submit up to 10 at a time to the administrator review desk. The original files are saved in a versioned JSON package. Inspection and download do not execute or activate recipes. The legacy SKILL.md form remains available during migration.",
+        body: "Creators can inspect a VDX-style ZIP, choose one valid recipe, assign its category and submit it to the administrator review desk. A larger collection ZIP may be inspected, but each submission selects one recipe. Its original files are saved in a versioned JSON package. Inspection and download do not execute or activate recipes. The legacy SKILL.md form remains available during migration.",
       },
       {
         title: "2026-10-21 · Recipe package inspection",

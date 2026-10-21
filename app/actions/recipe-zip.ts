@@ -91,8 +91,8 @@ function readSelections(form: FormData): Selection[] {
   let value: unknown;
   try { value = JSON.parse(String(form.get("selections") ?? "")); }
   catch { throw new RecipePackageError("Choose recipes to submit."); }
-  if (!Array.isArray(value) || value.length < 1 || value.length > 10)
-    throw new RecipePackageError("Choose 1–10 recipes per submission.");
+  if (!Array.isArray(value) || value.length !== 1)
+    throw new RecipePackageError("Choose one recipe per submission.");
   const seen = new Set<string>();
   return value.map((entry): Selection => {
     if (!entry || typeof entry !== "object" ||
@@ -216,15 +216,6 @@ export async function submitRecipeZip(form: FormData): Promise<ZipSubmitResult> 
     const selections = readSelections(form);
     const prepared = await readPreparedZip(form);
     const byManifest = new Map(prepared.map((recipe) => [recipe.manifestPath, recipe]));
-    const selectedIds = new Set<string>();
-    for (const selection of selections) {
-      const recipe = byManifest.get(selection.manifestPath);
-      if (!recipe?.report.recipeId || !recipe.report.version) continue;
-      const identity = `${recipe.report.recipeId}@${recipe.report.version}`;
-      if (selectedIds.has(identity))
-        throw new RecipePackageError("Select only one archive variant of each recipe ID and version.");
-      selectedIds.add(identity);
-    }
     const submitted: { id: string; slug: string }[] = [];
     const failed: { id: string; reason: string }[] = [];
     for (const selection of selections) {
