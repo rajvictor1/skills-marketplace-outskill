@@ -27,9 +27,14 @@ const LAYER_ICONS = {
 export default async function PublishPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string | string[] }>;
+  searchParams: Promise<{
+    category?: string | string[];
+    source?: string | string[];
+  }>;
 }) {
-  const requestedCategory = (await searchParams).category;
+  const params = await searchParams;
+  const requestedCategory = params.category;
+  const initialSource = params.source === "github" ? "github" : "paste";
   const selectedCategory =
     typeof requestedCategory === "string"
       ? getCategoryBySlug(requestedCategory)?.category.name
@@ -53,7 +58,10 @@ export default async function PublishPage({
       </div>
 
       <div className="mt-10 grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:gap-10">
-        <PublishForm initialCategory={selectedCategory} />
+        <PublishForm
+          initialCategory={selectedCategory}
+          initialSource={initialSource}
+        />
 
         <aside className="lg:pt-1">
           <h2 className="text-sm font-semibold tracking-tight text-foreground">

@@ -55,10 +55,12 @@ const INITIAL_PUBLISH_STATE: PublishState = { status: "idle" };
 
 export function PublishForm({
   initialCategory = "Marketing",
+  initialSource = "paste",
 }: {
   initialCategory?: string;
+  initialSource?: SourceType;
 }) {
-  const [sourceType, setSourceType] = useState<SourceType>("paste");
+  const [sourceType, setSourceType] = useState<SourceType>(initialSource);
   const [category, setCategory] = useState<string>(initialCategory);
   const [subcategory, setSubcategory] = useState<string>(
     getSubcategories(initialCategory)[0] ?? "",

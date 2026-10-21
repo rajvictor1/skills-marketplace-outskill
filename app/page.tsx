@@ -11,6 +11,7 @@ import {
   TerminalSquare,
 } from "lucide-react";
 
+import { SampleReviews } from "@/components/dashboard/sample-reviews";
 import { getRatings } from "@/lib/community";
 import { RatingSummary } from "@/components/community-reviews";
 import { SKILL_CATEGORY_NAMES } from "@/lib/skills/taxonomy";
@@ -53,7 +54,7 @@ export default async function Home() {
               <ShieldCheck className="size-4 text-[#a9ead2]" aria-hidden />A
               more thoughtful home for AI agent skills
             </span>
-            <h1 className="mt-9 text-balance text-[clamp(3.2rem,7.5vw,7.4rem)] font-semibold leading-[0.99] tracking-[-0.065em] text-white">
+            <h1 className="mt-9 text-balance text-[clamp(2.4rem,5.5vw,4.8rem)] font-semibold leading-[0.99] tracking-[-0.065em] text-white">
               Discover skills.
               <br />
               <span className="text-[#b9c6ff]">Know what&apos;s inside.</span>
@@ -134,6 +135,8 @@ export default async function Home() {
       </section>
 
       <CategoryDirectory compact />
+
+      <SampleReviews />
 
       <section className="bg-[#f3f5fb] px-5 py-24 sm:px-8 lg:py-32">
         <div className="mx-auto max-w-7xl">

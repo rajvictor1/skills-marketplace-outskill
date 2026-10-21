@@ -58,7 +58,7 @@ export default async function MySkillsPage() {
             new version number.
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           {admin && (
             <Link
               href="/admin"
@@ -127,7 +127,7 @@ export default async function MySkillsPage() {
               {submission?.snapshot.summary ?? listing.summary}
             </p>
             {submission?.reviewNote && (
-              <p className="mt-4 rounded-xl bg-[#f2edff] p-4 text-sm">
+              <p className="mt-4 rounded-xl bg-primary/10 p-4 text-sm">
                 <strong>Admin feedback:</strong> {submission.reviewNote}
               </p>
             )}

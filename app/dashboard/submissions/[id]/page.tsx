@@ -45,7 +45,7 @@ export default async function SubmissionPage({
         {row.submission.snapshot.name} · v{row.version.versionLabel}
       </h1>
       <p className="mt-3">{row.submission.snapshot.summary}</p>
-      <p className="mt-5 rounded-xl bg-[#e9f4ef] p-4 text-sm">
+      <p className="mt-5 rounded-xl bg-safe/10 p-4 text-sm">
         Risk score {row.version.riskScore}/100 · {findings.length} findings.{" "}
         {row.submission.reviewNote || "Administrator decision pending."}
       </p>
@@ -57,7 +57,7 @@ export default async function SubmissionPage({
           <p className="mt-2 text-sm">{item.description}</p>
         </div>
       ))}
-      <div className="mt-7 rounded-2xl border border-border bg-white p-6">
+      <div className="mt-7 rounded-2xl border border-border bg-card p-6">
         <Markdown>{row.version.skillMdBody}</Markdown>
       </div>
       <Link
