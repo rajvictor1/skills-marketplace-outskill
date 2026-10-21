@@ -161,15 +161,14 @@ export default async function RecipeWorkbench() {
                   fields={v.inspection.inputFields}
                 />
               )}
+              <RecipeListingDraftForm
+                id={v.id}
+                recipeId={v.recipe_id}
+                draft={v.listing_draft}
+                reviewStatus={v.status}
+              />
               {v.status === "approved" && (
-                <>
-                  <RecipeListingDraftForm
-                    id={v.id}
-                    recipeId={v.recipe_id}
-                    draft={v.listing_draft}
-                  />
-                  <RecipePublicationForm id={v.id} draft={v.listing_draft} />
-                </>
+                <RecipePublicationForm id={v.id} draft={v.listing_draft} />
               )}
               <p className="mt-4 text-xs text-muted-foreground">
                 Private source record · Publication tracked at the admin review

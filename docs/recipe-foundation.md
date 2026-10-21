@@ -100,7 +100,7 @@ Verification on Preview: supplied research.question.frame v1.0.0 saved as a priv
 
 ## Editable private listing preview
 
-An approved private package can have an owner-only listing draft with an editable title, summary, category and subcategory. This is stored in `recipe_private.package_listing_drafts` in the Preview Supabase project and is never added to the public catalog by saving it. A license is not needed for this private team-testing step. The public publication flow remains separate and requires redistribution terms and permission when the owner elects to use it. The supplied research package remains private.
+Any private package version, including a draft with compatibility findings, can have an owner-only listing draft with an editable title, summary, category and subcategory. This is stored in `recipe_private.package_listing_drafts` in the Preview Supabase project and is never added to the public catalog by saving it. A license is not needed for this private team-testing step. The public publication flow remains separate and requires approved source, redistribution terms and permission when the owner elects to use it. The supplied research package remains private.
 
 ## Private sample input preview
 

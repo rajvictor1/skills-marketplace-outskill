@@ -110,10 +110,12 @@ export function RecipeListingDraftForm({
   id,
   recipeId,
   draft,
+  reviewStatus,
 }: {
   id: string;
   recipeId: string;
   draft: ListingDraft;
+  reviewStatus: string;
 }) {
   const [state, action, pending] = useActionState(saveRecipeListingPreview, {
     message: "",
@@ -135,8 +137,7 @@ export function RecipeListingDraftForm({
           <h4 className="mt-2 text-xl font-semibold">{draft.title}</h4>
           <p className="mt-2 text-sm text-muted-foreground">{draft.summary}</p>
           <p className="mt-4 text-xs text-muted-foreground">
-            Source: {recipeId} · Package review: approved · Runtime: unverified
-            · Visibility: private
+            Source: {recipeId} · Package review: {reviewStatus.replaceAll("_", " ")} · Runtime: unverified · Visibility: private
           </p>
         </div>
       )}
