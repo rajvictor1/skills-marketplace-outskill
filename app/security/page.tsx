@@ -56,11 +56,11 @@ export default function SecurityPage() {
             How we vet every recipe
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
-            A recipe is instructions and scripts that load straight into your
-            agent, so we read it before you do. Every submission runs through
-            three automatic checks and an optional AI classifier. Each saved
-            version then needs administrator approval before publication.
-            Nothing reaches the catalog until it clears that scan.
+            Before publication, a recipe package is checked for required files,
+            schemas, and suspicious content. Three static security layers inspect
+            its instructions and scripts without running them. An administrator
+            then reviews the submitted version and decides whether to publish it.
+            A scan does not verify that a recipe works in your environment.
           </p>
         </div>
 
@@ -77,11 +77,12 @@ export default function SecurityPage() {
               The scanner
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-              The four layers
+              Three static checks, plus an optional classifier
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              Each layer looks for a different class of attack. They run in
-              sequence, and their findings combine into a single risk score.
+              The first three layers inspect submitted files and combine their
+              findings into a risk score. The optional AI classifier is not used
+              for ZIP recipe package uploads in this Preview.
             </p>
           </div>
 
@@ -133,9 +134,9 @@ export default function SecurityPage() {
               Try the scanner yourself
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              This is the real engine, running on the server. Paste a recipe and
-              run it, or start from the malicious example and watch it get
-              blocked with the hidden payload decoded in front of you.
+              This server-side demo scans pasted text. You can start from the
+              malicious example to see a hidden payload detected. The demo
+              does not validate a full ZIP package or run a recipe.
             </p>
           </div>
           <div className="mt-10">
@@ -155,8 +156,8 @@ export default function SecurityPage() {
           </h2>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
             Every scan resolves to one of three outcomes. The same badge and the
-            same words follow the recipe across the catalog, its detail page, and
-            your install.
+            same words follow the recipe across the catalog and its detail page.
+            A badge is a scan result, not proof of runtime safety.
           </p>
         </div>
 
@@ -171,9 +172,9 @@ export default function SecurityPage() {
                 {tier === "verified_safe" &&
                   "No high-risk findings in the checks that ran. The scan badge is separate from administrator approval; a version stays private until it is approved."}
                 {tier === "caution" &&
-                  "Published, but the scanner flagged findings worth a look, like a script that makes a network call. You see every finding before you install."}
+                  "The scanner flagged findings or could not verify runtime behavior. An administrator may publish a reviewed recipe with this caution badge."}
                 {tier === "blocked" &&
-                  "A critical finding, like a hidden instruction payload or remote code execution. The recipe is rejected and never reaches the public catalog."}
+                  "A critical finding, like a hidden instruction payload or remote code execution. This version cannot be approved until the creator corrects it and resubmits."}
               </p>
             </div>
           ))}
@@ -191,7 +192,7 @@ export default function SecurityPage() {
             it is not a guarantee. We never claim to catch everything, and we
             never execute a submitted script. Treat the trust badge as informed
             defense in depth, not a promise, and keep reading the findings
-            before you install.
+            before you download or use a recipe.
           </AlertDescription>
         </Alert>
       </section>
@@ -203,9 +204,8 @@ export default function SecurityPage() {
             See the badges in the wild.
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">
-            Browse recipes that passed the scan, or submit your own and watch it
-            run through the configured scan layers and then administrator
-            review.
+            Browse administrator-approved recipes, or submit your own for
+            package checks, static scanning, and human review.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button size="lg" asChild>

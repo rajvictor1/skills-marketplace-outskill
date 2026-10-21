@@ -118,7 +118,7 @@ export const SCAN_LAYERS = [
     key: "dangerous_pattern",
     name: "Dangerous-instruction patterns",
     blurb:
-      "Flags prompt-override phrasing, secret/credential reads, and network exfiltration in the SKILL.md.",
+      "Flags prompt-override phrasing, secret/credential reads, and network exfiltration in submitted instructions and reference files.",
   },
   {
     key: "script_analysis",
