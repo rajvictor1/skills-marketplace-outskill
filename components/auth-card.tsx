@@ -77,11 +77,11 @@ export function AuthCard({
             <ShieldCheck className="size-4 text-[#a9ead2]" aria-hidden />
             Skills with a closer look
           </span>
-          <h2 className="mt-14 max-w-md text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.055em] text-white sm:text-5xl">
+          <p className="mt-14 max-w-md text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.055em] text-white sm:text-5xl">
             {isSignUp
               ? "A better place to build with AI skills."
               : "Welcome back to your skills."}
-          </h2>
+          </p>
           <p className="mt-5 max-w-md text-base leading-relaxed text-[#d4d6eb]">
             {isSignUp
               ? "Join Skillbuffet to publish your expertise and explore skills with visible security reviews."

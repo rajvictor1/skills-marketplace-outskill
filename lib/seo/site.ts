@@ -88,32 +88,32 @@ export const PUBLIC_PAGES: Record<
       "Explore AI agent skills by category, inspect instructions and review results, and download approved versions. Share your own SKILL.md for review.",
   },
   "/skills": {
-    title: "AI Agent Skills by Category, Use Case and Permissions",
+    title: "AI Agent Skills by Category and Use Case",
     description:
       "Browse AI agent skills for marketing, development, research and more. Compare compatibility, declared permissions and review results before downloading.",
   },
   "/categories": {
-    title: "AI Skill Categories for Business, Technology and Research",
+    title: "AI Agent Skill Categories and Specialties",
     description:
       "Explore Skillbuffet categories and specialties for marketing, software, research and everyday work. Find the right field for browsing or submitting a skill.",
   },
   "/about": {
-    title: "About Skillbuffet and Its AI Skill Review Process",
+    title: "About Skillbuffet and Its AI Agent Skill Review Process",
     description:
       "Learn what Skillbuffet does, who operates the beta, and how AI agent skills reach the public catalog through scanning and administrator review.",
   },
   "/how-it-works": {
-    title: "How to Find, Inspect and Use AI Agent Skills Safely",
+    title: "How to Find and Use Reviewed AI Agent Skills",
     description:
       "Follow the Skillbuffet workflow: browse a category, inspect instructions and permissions, download an approved SKILL.md, and use it in your own agent.",
   },
   "/docs": {
-    title: "AI Agent Skill Documentation and Publishing Guides",
+    title: "AI Skill Documentation and Publishing Guides",
     description:
       "Read Skillbuffet documentation for discovering, submitting and downloading AI agent skills. Find review standards, API endpoints and release notes.",
   },
   "/security": {
-    title: "AI Skill Security Scanning and Administrator Review",
+    title: "AI Skill Scanning and Administrator Review",
     description:
       "Understand Skillbuffet scanning for hidden text, dangerous instructions and script patterns. Learn what review checks cover and where their limits remain.",
   },
@@ -133,7 +133,7 @@ export const PUBLIC_PAGES: Record<
       "Review Skillbuffet beta terms for skill submissions, content rights, acceptable use and reviews. Understand your responsibilities before publishing or downloading.",
   },
   "/publish": {
-    title: "Submit an AI Agent Skill for Administrator Review",
+    title: "Submit AI Agent Skills for Administrator Review",
     description:
       "Upload or paste SKILL.md, choose a category and declare permissions. GitHub is optional for file uploads; every new skill version needs administrator approval.",
   },

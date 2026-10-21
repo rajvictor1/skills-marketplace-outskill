@@ -1,5 +1,10 @@
 import type { LucideIcon } from "lucide-react";
-import { ShieldAlert, ShieldCheck, ShieldX, ShieldQuestion } from "lucide-react";
+import {
+  ShieldAlert,
+  ShieldCheck,
+  ShieldX,
+  ShieldQuestion,
+} from "lucide-react";
 
 /**
  * Trust tiers are the product's whole point: every skill carries one, derived
@@ -27,7 +32,7 @@ export const TRUST_META: Record<
   verified_safe: {
     label: "Verified Safe",
     short: "Safe",
-    blurb: "Passed every automated check with no high-risk findings.",
+    blurb: "No high-risk findings reported by completed automated checks.",
     icon: ShieldCheck,
     dot: "bg-safe",
     text: "text-safe",
@@ -119,12 +124,12 @@ export const SCAN_LAYERS = [
     key: "script_analysis",
     name: "Static script analysis",
     blurb:
-      "Inspects bundled scripts for remote code execution, subprocess calls, and obfuscation. Never runs them.",
+      "Checks submitted text for script patterns such as remote execution, subprocess calls and obfuscation. Never executes it.",
   },
   {
     key: "llm_injection",
     name: "LLM injection classifier",
     blurb:
-      "A Claude model reads the skill and rates prompt-injection risk. A triage signal, not the final gate.",
+      "When configured and available, a Claude model adds a prompt-injection risk assessment. It can be skipped and is not the final gate.",
   },
 ] as const;

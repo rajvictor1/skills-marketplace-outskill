@@ -1,7 +1,7 @@
 import { pageMetadata } from "@/lib/seo/site";
 import { getCatalogState } from "@/lib/skills/catalog";
 import { Catalog } from "@/components/catalog";
-import { Breadcrumbs } from "@/components/seo/page-seo";
+import { Breadcrumbs, PageSeo } from "@/components/seo/page-seo";
 export const metadata = pageMetadata(
   "/search",
   "Search AI Agent Skills by Task, Creator or Category",
@@ -20,6 +20,12 @@ export default async function Search({
   ]);
   return (
     <main className="mx-auto max-w-7xl px-5 py-12">
+      <PageSeo
+        path="/search"
+        title="Search AI agent skills"
+        description="Search approved Skillbuffet listings by task, creator or tag."
+        crumbs={[{ name: "Search skills", path: "/search" }]}
+      />
       <Breadcrumbs items={[{ name: "Search skills", path: "/search" }]} />
       <h1 className="text-4xl font-semibold">Search AI agent skills</h1>
       <p className="my-6 text-lg text-muted-foreground">

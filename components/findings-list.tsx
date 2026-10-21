@@ -36,11 +36,15 @@ export function FindingsList({ findings }: { findings: SampleFinding[] }) {
   if (findings.length === 0) {
     return (
       <div className="flex items-start gap-3 rounded-lg bg-safe/10 p-4 ring-1 ring-inset ring-safe/25">
-        <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-safe" aria-hidden />
+        <CheckCircle2
+          className="mt-0.5 size-5 shrink-0 text-safe"
+          aria-hidden
+        />
         <div>
           <p className="text-sm font-medium text-safe">No findings</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Every scanner layer passed with nothing worth flagging.
+            No findings were reported. An optional classifier may not have run;
+            check the report and review the instructions yourself.
           </p>
         </div>
       </div>

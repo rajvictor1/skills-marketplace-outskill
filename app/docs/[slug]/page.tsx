@@ -10,7 +10,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const doc = DOCS[slug];
+  const doc = Object.hasOwn(DOCS, slug) ? DOCS[slug] : undefined;
   return doc
     ? pageMetadata(`/docs/${slug}`, `${doc.title}: AI Skill Guide`, doc.intro)
     : pageMetadata(
@@ -26,7 +26,7 @@ export default async function DocPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const doc = DOCS[slug];
+  const doc = Object.hasOwn(DOCS, slug) ? DOCS[slug] : undefined;
   if (!doc) notFound();
   return (
     <main className="mx-auto max-w-6xl px-5 py-12 lg:grid lg:grid-cols-[15rem_1fr] lg:gap-12">

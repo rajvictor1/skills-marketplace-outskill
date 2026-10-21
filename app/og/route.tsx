@@ -5,12 +5,14 @@ import { getCategoryBySlug, categorySlug } from "@/lib/skills/taxonomy";
 import { getCatalogSkillBySlug } from "@/lib/skills/catalog";
 export async function GET(request: Request) {
   const path = new URL(request.url).searchParams.get("path") ?? "/";
-  let title = PUBLIC_PAGES[path]?.title,
-    description = PUBLIC_PAGES[path]?.description;
+  let title: string | undefined = PUBLIC_PAGES[path]?.title,
+    description: string | undefined = PUBLIC_PAGES[path]?.description;
   const parts = path.split("/").filter(Boolean);
   if (parts[0] === "docs" && parts.length === 2) {
-    title = DOCS[parts[1]]?.title;
-    description = DOCS[parts[1]]?.intro;
+    title = Object.hasOwn(DOCS, parts[1]) ? DOCS[parts[1]].title : undefined;
+    description = Object.hasOwn(DOCS, parts[1])
+      ? DOCS[parts[1]].intro
+      : undefined;
   }
   if (parts[0] === "skills" && parts[1] === "categories" && parts.length >= 3) {
     const match = getCategoryBySlug(parts[2]);
