@@ -21,7 +21,7 @@ export const DOCS: Record<
       },
       {
         title: "What the report tells you",
-        body: "The report contains file integrity information, structural issues, required input fields, optional input validation, static scanner findings and runtime blockers. A contract can be structurally valid while its adapter remains unimplemented. Report readiness flags stay false; successful validation is not evidence of a live integration.",
+        body: "The report contains file integrity information, structural issues, required input fields, optional input validation, static scanner findings and runtime blockers. In the private workbench, use Preview required inputs with fictional guided values or a JSON object; the server checks the bundled schema and returns only validation errors, without storing those values. A contract can be structurally valid while its adapter remains unimplemented. Report readiness flags stay false; successful validation is not evidence of a live integration.",
       },
       {
         title: "Private upload and review",

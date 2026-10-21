@@ -7,10 +7,17 @@ import {
   type PackageEnvelope,
 } from "@/lib/recipes/package";
 import { SCANNER_VERSION } from "@/lib/scanner/types";
+import { isSkillCategory, getSubcategories } from "@/lib/skills/taxonomy";
 
 type Inspection = Awaited<ReturnType<typeof inspectRecipePackage>>;
 type ReviewStatus = "draft" | "pending_review" | "approved" | "rejected";
 export type PrivateRecipeVersion = {
+  listing_draft: {
+    title: string;
+    summary: string;
+    category: string;
+    subcategory: string;
+  } | null;
   id: string;
   recipe_id: string;
   version: string;
@@ -43,9 +50,11 @@ export async function listPrivateRecipeVersions() {
   await requireAdmin();
   return database()<PrivateRecipeVersion[]>`
     select v.id, v.recipe_id, v.version, v.manifest_path, v.package_hash,
-      v.created_at, r.status, r.review_note, v.inspection
+      v.created_at, r.status, r.review_note, v.inspection,
+      case when d.version_id is null then null else jsonb_build_object('title',d.title,'summary',d.summary,'category',d.category,'subcategory',d.subcategory) end as listing_draft
     from recipe_private.package_versions v
     join recipe_private.package_reviews r on r.version_id=v.id
+    left join recipe_private.package_listing_drafts d on d.version_id=v.id
     order by v.created_at desc limit 50`;
 }
 export async function getPrivateRecipeVersion(id: string) {
@@ -54,8 +63,11 @@ export async function getPrivateRecipeVersion(id: string) {
   const [row] = await database()<
     (PrivateRecipeVersion & { payload: PackageEnvelope })[]
   >`
-    select v.*, r.status, r.review_note from recipe_private.package_versions v
-    join recipe_private.package_reviews r on r.version_id=v.id where v.id=${id}`;
+    select v.*, r.status, r.review_note,
+      case when d.version_id is null then null else jsonb_build_object('title',d.title,'summary',d.summary,'category',d.category,'subcategory') end as listing_draft
+    from recipe_private.package_versions v
+    join recipe_private.package_reviews r on r.version_id=v.id
+    left join recipe_private.package_listing_drafts d on d.version_id=v.id where v.id=${id}`;
   return row ?? null;
 }
 export async function savePrivateRecipeVersion(raw: unknown, submit: boolean) {
@@ -166,5 +178,48 @@ export async function reviewPrivateRecipeVersion(
       review_note=${note}, updated_at=now() where version_id=${id}`;
     await tx`insert into recipe_private.review_events (version_id, actor_id, action, note)
       values (${id},${admin.id},${decision},${note})`;
+  });
+}
+
+export async function savePrivateListingDraft(
+  id: string,
+  raw: Record<string, string>,
+) {
+  const admin = await requireAdmin();
+  if (!/^[0-9a-f-]{36}$/i.test(id))
+    throw new RecipePackageError("Choose a valid private recipe version.");
+  const title = raw.title?.trim(),
+    summary = raw.summary?.trim(),
+    category = raw.category,
+    subcategory = raw.subcategory;
+  if (
+    !title ||
+    title.length < 3 ||
+    title.length > 100 ||
+    !summary ||
+    summary.length < 10 ||
+    summary.length > 500
+  )
+    throw new RecipePackageError(
+      "Use a title of 3–100 characters and a summary of 10–500 characters.",
+    );
+  if (
+    !isSkillCategory(category) ||
+    !getSubcategories(category).includes(subcategory)
+  )
+    throw new RecipePackageError(
+      "Choose a valid category and matching subcategory.",
+    );
+  return database().begin(async (tx) => {
+    const [version] = await tx<
+      { id: string }[]
+    >`select id from recipe_private.package_versions where id=${id}`;
+    if (!version)
+      throw new RecipePackageError("Private recipe version not found.");
+    await tx`insert into recipe_private.package_listing_drafts
+      (version_id,title,summary,category,subcategory,updated_by)
+      values (${id},${title},${summary},${category},${subcategory},${admin.id})
+      on conflict (version_id) do update set title=excluded.title, summary=excluded.summary,
+        category=excluded.category, subcategory=excluded.subcategory, updated_by=excluded.updated_by, updated_at=now()`;
   });
 }

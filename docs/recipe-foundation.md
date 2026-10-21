@@ -97,3 +97,11 @@ The two database writes are intentionally not a distributed transaction. The Sup
 The public integration guide is generated separately from source files. The original manifest/schema bundle is delivered as recipe-package.json; it is not relabeled as executable SKILL.md. Listings carry caution status and explicitly show that runtime execution is unverified. Owner confirmation of redistribution rights is required before the handoff; no license is inferred from a supplied ZIP.
 
 Verification on Preview: supplied research.question.frame v1.0.0 saved as a private draft, submitted, approved for private contract inspection, and downloaded with all 41 files identical to the prepared local package. Its adapter remains unimplemented. This evidence does not establish runtime execution or public redistribution rights. Publication authorization/integrity gates have focused automated checks.
+
+## Editable private listing preview
+
+An approved private package can have an owner-only listing draft with an editable title, summary, category and subcategory. This is stored in `recipe_private.package_listing_drafts` in the Preview Supabase project and is never added to the public catalog by saving it. A license is not needed for this private team-testing step. The public publication flow remains separate and requires redistribution terms and permission when the owner elects to use it. The supplied research package remains private.
+
+## Private sample input preview
+
+The owner/team workbench builds guided fields from the bundled JSON Schema and provides a JSON mode for nested values. A server action converts typed values, applies a 32 KB input limit and reuses the static package inspector for schema validation. Only validation status and issue locations return to the browser. Sample values are not persisted in Supabase, Neon or audit events; use fictional values. This checks the contract only and never calls a runtime adapter or provider.

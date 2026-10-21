@@ -9,6 +9,8 @@ import {
 import { privateRobots } from "@/lib/seo/site";
 import {
   RecipePublicationForm,
+  RecipeListingDraftForm,
+  RecipeInputPreview,
   RecipePackageUpload,
   RecipePackageReview,
 } from "@/components/recipe-package-form";
@@ -125,7 +127,22 @@ export default async function RecipeWorkbench() {
               {(v.status === "draft" || v.status === "pending_review") && (
                 <RecipePackageReview id={v.id} status={v.status} />
               )}
-              {v.status === "approved" && <RecipePublicationForm id={v.id} />}
+              {v.inspection.inputFields.length > 0 && (
+                <RecipeInputPreview
+                  id={v.id}
+                  fields={v.inspection.inputFields}
+                />
+              )}
+              {v.status === "approved" && (
+                <>
+                  <RecipeListingDraftForm
+                    id={v.id}
+                    recipeId={v.recipe_id}
+                    draft={v.listing_draft}
+                  />
+                  <RecipePublicationForm id={v.id} draft={v.listing_draft} />
+                </>
+              )}
               <p className="mt-4 text-xs text-muted-foreground">
                 Private source record · Publication tracked at the admin review
                 desk · Installed: no · Runtime verified: no · Active: no

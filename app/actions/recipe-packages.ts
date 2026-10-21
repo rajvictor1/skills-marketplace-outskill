@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/admin";
 import { consumeRecipeInspectionLimit } from "@/lib/recipes/access";
 import { MAX_PACKAGE_BYTES, RecipePackageError } from "@/lib/recipes/package";
 import {
+  savePrivateListingDraft,
   savePrivateRecipeVersion,
   reviewPrivateRecipeVersion,
 } from "@/lib/recipes/storage";
@@ -101,6 +102,62 @@ export async function stageRecipePublication(
       message: result.existing
         ? "This version already has a marketplace submission. Open the admin review desk to view its status."
         : "Marketplace submission prepared. Open the admin review desk to inspect the files and approve publication. It is not public yet.",
+    };
+  } catch (error) {
+    return failure(error);
+  }
+}
+
+export type RecipeInputState = {
+  message: string;
+  valid?: boolean;
+  issues?: { path: string; keyword: string; missingProperty?: string }[];
+};
+export async function checkRecipeSampleInput(
+  _state: RecipeInputState,
+  form: FormData,
+): Promise<RecipeInputState> {
+  try {
+    const { inspectPrivateRecipeInput } = await import(
+      "@/lib/recipes/input-preview"
+    );
+    const result = await inspectPrivateRecipeInput(
+      String(form.get("versionId") ?? ""),
+      form,
+    );
+    return {
+      message: result.valid
+        ? "Sample input matches the bundled schema. No values were stored."
+        : "Sample input needs changes. No values were stored.",
+      valid: result.valid,
+      issues: result.issues,
+    };
+  } catch (error) {
+    return {
+      message:
+        error instanceof RecipePackageError
+          ? error.message
+          : "Sample validation is unavailable. Try again later.",
+    };
+  }
+}
+
+export async function saveRecipeListingPreview(
+  _state: RecipeActionState,
+  form: FormData,
+): Promise<RecipeActionState> {
+  try {
+    await savePrivateListingDraft(String(form.get("versionId") ?? ""), {
+      title: String(form.get("title") ?? ""),
+      summary: String(form.get("summary") ?? ""),
+      category: String(form.get("category") ?? ""),
+      subcategory: String(form.get("subcategory") ?? ""),
+    });
+    revalidatePath("/admin/recipes");
+    return {
+      ok: true,
+      message:
+        "Private listing preview saved. You can revise the title, summary and category at any time.",
     };
   } catch (error) {
     return failure(error);
