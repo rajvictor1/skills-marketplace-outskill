@@ -39,6 +39,10 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-surface-ivory: var(--surface-ivory);
+  --color-category-violet: var(--category-violet);
+  --color-category-teal: var(--category-teal);
+  --color-category-peach: var(--category-peach);
   /* Trust-tier semantic tokens — each maps to a real skill security state. */
   --color-safe: var(--safe);
   --color-safe-foreground: var(--safe-foreground);
@@ -55,9 +59,9 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Circle-inspired product system: clean product surfaces and a cinematic hero. */
+/* Skillbuffet: a navy brand shell, warm canvas, and purposeful category colors. */
 :root {
-  --background: #f8f8fb;
+  --background: #fbfbf8;
   --foreground: #14152b;
   --card: #ffffff;
   --card-foreground: #14152b;
@@ -95,6 +99,13 @@
   --sidebar-accent-foreground: #252646;
   --sidebar-border: #e2e3ed;
   --sidebar-ring: #4a64e9;
+  --surface-ivory: #fbfbf8;
+  --category-violet: #efecff;
+  --category-violet-ink: #3026a7;
+  --category-teal: #e5f5ef;
+  --category-teal-ink: #125541;
+  --category-peach: #fff0e8;
+  --category-peach-ink: #854737;
 }
 
 /* Scope dark tokens to atmospheric brand sections without darkening product UI. */
@@ -138,9 +149,55 @@
 
 .editorial-kicker { letter-spacing: .16em; text-transform: uppercase; font-size: .72rem; font-weight: 700; }
 
+/* Category colors identify the field; security states retain their own tokens. */
+.category-group[data-tone="violet"] {
+  --category-surface: var(--category-violet);
+  --category-ink: var(--category-violet-ink);
+}
+.category-group[data-tone="teal"] {
+  --category-surface: var(--category-teal);
+  --category-ink: var(--category-teal-ink);
+}
+.category-group[data-tone="peach"] {
+  --category-surface: var(--category-peach);
+  --category-ink: var(--category-peach-ink);
+}
+.category-group {
+  border-color: color-mix(in srgb, var(--category-ink) 15%, white);
+  box-shadow: 0 8px 28px #14152b06;
+}
+.category-group-header {
+  background: var(--category-surface);
+  color: var(--category-ink);
+  border-color: color-mix(in srgb, var(--category-ink) 12%, white);
+}
+.category-link {
+  transition: background-color 180ms ease;
+}
+.category-link:hover,
+.category-link:focus-visible {
+  background: var(--category-surface);
+}
+.category-link:focus-visible {
+  outline: 2px solid var(--category-ink);
+  outline-offset: -2px;
+}
+.category-link:hover .category-label,
+.category-link:focus-visible .category-label,
+.category-link:hover .category-arrow,
+.category-link:focus-visible .category-arrow {
+  color: var(--category-ink);
+}
+.category-arrow {
+  transition: transform 180ms ease;
+}
+.category-link:hover .category-arrow {
+  transform: translate(2px, -2px);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .brand-button { transition: none; }
-  .brand-button:hover { transform: none; }
+  .brand-button, .category-link, .category-arrow { transition: none; }
+  .brand-button:hover, .category-link:hover .category-arrow { transform: none; }
 }
 
 @layer base {
