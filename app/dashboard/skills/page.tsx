@@ -62,7 +62,7 @@ export default async function MySkillsPage() {
           {admin && (
             <Link
               href="/admin"
-              className="rounded-full border border-primary px-5 py-3 text-sm font-semibold text-primary"
+              className="cta-secondary rounded-full border border-primary px-5 py-3 text-sm font-semibold text-primary"
             >
               Admin review desk
             </Link>

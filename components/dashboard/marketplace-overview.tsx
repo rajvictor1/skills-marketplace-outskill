@@ -116,7 +116,7 @@ export function MarketplaceOverview({
             id="overview-range"
             value={range}
             onChange={(e) => setRange(e.target.value as RangeKey)}
-            className="h-10 max-w-full rounded-lg border border-border bg-card px-3 text-xs text-foreground"
+            className="h-11 max-w-full rounded-lg border border-border bg-card px-3 text-xs text-foreground"
           >
             {RANGES.map((item) => (
               <option key={item.key} value={item.key}>
@@ -126,14 +126,14 @@ export function MarketplaceOverview({
           </select>
           <Link
             href="/publish?source=github"
-            className="inline-flex h-10 items-center gap-2 rounded-lg border border-border bg-card px-3 text-xs font-medium hover:bg-secondary"
+            className="cta-secondary inline-flex h-11 items-center gap-2 rounded-lg border border-border bg-card px-3 text-xs font-medium hover:bg-secondary"
           >
             <GitBranch className="size-3.5" aria-hidden />
             Import repository
           </Link>
           <Link
             href="/publish"
-            className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#6958ea] px-4 text-xs font-semibold text-white hover:bg-[#7969f1]"
+            className="cta-primary inline-flex h-11 items-center gap-2 rounded-lg bg-[#6958ea] px-4 text-xs font-semibold text-white hover:bg-[#7969f1]"
           >
             Publish a skill <ArrowUpRight className="size-3.5" aria-hidden />
           </Link>

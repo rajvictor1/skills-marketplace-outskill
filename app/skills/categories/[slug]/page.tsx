@@ -80,7 +80,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             </div>
             <Link
               href={`/publish?category=${slug}`}
-              className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-white/50 px-6 text-sm font-semibold text-white transition-colors hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              className="cta-secondary inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-white/50 px-6 text-sm font-semibold text-white transition-colors hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
               Publish in this field{" "}
               <ArrowUpRight className="size-4" aria-hidden />

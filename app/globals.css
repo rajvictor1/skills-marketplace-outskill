@@ -495,3 +495,34 @@ main :where(h1, h2, p, dd) {
 main article {
   min-width: 0;
 }
+
+.cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  border: 1px solid var(--input);
+  border-radius: 0.75rem;
+  background: var(--card);
+  color: var(--foreground);
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+.cta-secondary:hover {
+  background: var(--secondary);
+  border-color: #8e83c5;
+}
+.cta-primary[data-size^="icon"],
+.cta-secondary[data-size^="icon"] {
+  min-width: 2.75rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta-secondary {
+    transition: none;
+  }
+}

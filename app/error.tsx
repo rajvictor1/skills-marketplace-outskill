@@ -28,7 +28,7 @@ export default function ErrorPage({
         </button>
         <Link
           href="/"
-          className="rounded-full border border-border px-5 py-3 text-sm font-semibold"
+          className="cta-secondary rounded-full border border-border px-5 py-3 text-sm font-semibold"
         >
           Back to home
         </Link>

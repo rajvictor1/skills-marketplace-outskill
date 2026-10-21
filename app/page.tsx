@@ -72,7 +72,7 @@ export default async function Home() {
               </Link>
               <Link
                 href="/publish"
-                className="inline-flex h-13 min-w-44 items-center justify-center gap-2 rounded-full border border-white/50 px-7 text-sm font-semibold text-white transition-colors hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                className="cta-secondary inline-flex h-13 min-w-44 items-center justify-center gap-2 rounded-full border border-white/50 px-7 text-sm font-semibold text-white transition-colors hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               >
                 Publish a skill <ArrowUpRight className="size-4" aria-hidden />
               </Link>
