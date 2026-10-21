@@ -49,7 +49,8 @@ export default function SecurityPage() {
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
             A skill is instructions and scripts that load straight into your
             agent, so we read it before you do. Every submission runs through
-            four independent layers, and the result is one honest trust badge.
+            three automatic checks and an optional AI classifier. Each saved
+            version then needs administrator approval before publication.
             Nothing reaches the catalog until it clears that scan.
           </p>
         </div>
@@ -159,7 +160,7 @@ export default function SecurityPage() {
               <TrustBadge tier={tier} showBlurb />
               <p className="text-sm leading-relaxed text-muted-foreground">
                 {tier === "verified_safe" &&
-                  "Clean across all four layers, or only informational notes. It ships with the emerald badge and appears everywhere in the catalog."}
+                  "No high-risk findings in the checks that ran. The scan badge is separate from administrator approval; a version stays private until it is approved."}
                 {tier === "caution" &&
                   "Published, but the scanner flagged findings worth a look, like a script that makes a network call. You see every finding before you install."}
                 {tier === "blocked" &&
@@ -174,9 +175,7 @@ export default function SecurityPage() {
       <section className="mx-auto max-w-3xl px-4 pb-20 sm:px-6">
         <Alert className="border-caution/25 bg-caution/10 text-caution">
           <ShieldOff className="size-4" aria-hidden />
-          <AlertTitle className="text-caution">
-            What we do not claim
-          </AlertTitle>
+          <AlertTitle className="text-caution">What we do not claim</AlertTitle>
           <AlertDescription className="text-foreground/80">
             Prompt injection is not a fully solved problem, and we will not
             pretend otherwise. Automated vetting meaningfully reduces risk, but
@@ -196,7 +195,8 @@ export default function SecurityPage() {
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">
             Browse skills that passed the scan, or submit your own and watch it
-            run through all four layers.
+            run through the configured scan layers and then administrator
+            review.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button size="lg" asChild>

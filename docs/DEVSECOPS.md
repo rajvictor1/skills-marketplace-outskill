@@ -86,3 +86,25 @@ liveness probe so a database incident is diagnosed accurately.
 | Production release approval | Pending team policy and account setting |
 | Runtime monitoring | `/api/health` liveness route added; external alerting pending |
 | Governance and evidence | Pull request checks and scan reports; branch rule and release log pending |
+
+## Nine lifecycle stages and evidence (21 October 2026)
+
+| Stage | Repository evidence | Limit / owner setting |
+| --- | --- | --- |
+| Plan | README, docs/ADMIN-OPERATIONS.md, changelog | Product priorities remain operator owned |
+| Create | Git branch and pull request; immutable skill versions and content hashes | Application changes require code review |
+| Verify | ESLint, TypeScript, scanner and authorization tests in .github/workflows/devsecops.yml | Passing checks do not prove all behavior safe |
+| Package | Committed pnpm lockfile, frozen CI install, Next build | Dependency audit is advisory-database coverage |
+| Secure | Submission scanner, server-side admin authorization, same-origin download POST, sanitized Markdown | AI classifier optional; no antivirus engine or code-execution sandbox |
+| Release | Vercel Preview plus separate production branch workflow; admin approve/publish per saved version | Main merge/production promotion still needs operator release decision |
+| Configure | .env.example, migrations, explicit administrator provisioning | Never commit credentials; configure production independently |
+| Monitor | /api/health, Vercel logs, review events, download records | External uptime alerts and agent execution telemetry not connected |
+| Govern | Review queue, reasons, per-version approvals, unpublish controls, review moderation, beta policies | Branch protection, legal details, retention and private contact require operator configuration |
+
+The pipeline is on the implementation branch until its pull request is merged into `main`. The presence of a workflow is not evidence that every stage passed in a run: inspect the commit's GitHub check results and Vercel deployment state. [GitHub's secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use) explains immutable SHA-pinned actions.
+
+## Source analysis and verified account settings
+
+`.github/workflows/codeql.yml` adds GitHub CodeQL analysis for JavaScript/TypeScript using an official action pinned to immutable commit `f051dc808ef3645eb0d08647ec751634ec2304ac`. Its first run must be checked before describing source analysis as passed. The existing DevSecOps workflow also runs the scanner and authorization regression suite.
+
+A repository API read on 21 October 2026 confirmed **Secret scanning enabled** and **Secret scanning push protection enabled**. Dependabot security updates were disabled at that read. These are account settings, so verify again before release. Do not describe them as enabled by the application code.

@@ -11,6 +11,9 @@ import {
   TerminalSquare,
 } from "lucide-react";
 
+import { getRatings } from "@/lib/community";
+import { RatingSummary } from "@/components/community-reviews";
+import { SKILL_CATEGORY_NAMES } from "@/lib/skills/taxonomy";
 import { Button } from "@/components/ui/button";
 import { ScanPreview } from "@/components/scan-preview";
 import { SkillCard } from "@/components/skill-card";
@@ -29,10 +32,17 @@ const LAYER_ICONS = {
 
 export default async function Home() {
   await headers();
-  const catalog = await getCatalogState();
+  const [catalog, reviews] = await Promise.all([
+    getCatalogState(),
+    getRatings("marketplace"),
+  ]);
   const featured = catalog.skills.slice(0, 3);
-  const exampleCount = catalog.skills.filter((skill) => skill.metadata?.isSample).length;
-  const coveredCategories = new Set(catalog.skills.map((skill) => skill.category)).size;
+  const exampleCount = catalog.skills.filter(
+    (skill) => skill.metadata?.isSample,
+  ).length;
+  const coveredCategories = new Set(
+    catalog.skills.map((skill) => skill.category),
+  ).size;
 
   return (
     <main className="overflow-hidden">
@@ -40,49 +50,84 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-5xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-medium text-white/90 backdrop-blur-md">
-              <ShieldCheck className="size-4 text-[#a9ead2]" aria-hidden />
-              A more thoughtful home for AI agent skills
+              <ShieldCheck className="size-4 text-[#a9ead2]" aria-hidden />A
+              more thoughtful home for AI agent skills
             </span>
             <h1 className="mt-9 text-balance text-[clamp(3.2rem,7.5vw,7.4rem)] font-semibold leading-[0.99] tracking-[-0.065em] text-white">
-              Discover skills.<br />
+              Discover skills.
+              <br />
               <span className="text-[#b9c6ff]">Know what&apos;s inside.</span>
             </h1>
             <p className="mx-auto mt-8 max-w-2xl text-balance text-lg leading-relaxed text-[#d9dbf0] sm:text-xl">
-              Explore useful AI agent skills, see how each one was reviewed, and publish your own expertise in one curated marketplace.
+              Explore useful AI agent skills, see how each one was reviewed, and
+              publish your own expertise in one curated marketplace.
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link href="/skills" className="brand-button inline-flex h-13 min-w-44 items-center justify-center gap-2 rounded-full px-7 text-sm font-semibold">
+              <Link
+                href="/skills"
+                className="brand-button inline-flex h-13 min-w-44 items-center justify-center gap-2 rounded-full px-7 text-sm font-semibold"
+              >
                 Explore skills <ArrowRight className="size-4" aria-hidden />
               </Link>
-              <Link href="/publish" className="inline-flex h-13 min-w-44 items-center justify-center gap-2 rounded-full border border-white/50 px-7 text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+              <Link
+                href="/publish"
+                className="inline-flex h-13 min-w-44 items-center justify-center gap-2 rounded-full border border-white/50 px-7 text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              >
                 Publish a skill <ArrowUpRight className="size-4" aria-hidden />
               </Link>
             </div>
-            <p className="mt-12 text-xs font-medium uppercase tracking-[0.2em] text-[#aeb1d2]">Built for creators · teams · AI builders</p>
+            <div className="mx-auto mt-9 flex max-w-xl flex-wrap items-center justify-center gap-4 rounded-2xl border border-white/20 bg-white/10 p-5 text-white">
+              <RatingSummary average={reviews.average} count={reviews.count} />
+              <Link
+                href="/reviews"
+                className="text-sm font-semibold text-[#d6d0ff] underline underline-offset-4"
+              >
+                {reviews.count
+                  ? "Read community reviews"
+                  : "Be the first to review Skillbuffet"}
+              </Link>
+            </div>
+            <p className="mt-12 text-xs font-medium uppercase tracking-[0.2em] text-[#aeb1d2]">
+              Built for creators · teams · AI builders
+            </p>
           </div>
 
           <div className="relative mx-auto mt-12 max-w-5xl rounded-[2rem] border border-white/20 bg-white/10 p-2 shadow-[0_32px_100px_#06091f99] sm:mt-16 sm:p-3">
-            <div className="absolute inset-x-16 -top-12 -z-10 h-36 rounded-full bg-[#5875ff]/30 blur-3xl" aria-hidden />
+            <div
+              className="absolute inset-x-16 -top-12 -z-10 h-36 rounded-full bg-[#5875ff]/30 blur-3xl"
+              aria-hidden
+            />
             <ScanPreview />
           </div>
-          <p className="mt-5 text-center text-xs text-[#b6b9d2]">A product preview of Skillbuffet&apos;s scanner. The example shown is a blocked submission.</p>
+          <p className="mt-5 text-center text-xs text-[#b6b9d2]">
+            An illustrative scanner example showing how a dangerous submission
+            is blocked.
+          </p>
         </div>
       </section>
 
-      <section className="bg-white px-5 py-24 text-foreground sm:px-8 lg:py-32">
+      <section className="bg-[#faf7ef] px-5 py-24 text-foreground sm:px-8 lg:py-32">
         <div className="mx-auto grid max-w-7xl items-start gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-24">
           <div>
-            <p className="editorial-kicker text-primary">One clear place to start</p>
+            <p className="editorial-kicker text-primary">
+              One clear place to start
+            </p>
             <h2 className="mt-5 max-w-2xl text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.05em] sm:text-5xl lg:text-6xl">
               From a useful idea to a skill people can trust.
             </h2>
           </div>
           <div className="lg:pt-9">
             <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Skillbuffet brings discovery, review, and publishing together. Find a skill by the work it helps you do, read its instructions, and inspect its security result before you install it.
+              Skillbuffet brings discovery, review, and publishing together.
+              Find a skill by the work it helps you do, read its instructions,
+              and inspect its security result before you install it.
             </p>
-            <Link href="#categories" className="mt-9 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
-              Explore all 18 categories <ArrowRight className="size-4" aria-hidden />
+            <Link
+              href="#categories"
+              className="mt-9 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+            >
+              Explore all {SKILL_CATEGORY_NAMES.length} categories{" "}
+              <ArrowRight className="size-4" aria-hidden />
             </Link>
           </div>
         </div>
@@ -93,19 +138,44 @@ export default async function Home() {
       <section className="bg-[#f3f5fb] px-5 py-24 sm:px-8 lg:py-32">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
-            <p className="editorial-kicker text-primary">How Skillbuffet works</p>
-            <h2 className="mt-4 text-balance text-4xl font-semibold leading-tight tracking-[-0.05em] sm:text-5xl">A simple journey, with the details that matter.</h2>
+            <p className="editorial-kicker text-primary">
+              How Skillbuffet works
+            </p>
+            <h2 className="mt-4 text-balance text-4xl font-semibold leading-tight tracking-[-0.05em] sm:text-5xl">
+              A simple journey, with the details that matter.
+            </h2>
           </div>
           <div className="mt-14 grid gap-0 border-y border-border lg:grid-cols-3">
             {[
-              ["01", "Discover", "Browse skills by category, search for a use case, and compare what each one does."],
-              ["02", "Inspect", "Read the skill and its scan findings before deciding whether it belongs in your agent."],
-              ["03", "Publish", "Submit your own skill. Critical findings block publication until the issue is resolved."],
+              [
+                "01",
+                "Discover",
+                "Browse skills by category, search for a use case, and compare what each one does.",
+              ],
+              [
+                "02",
+                "Inspect",
+                "Read the skill and its scan findings before deciding whether it belongs in your agent.",
+              ],
+              [
+                "03",
+                "Publish",
+                "Submit your skill for scanning and administrator review. It becomes public only after approval.",
+              ],
             ].map(([number, title, description]) => (
-              <div key={number} className="border-b border-border py-9 last:border-b-0 lg:border-b-0 lg:border-r lg:px-9 lg:first:pl-0 lg:last:border-r-0">
-                <span className="font-mono text-xs font-semibold text-primary">{number}</span>
-                <h3 className="mt-6 text-2xl font-semibold tracking-[-0.04em]">{title}</h3>
-                <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">{description}</p>
+              <div
+                key={number}
+                className="border-b border-border py-9 last:border-b-0 lg:border-b-0 lg:border-r lg:px-9 lg:first:pl-0 lg:last:border-r-0"
+              >
+                <span className="font-mono text-xs font-semibold text-primary">
+                  {number}
+                </span>
+                <h3 className="mt-6 text-2xl font-semibold tracking-[-0.04em]">
+                  {title}
+                </h3>
+                <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                  {description}
+                </p>
               </div>
             ))}
           </div>
@@ -116,52 +186,122 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="grid items-end gap-8 lg:grid-cols-[1fr_0.9fr]">
             <div>
-              <p className="editorial-kicker text-[#aebcff]">The review layer</p>
-              <h2 className="mt-4 max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.05em] sm:text-5xl lg:text-6xl">Good skills deserve a closer look.</h2>
+              <p className="editorial-kicker text-[#aebcff]">
+                The review layer
+              </p>
+              <h2 className="mt-4 max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.05em] sm:text-5xl lg:text-6xl">
+                Good skills deserve a closer look.
+              </h2>
             </div>
-            <p className="max-w-xl text-base leading-relaxed text-[#c8cae1] lg:pb-2">Every submission passes four automated checks for hidden instructions, risky patterns, scripts, and prompt injection. A critical finding blocks publication.</p>
+            <p className="max-w-xl text-base leading-relaxed text-[#c8cae1] lg:pb-2">
+              Every submission is scanned for hidden instructions, risky
+              patterns and scripts. An optional AI classifier adds another
+              check. An administrator reviews each version before it becomes
+              public.
+            </p>
           </div>
           <div className="mt-14 grid gap-px overflow-hidden rounded-[1.8rem] border border-white/15 bg-white/15 md:grid-cols-2 lg:grid-cols-4">
             {SCAN_LAYERS.map((layer, index) => {
               const Icon = LAYER_ICONS[layer.key];
-              return <div key={layer.key} className="bg-[#1b1d49] p-7 sm:p-8">
-                <span className="flex size-11 items-center justify-center rounded-full bg-[#aebcff]/15 text-[#b9c6ff]"><Icon className="size-5" aria-hidden /></span>
-                <span className="mt-8 block font-mono text-xs text-[#aeb1d2]">0{index + 1} / 04</span>
-                <h3 className="mt-2 text-xl font-semibold tracking-[-0.035em]">{layer.name}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#bfc1d7]">{layer.blurb}</p>
-              </div>;
+              return (
+                <div key={layer.key} className="bg-[#1b1d49] p-7 sm:p-8">
+                  <span className="flex size-11 items-center justify-center rounded-full bg-[#aebcff]/15 text-[#b9c6ff]">
+                    <Icon className="size-5" aria-hidden />
+                  </span>
+                  <span className="mt-8 block font-mono text-xs text-[#aeb1d2]">
+                    0{index + 1} / 04
+                  </span>
+                  <h3 className="mt-2 text-xl font-semibold tracking-[-0.035em]">
+                    {layer.name}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-[#bfc1d7]">
+                    {layer.blurb}
+                  </p>
+                </div>
+              );
             })}
           </div>
-          <p className="mt-6 max-w-3xl text-sm leading-relaxed text-[#bfc1d7]">Automated scanning reduces risk; it cannot guarantee that every skill is safe. Always review permissions and code before installing.</p>
-          <Link href="/security" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#c2cdff] hover:underline">See how vetting works <ArrowRight className="size-4" aria-hidden /></Link>
+          <p className="mt-6 max-w-3xl text-sm leading-relaxed text-[#bfc1d7]">
+            Automated scanning reduces risk; it cannot guarantee that every
+            skill is safe. Always review permissions and code before installing.
+          </p>
+          <Link
+            href="/security"
+            className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#c2cdff] hover:underline"
+          >
+            See how vetting works <ArrowRight className="size-4" aria-hidden />
+          </Link>
         </div>
       </section>
 
-      <section className="bg-white px-5 py-24 sm:px-8 lg:py-32">
+      <section className="bg-[#faf7ef] px-5 py-24 sm:px-8 lg:py-32">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
             <div>
-              <p className="editorial-kicker text-primary">Marketplace preview</p>
-              <h2 className="mt-4 max-w-2xl text-balance text-4xl font-semibold leading-tight tracking-[-0.05em] sm:text-5xl">Find your next useful skill.</h2>
-              <p className="mt-4 max-w-xl text-base text-muted-foreground">Explore skills across marketing, sales, and technical workflows.</p>
+              <p className="editorial-kicker text-primary">
+                The curated collection
+              </p>
+              <h2 className="mt-4 max-w-2xl text-balance text-4xl font-semibold leading-tight tracking-[-0.05em] sm:text-5xl">
+                Find your next useful skill.
+              </h2>
+              <p className="mt-4 max-w-xl text-base text-muted-foreground">
+                Explore skills across marketing, sales, and technical workflows.
+              </p>
             </div>
-            <Button size="lg" asChild className="brand-button h-11 rounded-full px-6"><Link href="/skills">Browse all skills <ArrowRight className="size-4" aria-hidden /></Link></Button>
+            <Button
+              size="lg"
+              asChild
+              className="brand-button h-11 rounded-full px-6"
+            >
+              <Link href="/skills">
+                Browse all skills <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            </Button>
           </div>
-          {featured.length > 0 && <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((skill) => <SkillCard key={skill.id} skill={skill} />)}
-          </div>}
-          {exampleCount > 0 && <div className="mt-8 max-w-3xl"><DemoDataNotice>Example skills in this preview have not been submitted, scanned, or installed.</DemoDataNotice></div>}
+          {featured.length > 0 && (
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {featured.map((skill) => (
+                <SkillCard key={skill.id} skill={skill} />
+              ))}
+            </div>
+          )}
+          {exampleCount > 0 && (
+            <div className="mt-8 max-w-3xl">
+              <DemoDataNotice>
+                Example skills in this preview have not been submitted, scanned,
+                or installed.
+              </DemoDataNotice>
+            </div>
+          )}
         </div>
       </section>
 
       <section className="bg-[#f3f5fb] px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
-          {exampleCount > 0 && <div className="mb-5 max-w-3xl"><DemoDataNotice>{`Catalog counts include ${exampleCount} local preview examples. They are not customer activity or live adoption data.`}</DemoDataNotice></div>}
+          {exampleCount > 0 && (
+            <div className="mb-5 max-w-3xl">
+              <DemoDataNotice>{`Catalog counts include ${exampleCount} local preview examples. They are not customer activity or live adoption data.`}</DemoDataNotice>
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-8 border-t border-border pt-10 lg:grid-cols-4">
-            <Stat value={String(catalog.skills.length)} label="Catalog skills" />
-            <Stat value={String(coveredCategories)} label="Covered categories" />
-            <Stat value={String(WORKFLOW_TEMPLATES.length)} label="Workflow template" />
-            <Stat value="4" label="Checks on every submission" />
+            <Stat
+              value={String(catalog.skills.length)}
+              label="Catalog skills"
+            />
+            <Stat
+              value={String(coveredCategories)}
+              label="Covered categories"
+            />
+            <Stat
+              value={String(WORKFLOW_TEMPLATES.length)}
+              label="Workflow template"
+            />
+            <Stat
+              value={String(
+                catalog.skills.reduce((sum, skill) => sum + skill.installs, 0),
+              )}
+              label="Recorded downloads"
+            />
           </div>
         </div>
       </section>
@@ -169,9 +309,19 @@ export default async function Home() {
       <section className="brand-hero dark-surface px-5 py-24 text-center text-foreground sm:px-8 lg:py-32">
         <div className="mx-auto max-w-3xl">
           <BadgeCheck className="mx-auto size-11 text-[#b7c7ff]" aria-hidden />
-          <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.05em] sm:text-6xl">Your expertise deserves a better home.</h2>
-          <p className="mx-auto mt-5 max-w-xl text-lg text-[#d8daef]">Publish an AI agent skill, see its review result, and make it discoverable to the people who need it.</p>
-          <Link href="/publish" className="brand-button mt-9 inline-flex h-13 items-center justify-center gap-2 rounded-full px-8 text-sm font-semibold">Publish a skill <ArrowRight className="size-4" aria-hidden /></Link>
+          <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.05em] sm:text-6xl">
+            Your expertise deserves a better home.
+          </h2>
+          <p className="mx-auto mt-5 max-w-xl text-lg text-[#d8daef]">
+            Publish an AI agent skill, see its review result, and make it
+            discoverable to the people who need it.
+          </p>
+          <Link
+            href="/publish"
+            className="brand-button mt-9 inline-flex h-13 items-center justify-center gap-2 rounded-full px-8 text-sm font-semibold"
+          >
+            Publish a skill <ArrowRight className="size-4" aria-hidden />
+          </Link>
         </div>
       </section>
     </main>
@@ -179,5 +329,12 @@ export default async function Home() {
 }
 
 function Stat({ value, label }: { value: string; label: string }) {
-  return <div><p className="text-3xl font-semibold tracking-[-0.05em] sm:text-4xl">{value}</p><p className="mt-2 text-sm text-muted-foreground">{label}</p></div>;
+  return (
+    <div>
+      <p className="text-3xl font-semibold tracking-[-0.05em] sm:text-4xl">
+        {value}
+      </p>
+      <p className="mt-2 text-sm text-muted-foreground">{label}</p>
+    </div>
+  );
 }

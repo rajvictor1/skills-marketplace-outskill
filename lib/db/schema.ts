@@ -24,6 +24,7 @@ export interface SkillMetadata {
   dataHandling?: string;
   documentationUrl?: string;
   supportUrl?: string;
+  githubUrl?: string;
 }
 
 // Re-export the Better Auth tables so a single `schema` module holds everything
@@ -64,10 +65,7 @@ export const findingSeverity = pgEnum("finding_severity", [
   "critical",
 ]);
 
-export const findingSource = pgEnum("finding_source", [
-  "deterministic",
-  "llm",
-]);
+export const findingSource = pgEnum("finding_source", ["deterministic", "llm"]);
 
 /* --------------------------------------------------------------- tables -- */
 
@@ -121,7 +119,7 @@ export const skillVersion = pgTable(
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [
-    uniqueIndex("skill_version_skill_hash_idx").on(t.skillId, t.contentHash),
+    uniqueIndex("skill_version_skill_label_idx").on(t.skillId, t.versionLabel),
     uniqueIndex("skill_version_skill_version_idx").on(t.skillId, t.version),
   ],
 );
@@ -239,3 +237,97 @@ export type SkillVersion = typeof skillVersion.$inferSelect;
 export type SkillFile = typeof skillFile.$inferSelect;
 export type ScanResultRow = typeof scanResult.$inferSelect;
 export type Finding = typeof finding.$inferSelect;
+
+export interface ListingSnapshot {
+  name: string;
+  description: string;
+  summary: string;
+  category: string;
+  subcategory: string;
+  tags: string[];
+  metadata: SkillMetadata;
+  source: "upload" | "github";
+  sourceUrl?: string;
+}
+
+// Administrator privileges are provisioned by the operator, never at sign-up.
+export const marketplaceAdmin = pgTable("marketplace_admin", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const skillSubmission = pgTable("skill_submission", {
+  id: text("id").primaryKey(),
+  skillId: text("skill_id")
+    .notNull()
+    .references(() => skill.id, { onDelete: "cascade" }),
+  versionId: text("version_id")
+    .notNull()
+    .unique()
+    .references(() => skillVersion.id, { onDelete: "cascade" }),
+  snapshot: jsonb("snapshot").$type<ListingSnapshot>().notNull(),
+  status: text("status")
+    .$type<
+      "pending" | "approved" | "changes_requested" | "rejected" | "blocked"
+    >()
+    .notNull()
+    .default("pending"),
+  reviewerId: text("reviewer_id").references(() => user.id, {
+    onDelete: "set null",
+  }),
+  reviewNote: text("review_note"),
+  reviewedAt: timestamp("reviewed_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const reviewEvent = pgTable("review_event", {
+  id: text("id").primaryKey(),
+  actorId: text("actor_id").references(() => user.id, { onDelete: "set null" }),
+  skillId: text("skill_id").references(() => skill.id, {
+    onDelete: "set null",
+  }),
+  action: text("action").notNull(),
+  note: text("note").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const skillDownload = pgTable(
+  "skill_download",
+  {
+    id: text("id").primaryKey(),
+    skillId: text("skill_id")
+      .notNull()
+      .references(() => skill.id, { onDelete: "cascade" }),
+    versionId: text("version_id")
+      .notNull()
+      .references(() => skillVersion.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("skill_download_user_version_idx").on(t.userId, t.versionId),
+  ],
+);
+
+export const communityRating = pgTable(
+  "community_rating",
+  {
+    id: text("id").primaryKey(),
+    target: text("target").notNull(), // "marketplace" or a published skill id
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    stars: integer("stars").notNull(),
+    comment: text("comment").notNull().default(""),
+    hidden: boolean("hidden").notNull().default(false),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("community_rating_user_target_idx").on(t.userId, t.target),
+  ],
+);

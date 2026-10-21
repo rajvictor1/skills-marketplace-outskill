@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Eye, FileWarning, TerminalSquare, Bot, ShieldCheck } from "lucide-react";
+import {
+  Eye,
+  FileWarning,
+  TerminalSquare,
+  Bot,
+  ShieldCheck,
+} from "lucide-react";
 
 import { PublishForm } from "@/components/publish-form";
 import { getCategoryBySlug } from "@/lib/skills/taxonomy";
@@ -18,9 +24,16 @@ const LAYER_ICONS = {
   llm_injection: Bot,
 } as const;
 
-export default async function PublishPage({ searchParams }: { searchParams: Promise<{ category?: string | string[] }> }) {
+export default async function PublishPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string | string[] }>;
+}) {
   const requestedCategory = (await searchParams).category;
-  const selectedCategory = typeof requestedCategory === "string" ? getCategoryBySlug(requestedCategory)?.category.name : undefined;
+  const selectedCategory =
+    typeof requestedCategory === "string"
+      ? getCategoryBySlug(requestedCategory)?.category.name
+      : undefined;
   return (
     <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-16">
       <div className="max-w-2xl">
@@ -33,9 +46,9 @@ export default async function PublishPage({ searchParams }: { searchParams: Prom
         </h1>
         <p className="mt-3 text-base leading-relaxed text-muted-foreground">
           Paste your SKILL.md, upload that file, or import a public repo. Every
-          submission runs through four independent scanner layers before it can
-          reach the catalog. A single critical finding blocks publication, so
-          the trust badge on a listed skill actually means something.
+          submission is checked by the scanner and then reviewed by the
+          administrator. Your skill stays private until the administrator
+          approves this version. Critical scanner findings block the submission.
         </p>
       </div>
 
@@ -47,8 +60,8 @@ export default async function PublishPage({ searchParams }: { searchParams: Prom
             What we check
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Four layers read every submission. Bundled scripts are analyzed
-            statically and never executed.
+            Three automatic checks read the file; an optional AI classifier runs
+            when configured. Submitted instructions are never executed.
           </p>
 
           <ul className="mt-5 grid gap-3">

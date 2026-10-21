@@ -1,43 +1,170 @@
+export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Package, ShieldCheck } from "lucide-react";
-import { getCreatorWorkspace } from "@/lib/dashboard-queries";
-import { Button } from "@/components/ui/button";
-import { DemoDataNotice } from "@/components/dashboard/demo-data-notice";
+import { desc, eq } from "drizzle-orm";
+import { getViewer, isAdmin } from "@/lib/admin";
+import { db } from "@/lib/db";
+import { skill, skillSubmission, skillVersion } from "@/lib/db/schema";
 import { TrustBadge } from "@/components/trust-badge";
-
-export const metadata: Metadata = { title: "My skills" };
-
-function StateNotice({ title, body, href, label }: { title: string; body: string; href?: string; label?: string }) {
-  return <div className="rounded-2xl border border-border bg-card p-8 text-center sm:p-12"><span className="mx-auto flex size-11 items-center justify-center rounded-xl bg-secondary text-primary"><Package className="size-5" aria-hidden /></span><h2 className="mt-4 text-lg font-semibold">{title}</h2><p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">{body}</p>{href && label && <Button asChild className="mt-5"><Link href={href}>{label}<ArrowRight className="size-4" aria-hidden /></Link></Button>}</div>;
-}
-
+export const metadata: Metadata = {
+  title: "My skills",
+  robots: { index: false },
+};
 export default async function MySkillsPage() {
-  const workspace = await getCreatorWorkspace();
-  const published = workspace.status === "ready" ? workspace.skills.filter((item) => item.status === "published").length : 0;
-  const installs = workspace.status === "ready" ? workspace.skills.reduce((total, item) => total + item.installs, 0) : 0;
-  return <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-    <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-xs font-medium uppercase tracking-[0.16em] text-primary">Creator workspace</p><h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">My skills</h1><p className="mt-2 text-sm text-muted-foreground">Manage submissions saved to your creator account.</p></div><Button asChild><Link href="/publish">Publish a skill <ArrowRight className="size-4" aria-hidden /></Link></Button></div>
-    {workspace.status === "ready" && <div className="mb-5 grid gap-3 sm:grid-cols-3"><SmallMetric label="Your submissions" value={workspace.skills.length.toLocaleString()} /><SmallMetric label="Published" value={published.toLocaleString()} /><SmallMetric label="Installs" value={installs.toLocaleString()} /></div>}
-    {workspace.status === "no_database" && <><DemoDataNotice>This creator workspace will show actual submissions after a Postgres database is configured and migrated. The example marketplace skills are not owned by your account.</DemoDataNotice><div className="mt-5"><StateNotice title="Creator storage is not configured" body="Publishing saves the submitted SKILL.md snapshot and scan report in the marketplace database. Set DATABASE_URL and apply the database migrations before accepting submissions." /></div></>}
-    {workspace.status === "signed_out" && <StateNotice title="Sign in to view your skills" body="Creator submissions are private to the account that uploaded them. Sign in to view your published and blocked submissions." href="/auth/sign-in" label="Sign in" />}
-    {workspace.status === "unavailable" && <StateNotice title="We could not load your creator workspace" body="Check the database connection and confirm the latest database migration has been applied. Your saved submissions have not been changed." />}
-    {workspace.status === "ready" && workspace.skills.length === 0 && <StateNotice title="Your creator workspace is ready" body="You have not submitted a skill yet. Add your SKILL.md, choose its category, declare its permissions, and review the scanner report before publishing." href="/publish" label="Publish your first skill" />}
-    {workspace.status === "ready" && workspace.skills.length > 0 && <>
-      <div className="mb-4 flex items-center gap-2 rounded-xl border border-border bg-card/70 px-4 py-3 text-xs text-muted-foreground"><ShieldCheck className="size-4 text-primary" aria-hidden />These rows come from your signed-in creator account. Install activity and agent runs are not tracked yet, so recorded install counters may remain at zero.</div>
-      <div className="overflow-hidden rounded-2xl border border-border bg-card">
-        <div className="hidden grid-cols-[minmax(14rem,2fr)_1fr_0.8fr_0.7fr_0.7fr] gap-4 border-b border-border px-5 py-3 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground md:grid"><span>Skill</span><span>Status</span><span>Security review</span><span>Installs</span><span>Updated</span></div>
-        <div className="divide-y divide-border/70">{workspace.skills.map((item) => <article key={item.id} className="grid gap-3 px-5 py-4 md:grid-cols-[minmax(14rem,2fr)_1fr_0.8fr_0.7fr_0.7fr] md:items-center md:gap-4">
-          <div className="min-w-0"><Link href={item.status === "published" ? `/skills/${item.slug}` : "/security"} className="font-medium hover:text-primary">{item.name}</Link><p className="mt-1 truncate text-xs text-muted-foreground">{item.category}{item.subcategory ? ` · ${item.subcategory}` : ""}{item.version ? ` · v${item.version}` : ""}</p><p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{item.summary ?? "No marketplace summary"}</p></div>
-          <div><span className={`inline-flex rounded-full px-2.5 py-1 text-xs capitalize ${item.status === "published" ? "bg-primary/10 text-primary" : item.status === "blocked" ? "bg-danger/10 text-danger" : "bg-secondary text-muted-foreground"}`}>{item.status}</span></div>
-          <div>{item.trustTier === "pending" ? <span className="text-xs text-muted-foreground">Pending scan</span> : <TrustBadge tier={item.trustTier} />}{item.riskScore !== null && <p className="mt-1 text-[10px] text-muted-foreground">Risk score {item.riskScore}/100</p>}</div>
-          <div className="font-mono text-sm">{item.installs.toLocaleString()}<span className="ml-1 text-[10px] font-sans text-muted-foreground md:hidden">installs</span></div>
-          <time dateTime={item.updatedAt.toISOString()} className="text-xs text-muted-foreground">{item.updatedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</time>
-        </article>)}</div>
+  const session = await getViewer();
+  if (!session?.user)
+    return (
+      <main className="p-10">
+        <h1 className="text-3xl font-semibold">Your creator workspace</h1>
+        <p className="mt-4">
+          Sign in to see your private submissions and review decisions.
+        </p>
+        <Link
+          href="/auth/sign-in"
+          className="mt-5 inline-block text-primary underline"
+        >
+          Sign in
+        </Link>
+      </main>
+    );
+  const [rows, admin] = await Promise.all([
+    db
+      .select({
+        listing: skill,
+        submission: skillSubmission,
+        version: skillVersion,
+      })
+      .from(skill)
+      .leftJoin(skillSubmission, eq(skillSubmission.skillId, skill.id))
+      .leftJoin(skillVersion, eq(skillSubmission.versionId, skillVersion.id))
+      .where(eq(skill.authorId, session.user.id))
+      .orderBy(desc(skillSubmission.createdAt)),
+    isAdmin(session.user.id),
+  ]);
+  const unique = [
+    ...new Map(rows.map((row) => [row.listing.id, row.listing])).values(),
+  ];
+  return (
+    <main className="mx-auto max-w-6xl px-5 py-10">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="editorial-kicker text-primary">Creator workspace</p>
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight">
+            Your skills, from draft to discovery.
+          </h1>
+          <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
+            New skills and updates are private until an administrator approves
+            the exact version. For an update, upload the same skill ID with a
+            new version number.
+          </p>
+        </div>
+        <div className="flex gap-3">
+          {admin && (
+            <Link
+              href="/admin"
+              className="rounded-full border border-primary px-5 py-3 text-sm font-semibold text-primary"
+            >
+              Admin review desk
+            </Link>
+          )}
+          <Link
+            href="/publish"
+            className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
+          >
+            Submit a skill
+          </Link>
+        </div>
       </div>
-    </>}
-    <p className="mt-6 text-xs leading-relaxed text-muted-foreground">Submitted content and its scan results are stored with the marketplace database; they are not added to this application&apos;s source code repository.</p>
-  </main>;
+      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        {[
+          [unique.length, "Skills"],
+          [unique.filter((s) => s.status === "published").length, "Published"],
+          [
+            rows.filter((r) => r.submission?.status === "pending").length,
+            "Pending reviews",
+          ],
+        ].map(([value, label]) => (
+          <div
+            key={label}
+            className="rounded-2xl border border-border bg-card p-6"
+          >
+            <p className="text-3xl font-semibold">{value}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{label}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-8 space-y-4">
+        {rows.map(({ listing, submission, version }) => (
+          <article
+            key={submission?.id ?? listing.id}
+            className="rounded-2xl border border-border bg-card p-6"
+          >
+            <div className="flex flex-wrap justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-semibold">
+                  {submission?.snapshot.name ?? listing.name}
+                </h2>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {submission?.snapshot.category ?? listing.category} · v
+                  {version?.versionLabel ?? "—"}
+                </p>
+              </div>
+              <div>
+                <p className="rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold capitalize text-primary">
+                  {submission?.status === "pending"
+                    ? "Pending admin review"
+                    : (submission?.status.replaceAll("_", " ") ??
+                      listing.status)}
+                </p>
+                {version && (
+                  <div className="mt-2">
+                    <TrustBadge tier={version.trustTier} />
+                  </div>
+                )}
+              </div>
+            </div>
+            <p className="mt-4 text-sm">
+              {submission?.snapshot.summary ?? listing.summary}
+            </p>
+            {submission?.reviewNote && (
+              <p className="mt-4 rounded-xl bg-[#f2edff] p-4 text-sm">
+                <strong>Admin feedback:</strong> {submission.reviewNote}
+              </p>
+            )}
+            <div className="mt-4 flex flex-wrap gap-4 text-sm">
+              {submission && (
+                <Link
+                  href={`/dashboard/submissions/${submission.id}`}
+                  className="font-semibold text-primary underline"
+                >
+                  Inspect your submission
+                </Link>
+              )}
+              {listing.status === "published" && (
+                <Link
+                  href={`/skills/${listing.slug}`}
+                  className="font-semibold text-primary underline"
+                >
+                  View approved public version
+                </Link>
+              )}
+              <span className="text-muted-foreground">
+                {listing.downloadCount} recorded downloads
+              </span>
+            </div>
+          </article>
+        ))}
+      </div>
+      {!rows.length && (
+        <div className="mt-8 rounded-2xl border border-dashed border-border p-10">
+          <h2 className="text-xl font-semibold">
+            Start with one useful skill.
+          </h2>
+          <p className="mt-3 text-muted-foreground">
+            Upload your SKILL.md, choose a category, and send it for review.
+          </p>
+        </div>
+      )}
+    </main>
+  );
 }
-
-function SmallMetric({ label, value }: { label: string; value: string }) { return <div className="rounded-xl border border-border bg-card p-4"><p className="text-xs text-muted-foreground">{label}</p><p className="mt-2 font-mono text-2xl font-semibold">{value}</p></div>; }

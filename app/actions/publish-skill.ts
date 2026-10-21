@@ -15,6 +15,8 @@ import {
   skill,
   skillFile,
   skillVersion,
+  skillSubmission,
+  reviewEvent,
 } from "@/lib/db/schema";
 import { scanSkill, type AnthropicLike } from "@/lib/scanner";
 import { parseSkill, SkillParseError } from "@/lib/skills/parse";
@@ -23,8 +25,20 @@ import { getSubcategories, isSkillCategory } from "@/lib/skills/taxonomy";
 const MAX_SKILL_BYTES = 256 * 1024;
 const MAX_SUMMARY = 280;
 const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
-const LICENSES = new Set(["MIT", "Apache-2.0", "CC-BY-4.0", "Proprietary", "Other"]);
-const COMPATIBILITY = new Set(["Claude Code", "Claude Desktop", "Cursor", "Windsurf", "Other agent"]);
+const LICENSES = new Set([
+  "MIT",
+  "Apache-2.0",
+  "CC-BY-4.0",
+  "Proprietary",
+  "Other",
+]);
+const COMPATIBILITY = new Set([
+  "Claude Code",
+  "Claude Desktop",
+  "Cursor",
+  "Windsurf",
+  "Other agent",
+]);
 const PERMISSIONS = new Set([
   "Read local files",
   "Write or modify files",
@@ -42,10 +56,16 @@ export type PublishState =
       message: string;
       findingCount: number;
       existingVersionKept: boolean;
-      findings: { severity: string; title: string; description: string; filePath: string | null; evidence?: string }[];
+      findings: {
+        severity: string;
+        title: string;
+        description: string;
+        filePath: string | null;
+        evidence?: string;
+      }[];
     }
   | {
-      status: "published";
+      status: "submitted";
       skillName: string;
       slug: string;
       trustTier: "verified_safe" | "caution";
@@ -56,8 +76,20 @@ function field(formData: FormData, key: string): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function getMultiValue(formData: FormData, key: string, limit: number): string[] {
-  return [...new Set(formData.getAll(key).map(String).map((value) => value.trim()).filter(Boolean))].slice(0, limit);
+function getMultiValue(
+  formData: FormData,
+  key: string,
+  limit: number,
+): string[] {
+  return [
+    ...new Set(
+      formData
+        .getAll(key)
+        .map(String)
+        .map((value) => value.trim())
+        .filter(Boolean),
+    ),
+  ].slice(0, limit);
 }
 
 async function readGitHubSkill(repositoryUrl: string): Promise<string> {
@@ -79,8 +111,13 @@ async function readGitHubSkill(repositoryUrl: string): Promise<string> {
   }
 
   const parts = url.pathname.split("/").filter(Boolean);
-  if (parts.length !== 2 || !parts.every((part) => /^[A-Za-z0-9_.-]+$/.test(part))) {
-    throw new Error("Use a repository URL in the format github.com/owner/repository.");
+  if (
+    parts.length !== 2 ||
+    !parts.every((part) => /^[A-Za-z0-9_.-]+$/.test(part))
+  ) {
+    throw new Error(
+      "Use a repository URL in the format github.com/owner/repository.",
+    );
   }
 
   const [owner, repository] = parts;
@@ -97,13 +134,17 @@ async function readGitHubSkill(repositoryUrl: string): Promise<string> {
     requestOptions,
   );
   if (!repositoryResponse.ok) {
-    throw new Error("We could not read that public repository. Check the URL and try again.");
+    throw new Error(
+      "We could not read that public repository. Check the URL and try again.",
+    );
   }
 
   const repositoryData: unknown = await repositoryResponse.json();
   const branch =
-    typeof repositoryData === "object" && repositoryData !== null &&
-    "default_branch" in repositoryData && typeof repositoryData.default_branch === "string"
+    typeof repositoryData === "object" &&
+    repositoryData !== null &&
+    "default_branch" in repositoryData &&
+    typeof repositoryData.default_branch === "string"
       ? repositoryData.default_branch
       : "main";
   const branchPath = branch.split("/").map(encodeURIComponent).join("/");
@@ -115,16 +156,21 @@ async function readGitHubSkill(repositoryUrl: string): Promise<string> {
   });
 
   if (!skillResponse.ok) {
-    throw new Error("The repository must contain a SKILL.md file in its root folder.");
+    throw new Error(
+      "The repository must contain a SKILL.md file in its root folder.",
+    );
   }
 
-  const contentLength = Number(skillResponse.headers.get("content-length") ?? 0);
+  const contentLength = Number(
+    skillResponse.headers.get("content-length") ?? 0,
+  );
   if (contentLength > MAX_SKILL_BYTES) {
     throw new Error("SKILL.md is larger than the 256 KB upload limit.");
   }
 
   const reader = skillResponse.body?.getReader();
-  if (!reader) throw new Error("We could not read SKILL.md from that repository.");
+  if (!reader)
+    throw new Error("We could not read SKILL.md from that repository.");
   const chunks: Uint8Array[] = [];
   let size = 0;
   try {
@@ -164,7 +210,11 @@ async function readSubmission(formData: FormData): Promise<{
   if (sourceType === "github") {
     const sourceUrl = field(formData, "repositoryUrl");
     if (!sourceUrl) throw new Error("Enter a public GitHub repository URL.");
-    return { raw: await readGitHubSkill(sourceUrl), source: "github", sourceUrl };
+    return {
+      raw: await readGitHubSkill(sourceUrl),
+      source: "github",
+      sourceUrl,
+    };
   }
 
   if (sourceType === "upload") {
@@ -186,7 +236,8 @@ async function readSubmission(formData: FormData): Promise<{
     }
   }
 
-  if (sourceType !== "paste") throw new Error("Choose how you want to submit the skill.");
+  if (sourceType !== "paste")
+    throw new Error("Choose how you want to submit the skill.");
   const raw = field(formData, "skillMd");
   if (!raw) throw new Error("Paste the contents of your SKILL.md file.");
   if (Buffer.byteLength(raw, "utf8") > MAX_SKILL_BYTES) {
@@ -211,6 +262,25 @@ function validateDetails(formData: FormData) {
   const requestedPermissions = getMultiValue(formData, "permission", 8);
   const documentationUrl = field(formData, "documentationUrl");
   const supportUrl = field(formData, "supportUrl");
+  const githubUrl = field(formData, "githubUrl");
+  if (githubUrl) {
+    try {
+      const url = new URL(githubUrl);
+      if (
+        url.protocol !== "https:" ||
+        url.hostname !== "github.com" ||
+        url.username ||
+        url.password ||
+        url.port ||
+        !/^\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/.test(url.pathname) ||
+        url.search ||
+        url.hash
+      )
+        issues.push("GitHub URL must be https://github.com/owner/repository.");
+    } catch {
+      issues.push("Enter a valid GitHub repository URL or leave it blank.");
+    }
+  }
 
   if (displayName.length < 3 || displayName.length > 80) {
     issues.push("Skill title must be between 3 and 80 characters.");
@@ -236,13 +306,19 @@ function validateDetails(formData: FormData) {
   if (requestedPermissions.some((item) => !PERMISSIONS.has(item))) {
     issues.push("Choose declared permissions from the list.");
   }
-  for (const [label, value] of [["Documentation", documentationUrl], ["Support", supportUrl]] as const) {
-    if (value.length > 500) issues.push(`${label} URL must be 500 characters or fewer.`);
+  for (const [label, value] of [
+    ["Documentation", documentationUrl],
+    ["Support", supportUrl],
+  ] as const) {
+    if (value.length > 500)
+      issues.push(`${label} URL must be 500 characters or fewer.`);
     if (value) {
       try {
         const url = new URL(value);
         if (url.protocol !== "https:" || url.username || url.password) {
-          issues.push(`${label} URL must use HTTPS and must not include sign-in credentials.`);
+          issues.push(
+            `${label} URL must use HTTPS and must not include sign-in credentials.`,
+          );
         }
       } catch {
         issues.push(`${label} URL must be a valid HTTPS address.`);
@@ -250,7 +326,9 @@ function validateDetails(formData: FormData) {
     }
   }
   if (formData.get("rightsConfirmed") !== "on") {
-    issues.push("Confirm that you have the right to publish this skill and its files.");
+    issues.push(
+      "Confirm that you have the right to publish this skill and its files.",
+    );
   }
 
   if (issues.length) return { issues } as const;
@@ -271,6 +349,7 @@ function validateDetails(formData: FormData) {
       dataHandling: field(formData, "dataHandling").slice(0, 1000),
       documentationUrl,
       supportUrl,
+      githubUrl,
     },
   } as const;
 }
@@ -282,7 +361,8 @@ export async function publishSkill(
   if (!process.env.DATABASE_URL) {
     return {
       status: "error",
-      message: "Publishing needs a Postgres database. Configure DATABASE_URL, then sign in to save a skill.",
+      message:
+        "Publishing needs a Postgres database. Configure DATABASE_URL, then sign in to save a skill.",
     };
   }
 
@@ -292,19 +372,25 @@ export async function publishSkill(
   } catch {
     return {
       status: "error",
-      message: "The publishing database is unavailable. Check DATABASE_URL and database migrations.",
+      message:
+        "The publishing database is unavailable. Check DATABASE_URL and database migrations.",
     };
   }
   if (!session?.user) {
     return {
       status: "unauthorized",
-      message: "Sign in first. Your skill is not stored until you are signed in.",
+      message:
+        "Sign in first. Your skill is not stored until you are signed in.",
     };
   }
 
   const details = validateDetails(formData);
   if ("issues" in details) {
-    return { status: "error", message: "Check the publishing details below.", issues: details.issues };
+    return {
+      status: "error",
+      message: "Check the publishing details below.",
+      issues: details.issues,
+    };
   }
 
   let submission: Awaited<ReturnType<typeof readSubmission>>;
@@ -313,7 +399,10 @@ export async function publishSkill(
   } catch (error) {
     return {
       status: "error",
-      message: error instanceof Error ? error.message : "We could not read that submission.",
+      message:
+        error instanceof Error
+          ? error.message
+          : "We could not read that submission.",
     };
   }
 
@@ -327,7 +416,10 @@ export async function publishSkill(
     if (error instanceof SkillParseError) {
       return { status: "error", message: error.message, issues: error.issues };
     }
-    return { status: "error", message: "SKILL.md frontmatter could not be read." };
+    return {
+      status: "error",
+      message: "SKILL.md frontmatter could not be read.",
+    };
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -338,7 +430,10 @@ export async function publishSkill(
   try {
     scan = await scanSkill(bundle, { anthropic, timeoutMs: 12_000 });
   } catch {
-    return { status: "error", message: "The security scan failed. Nothing was saved; try again." };
+    return {
+      status: "error",
+      message: "The security scan failed. Nothing was saved; try again.",
+    };
   }
 
   const skillId = createId();
@@ -354,6 +449,7 @@ export async function publishSkill(
     dataHandling: details.value.dataHandling,
     documentationUrl: details.value.documentationUrl,
     supportUrl: details.value.supportUrl,
+    githubUrl: submission.sourceUrl ?? details.value.githubUrl,
   };
 
   try {
@@ -362,6 +458,7 @@ export async function publishSkill(
         .select()
         .from(skill)
         .where(eq(skill.slug, bundle.skillMd.frontmatter.name))
+        .for("update")
         .limit(1);
 
       if (existing && existing.authorId !== session.user.id) {
@@ -459,33 +556,48 @@ export async function publishSkill(
         );
       }
 
-      if (scan.trustTier !== "blocked") {
+      await tx.insert(skillSubmission).values({
+        id: createId(),
+        skillId: targetSkillId,
+        versionId,
+        status: scan.trustTier === "blocked" ? "blocked" : "pending",
+        snapshot: {
+          name: details.value.displayName,
+          description: bundle.skillMd.frontmatter.description,
+          summary: details.value.summary,
+          category: details.value.category,
+          subcategory: details.value.subcategory,
+          tags: details.value.tags,
+          metadata,
+          source: submission.source,
+          sourceUrl: submission.sourceUrl,
+        },
+      });
+      await tx
+        .insert(reviewEvent)
+        .values({
+          id: createId(),
+          actorId: session.user.id,
+          skillId: targetSkillId,
+          action: scan.trustTier === "blocked" ? "scan_blocked" : "submitted",
+          note: `Version ${details.value.versionLabel} ${scan.trustTier === "blocked" ? "blocked by scanner" : "awaiting admin review"}.`,
+        });
+      // Existing approved metadata and version stay untouched until an administrator approves.
+      if (existing)
         await tx
           .update(skill)
-          .set({
-            name: details.value.displayName,
-            description: bundle.skillMd.frontmatter.description,
-            summary: details.value.summary,
-            category: details.value.category,
-            subcategory: details.value.subcategory,
-            tags: details.value.tags,
-            metadata,
-            status: "published",
-            latestTrustTier: scan.trustTier,
-            currentVersionId: versionId,
-            source: submission.source,
-            sourceUrl: submission.sourceUrl,
-            updatedAt: new Date(),
-          })
+          .set({ updatedAt: new Date() })
           .where(eq(skill.id, targetSkillId));
-      }
 
-      return { existingVersionKept: Boolean(existing && scan.trustTier === "blocked") };
+      return {
+        existingVersionKept: Boolean(existing && scan.trustTier === "blocked"),
+      };
     });
 
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/skills");
     revalidatePath("/skills");
+    revalidatePath("/admin");
 
     if (scan.trustTier === "blocked") {
       return {
@@ -506,7 +618,7 @@ export async function publishSkill(
     }
 
     return {
-      status: "published",
+      status: "submitted",
       skillName: details.value.displayName,
       slug: bundle.skillMd.frontmatter.name,
       trustTier: scan.trustTier,
@@ -515,12 +627,14 @@ export async function publishSkill(
     if (error instanceof Error && error.message === "SKILL_ID_IN_USE") {
       return {
         status: "error",
-        message: "That SKILL.md name is already used by another creator. Choose a unique name in its frontmatter.",
+        message:
+          "That SKILL.md name is already used by another creator. Choose a unique name in its frontmatter.",
       };
     }
     return {
       status: "error",
-      message: "We could not save this skill. Check that the database migration has been applied, then try again.",
+      message:
+        "We could not save this version. Use a new version number for updates, and check that the latest database migration has been applied.",
     };
   }
 }

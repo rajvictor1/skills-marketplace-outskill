@@ -15,6 +15,13 @@
       "when": 1792488707146,
       "tag": "0001_skill_metadata",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792570384251,
+      "tag": "0002_admin_reviews_and_community",
+      "breakpoints": true
     }
   ]
 }

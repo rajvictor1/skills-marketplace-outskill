@@ -15,7 +15,8 @@ import {
 import { TrustBadge } from "@/components/trust-badge";
 import { FindingsList } from "@/components/findings-list";
 import { Markdown } from "@/components/markdown";
-import { InstallCommand } from "@/components/install-command";
+import { RatingSummary, ReviewForm } from "@/components/community-reviews";
+import { getRatings } from "@/lib/community";
 import { DemoDataNotice } from "@/components/dashboard/demo-data-notice";
 import { SEVERITY_META } from "@/lib/trust";
 import { getCatalogSkillBySlug } from "@/lib/skills/catalog";
@@ -27,7 +28,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const lookup = await getCatalogSkillBySlug(slug);
-  if (lookup.status !== "found") return { title: lookup.status === "unavailable" ? "Catalog unavailable" : "Skill not found" };
+  if (lookup.status !== "found")
+    return {
+      title:
+        lookup.status === "unavailable"
+          ? "Catalog unavailable"
+          : "Skill not found",
+    };
   const { skill } = lookup;
   return { title: skill.name, description: skill.summary };
 }
@@ -41,9 +48,20 @@ export default async function SkillDetailPage({
   const { slug } = await params;
   const lookup = await getCatalogSkillBySlug(slug);
   if (lookup.status === "not_found") notFound();
-  if (lookup.status === "unavailable") return <main className="mx-auto max-w-4xl px-4 py-16 sm:px-6"><DemoDataNotice>The catalog database is currently unavailable, so this listing could not be confirmed. Check the database connection and migrations, then try again.</DemoDataNotice></main>;
+  if (lookup.status === "unavailable")
+    return (
+      <main className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+        <DemoDataNotice>
+          The catalog database is currently unavailable, so this listing could
+          not be confirmed. Check the database connection and migrations, then
+          try again.
+        </DemoDataNotice>
+      </main>
+    );
   const { skill } = lookup;
-  const isExample = lookup.source === "demo" || Boolean(skill.metadata?.isSample);
+  const ratings = await getRatings(skill.id);
+  const isExample =
+    lookup.source === "demo" || Boolean(skill.metadata?.isSample);
 
   const severityCounts = skill.findings.reduce<Record<string, number>>(
     (acc, f) => {
@@ -70,8 +88,18 @@ export default async function SkillDetailPage({
             <span className="rounded-md bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">
               {skill.category}
             </span>
-            {skill.subcategory && <span className="rounded-md border border-border px-2 py-0.5 text-xs text-muted-foreground">{skill.subcategory}</span>}
-            {isExample ? <span className="rounded-full border border-primary/20 bg-primary/[0.07] px-2.5 py-1 text-xs font-semibold text-primary">Example skill</span> : <TrustBadge tier={skill.trustTier} />}
+            {skill.subcategory && (
+              <span className="rounded-md border border-border px-2 py-0.5 text-xs text-muted-foreground">
+                {skill.subcategory}
+              </span>
+            )}
+            {isExample ? (
+              <span className="rounded-full border border-primary/20 bg-primary/[0.07] px-2.5 py-1 text-xs font-semibold text-primary">
+                Example skill
+              </span>
+            ) : (
+              <TrustBadge tier={skill.trustTier} />
+            )}
             <span className="font-mono text-xs text-muted-foreground">
               v{skill.version}
             </span>
@@ -82,7 +110,18 @@ export default async function SkillDetailPage({
           <p className="mt-2 max-w-2xl text-base text-muted-foreground">
             {skill.summary}
           </p>
-          {skill.tags?.length ? <div className="mt-3 flex flex-wrap gap-2">{skill.tags.map((tag) => <span key={tag} className="rounded-full border border-border px-2.5 py-1 text-xs text-muted-foreground">{tag}</span>)}</div> : null}
+          {skill.tags?.length ? (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {skill.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-border px-2.5 py-1 text-xs text-muted-foreground"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          ) : null}
 
           <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
@@ -92,75 +131,128 @@ export default async function SkillDetailPage({
               <span className="text-foreground">{skill.author.name}</span>
               <span>· {skill.author.role}</span>
             </span>
-            {!isExample && <span className="flex items-center gap-1.5">
-              <Download className="size-4" aria-hidden />
-              Install tracking not connected
-            </span>}
-            {!isExample && <span className="flex items-center gap-1.5">
-              <Clock className="size-4" aria-hidden />
-              Updated {skill.updatedAt}
-            </span>}
+            {!isExample && (
+              <span className="flex items-center gap-1.5">
+                <Download className="size-4" aria-hidden />
+                {skill.installs.toLocaleString()} recorded downloads
+              </span>
+            )}
+            {!isExample && (
+              <span className="flex items-center gap-1.5">
+                <Clock className="size-4" aria-hidden />
+                Updated {skill.updatedAt}
+              </span>
+            )}
           </div>
         </div>
       </div>
 
-      {isExample && <div className="mt-6"><DemoDataNotice>This is an example for the marketplace preview. It is not a creator submission, has not been security scanned, and cannot be installed from Skillbuffet.</DemoDataNotice></div>}
+      {isExample && (
+        <div className="mt-6">
+          <DemoDataNotice>
+            This is an example for the marketplace preview. It is not a creator
+            submission, has not been security scanned, and cannot be installed
+            from Skillbuffet.
+          </DemoDataNotice>
+        </div>
+      )}
 
+      <div className="mt-6 flex flex-wrap items-center gap-4 rounded-2xl border border-[#c9dfd5] bg-[#eaf4ee] px-5 py-4">
+        <span className="text-sm font-semibold text-[#285f4c]">
+          ✓ Admin approved version {skill.version}
+        </span>
+        <RatingSummary average={ratings.average} count={ratings.count} />
+      </div>
       <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_20rem] lg:gap-12">
         {/* main column */}
         <div className="min-w-0 space-y-10">
           {/* scan report */}
-          {!isExample && <section>
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-foreground">
-                Security scan report
-              </h2>
-              <span className="font-mono text-xs text-muted-foreground">
-                {skill.scannerVersion}
-              </span>
-            </div>
-
-            <div className="mt-4">
-              <TrustBadge tier={skill.trustTier} showBlurb />
-            </div>
-
-            {/* severity summary */}
-            {skill.findings.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2">
-                {(["critical", "high", "medium", "low", "info"] as const)
-                  .filter((s) => severityCounts[s])
-                  .map((s) => (
-                    <span
-                      key={s}
-                      className={
-                        "rounded-full px-2.5 py-0.5 text-xs font-medium " +
-                        SEVERITY_META[s].surface
-                      }
-                    >
-                      {severityCounts[s]} {SEVERITY_META[s].label.toLowerCase()}
-                    </span>
-                  ))}
+          {!isExample && (
+            <section>
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-foreground">
+                  Security scan report
+                </h2>
+                <span className="font-mono text-xs text-muted-foreground">
+                  {skill.scannerVersion}
+                </span>
               </div>
-            )}
 
-            <div className="mt-5">
-              <FindingsList findings={skill.findings} />
+              <div className="mt-4">
+                <TrustBadge tier={skill.trustTier} showBlurb />
+              </div>
+
+              {/* severity summary */}
+              {skill.findings.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {(["critical", "high", "medium", "low", "info"] as const)
+                    .filter((s) => severityCounts[s])
+                    .map((s) => (
+                      <span
+                        key={s}
+                        className={
+                          "rounded-full px-2.5 py-0.5 text-xs font-medium " +
+                          SEVERITY_META[s].surface
+                        }
+                      >
+                        {severityCounts[s]}{" "}
+                        {SEVERITY_META[s].label.toLowerCase()}
+                      </span>
+                    ))}
+                </div>
+              )}
+
+              <div className="mt-5">
+                <FindingsList findings={skill.findings} />
+              </div>
+
+              <p className="mt-4 text-xs text-muted-foreground">
+                Classifier: {skill.classifierModel}. Automated vetting reduces
+                risk but is not a guarantee. Review a skill before trusting it
+                with sensitive data.
+              </p>
+            </section>
+          )}
+
+          <section
+            id="reviews"
+            className="rounded-2xl border border-border bg-[#faf4e9] p-6"
+          >
+            <h2 className="text-xl font-semibold">Community reviews</h2>
+            <div className="mt-3">
+              <RatingSummary average={ratings.average} count={ratings.count} />
             </div>
-
-            <p className="mt-4 text-xs text-muted-foreground">
-              Classifier: {skill.classifierModel}. Automated vetting reduces
-              risk but is not a guarantee. Review a skill before trusting it with
-              sensitive data.
-            </p>
-          </section>}
-
+            {!ratings.count && (
+              <p className="mt-3 text-sm text-muted-foreground">
+                No reviews yet. Download and try this skill, then share your
+                experience.
+              </p>
+            )}
+            {ratings.reviews.map((review) => (
+              <article
+                key={review.id}
+                className="mt-5 border-t border-border pt-4"
+              >
+                <p className="text-sm font-semibold">
+                  {review.name} · {review.stars}/5{" "}
+                  <span className="font-normal text-muted-foreground">
+                    · Recorded downloader
+                  </span>
+                </p>
+                <p className="mt-2 whitespace-pre-wrap text-sm">
+                  {review.comment || "Star rating only"}
+                </p>
+              </article>
+            ))}
+            <ReviewForm target={skill.id} />
+          </section>
           {/* SKILL.md */}
           <section>
-            <h2 className="text-lg font-semibold text-foreground">
-              SKILL.md
-            </h2>
+            <h2 className="text-lg font-semibold text-foreground">SKILL.md</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              {isExample ? "Illustrative instructions for this preview listing. Adapt and review them before submitting a real skill." : "The full instructions that load into your agent. Read them before installing."}
+              {isExample
+                ? "Illustrative instructions for this preview listing. Adapt and review them before submitting a real skill."
+                : "The full instructions that load into your agent. Read them before installing."}
             </p>
             <div className="mt-4 rounded-2xl border border-border bg-card p-6">
               <Markdown>{matter(skill.skillMd).content}</Markdown>
@@ -171,12 +263,47 @@ export default async function SkillDetailPage({
         {/* sidebar */}
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
           <MarketplaceDetails metadata={skill.metadata} />
-          {isExample ? <div className="rounded-2xl border border-border bg-card p-5"><h3 className="text-sm font-semibold text-foreground">Build a real skill</h3><p className="mt-2 text-xs leading-relaxed text-muted-foreground">Use this example for inspiration, then submit your own SKILL.md for security review.</p><Link href="/publish" className="mt-4 inline-flex text-sm font-semibold text-primary hover:underline">Open publishing form</Link></div> : <div className="rounded-2xl border border-border bg-card p-5">
-            <h3 className="text-sm font-semibold text-foreground">Install</h3>
-            <div className="mt-3">
-              <InstallCommand slug={skill.slug} />
+          {isExample ? (
+            <div className="rounded-2xl border border-border bg-card p-5">
+              <h3 className="text-sm font-semibold text-foreground">
+                Build a real skill
+              </h3>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                Use this example for inspiration, then submit your own SKILL.md
+                for security review.
+              </p>
+              <Link
+                href="/publish"
+                className="mt-4 inline-flex text-sm font-semibold text-primary hover:underline"
+              >
+                Open publishing form
+              </Link>
             </div>
-          </div>}
+          ) : (
+            <div className="rounded-2xl border border-border bg-card p-5">
+              <h3 className="text-lg font-semibold text-foreground">
+                Make it part of your toolkit.
+              </h3>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Download the approved SKILL.md, read its instructions, and add
+                it to your agent&apos;s skills folder.
+              </p>
+              <form
+                action={`/api/skills/${skill.slug}/download`}
+                method="post"
+                className="mt-5"
+              >
+                <button className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">
+                  <Download className="size-4" aria-hidden />
+                  Download SKILL.md
+                </button>
+              </form>
+              <p className="mt-3 text-xs text-muted-foreground">
+                Sign-in required. Repeat downloads of the same version count
+                once per account. Creator downloads do not increase the counter.
+              </p>
+            </div>
+          )}
 
           <div className="rounded-2xl border border-border bg-card p-5">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
@@ -185,10 +312,7 @@ export default async function SkillDetailPage({
             </h3>
             <ul className="mt-3 grid gap-2">
               {skill.files.map((f) => (
-                <li
-                  key={f.path}
-                  className="flex items-center gap-2 text-sm"
-                >
+                <li key={f.path} className="flex items-center gap-2 text-sm">
                   {f.isScript ? (
                     <TerminalSquare
                       className="size-4 shrink-0 text-caution"
@@ -209,10 +333,12 @@ export default async function SkillDetailPage({
                 </li>
               ))}
             </ul>
-            {!isExample && <p className="mt-3 text-xs text-muted-foreground">
-              Scripts are analyzed statically. We never execute a submitted
-              skill.
-            </p>}
+            {!isExample && (
+              <p className="mt-3 text-xs text-muted-foreground">
+                Scripts are analyzed statically. We never execute a submitted
+                skill.
+              </p>
+            )}
           </div>
         </aside>
       </div>
@@ -220,37 +346,140 @@ export default async function SkillDetailPage({
   );
 }
 
-function MarketplaceDetails({ metadata }: { metadata?: import("@/lib/sample-data").SkillMarketplaceMetadata }) {
+function MarketplaceDetails({
+  metadata,
+}: {
+  metadata?: import("@/lib/sample-data").SkillMarketplaceMetadata;
+}) {
   if (!metadata) return null;
   const permissions = metadata.requestedPermissions ?? [];
   const compatibility = metadata.compatibility ?? [];
-  const hasDetails = metadata.license || permissions.length || compatibility.length || metadata.inputs || metadata.outputs || metadata.dataHandling || metadata.documentationUrl || metadata.supportUrl;
+  const hasDetails =
+    metadata.license ||
+    permissions.length ||
+    compatibility.length ||
+    metadata.inputs ||
+    metadata.outputs ||
+    metadata.dataHandling ||
+    metadata.documentationUrl ||
+    metadata.supportUrl;
   if (!hasDetails) return null;
   const documentationUrl = safeHttpsUrl(metadata.documentationUrl);
   const supportUrl = safeHttpsUrl(metadata.supportUrl);
-  return <section className="rounded-2xl border border-border bg-card p-5" aria-labelledby="skill-profile-title">
-    <h3 id="skill-profile-title" className="text-sm font-semibold">Skill profile</h3>
-    {metadata.license && <DetailField label="License" value={metadata.license} />}
-    <DetailField label="Works with" value={compatibility.length ? compatibility.join(", ") : "Not specified"} />
-    <div className="mt-4"><p className="text-xs font-medium text-muted-foreground">Declared access needs</p>{permissions.length ? <ul className="mt-2 grid gap-1.5">{permissions.map((permission) => <li key={permission} className="flex items-start gap-2 text-xs leading-relaxed"><span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-caution" />{permission}</li>)}</ul> : <p className="mt-1 text-xs text-foreground">No extra access declared</p>}</div>
-    {metadata.inputs && <DetailField label="Expected inputs" value={metadata.inputs} />}
-    {metadata.outputs && <DetailField label="Expected outputs" value={metadata.outputs} />}
-    {metadata.dataHandling && <DetailField label="Data handling" value={metadata.dataHandling} />}
-    {documentationUrl && <p className="mt-4 text-xs"><a href={documentationUrl} target="_blank" rel="noreferrer" className="text-primary hover:underline">Documentation ↗</a></p>}
-    {supportUrl && <p className="mt-2 text-xs"><a href={supportUrl} target="_blank" rel="noreferrer" className="text-primary hover:underline">Support ↗</a></p>}
-    <p className="mt-4 border-t border-border pt-3 text-[10px] leading-relaxed text-muted-foreground">Creator declarations are informational. The scan report is a separate automated review.</p>
-  </section>;
+  const githubUrl = safeHttpsUrl(metadata.githubUrl);
+  return (
+    <section
+      className="rounded-2xl border border-border bg-card p-5"
+      aria-labelledby="skill-profile-title"
+    >
+      <h3 id="skill-profile-title" className="text-sm font-semibold">
+        Skill profile
+      </h3>
+      {metadata.license && (
+        <DetailField label="License" value={metadata.license} />
+      )}
+      <DetailField
+        label="Works with"
+        value={
+          compatibility.length ? compatibility.join(", ") : "Not specified"
+        }
+      />
+      <div className="mt-4">
+        <p className="text-xs font-medium text-muted-foreground">
+          Declared access needs
+        </p>
+        {permissions.length ? (
+          <ul className="mt-2 grid gap-1.5">
+            {permissions.map((permission) => (
+              <li
+                key={permission}
+                className="flex items-start gap-2 text-xs leading-relaxed"
+              >
+                <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-caution" />
+                {permission}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-1 text-xs text-foreground">
+            No extra access declared
+          </p>
+        )}
+      </div>
+      {metadata.inputs && (
+        <DetailField label="Expected inputs" value={metadata.inputs} />
+      )}
+      {metadata.outputs && (
+        <DetailField label="Expected outputs" value={metadata.outputs} />
+      )}
+      {metadata.dataHandling && (
+        <DetailField label="Data handling" value={metadata.dataHandling} />
+      )}
+      {githubUrl && (
+        <p className="mt-4 text-xs">
+          <a
+            href={githubUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-primary hover:underline"
+          >
+            GitHub source repository ↗
+          </a>
+          <span className="mt-1 block text-muted-foreground">
+            Source link supplied by the creator and reviewed with this version.
+          </span>
+        </p>
+      )}
+      {documentationUrl && (
+        <p className="mt-4 text-xs">
+          <a
+            href={documentationUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-primary hover:underline"
+          >
+            Documentation ↗
+          </a>
+        </p>
+      )}
+      {supportUrl && (
+        <p className="mt-2 text-xs">
+          <a
+            href={supportUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-primary hover:underline"
+          >
+            Support ↗
+          </a>
+        </p>
+      )}
+      <p className="mt-4 border-t border-border pt-3 text-[10px] leading-relaxed text-muted-foreground">
+        Creator declarations are informational. The scan report is a separate
+        automated review.
+      </p>
+    </section>
+  );
 }
 
 function DetailField({ label, value }: { label: string; value: string }) {
-  return <div className="mt-4"><p className="text-xs font-medium text-muted-foreground">{label}</p><p className="mt-1 break-words text-xs leading-relaxed text-foreground">{value}</p></div>;
+  return (
+    <div className="mt-4">
+      <p className="text-xs font-medium text-muted-foreground">{label}</p>
+      <p className="mt-1 break-words text-xs leading-relaxed text-foreground">
+        {value}
+      </p>
+    </div>
+  );
 }
 
 function safeHttpsUrl(value?: string) {
   if (!value) return undefined;
   try {
     const url = new URL(value);
-    return url.protocol === "https:" && !url.username && !url.password ? url.toString() : undefined;
+    return url.protocol === "https:" && !url.username && !url.password
+      ? url.toString()
+      : undefined;
   } catch {
     return undefined;
   }

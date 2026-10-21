@@ -1,50 +1,73 @@
 import Link from "next/link";
-import { Download } from "lucide-react";
-
+import { ArrowUpRight, Download, BadgeCheck, Sparkles } from "lucide-react";
+import { RatingSummary } from "@/components/community-reviews";
 import { TrustBadge } from "@/components/trust-badge";
 import type { SampleSkill } from "@/lib/sample-data";
-
-function formatInstalls(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
-  return `${n}`;
-}
-
+import { SKILL_CATEGORY_NAMES } from "@/lib/skills/taxonomy";
+const TONES = [
+  "bg-[#eee8ff] text-[#514095]",
+  "bg-[#e1f2eb] text-[#285f4c]",
+  "bg-[#ffeadb] text-[#88502e]",
+  "bg-[#e4eefb] text-[#365c89]",
+];
 export function SkillCard({ skill }: { skill: SampleSkill }) {
-  const isExample = Boolean(skill.metadata?.isSample);
+  const tone =
+    TONES[
+      Math.max(
+        0,
+        SKILL_CATEGORY_NAMES.findIndex((c) => c === skill.category),
+      ) % TONES.length
+    ];
   return (
     <Link
       href={`/skills/${skill.slug}`}
-      className="group flex min-h-64 flex-col rounded-[1.5rem] border border-border bg-card p-6 shadow-[0_8px_35px_#11153a0a] transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_18px_45px_#11153a1a] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary motion-reduce:hover:translate-y-0"
+      className="group flex min-h-80 flex-col overflow-hidden rounded-3xl border border-border bg-white transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary motion-reduce:hover:translate-y-0"
     >
-      <div className="flex items-center justify-between gap-3">
-        <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
-          {skill.category}
-        </span>
-        {isExample ? <span className="rounded-full border border-primary/20 bg-primary/[0.07] px-2.5 py-1 text-xs font-semibold text-primary">Example</span> : <TrustBadge tier={skill.trustTier} />}
-      </div>
-
-      <h3 className="mt-7 text-lg font-semibold tracking-[-0.035em] text-foreground group-hover:text-primary">
-        {skill.name}
-      </h3>
-      <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">
-        {skill.summary}
-      </p>
-
-      {skill.tags?.length ? <div className="mt-3 flex flex-wrap gap-1.5">{skill.tags.slice(0, 3).map((tag) => <span key={tag} className="rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground">{tag}</span>)}</div> : null}
-
-      <div className="mt-auto flex items-center gap-3 border-t border-border/70 pt-5">
-        <span className="flex size-7 items-center justify-center rounded-full bg-secondary text-[11px] font-medium text-secondary-foreground">
-          {skill.author.initials}
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-xs font-medium text-foreground">
-            {skill.author.name}
+      <div
+        className={`flex min-h-28 items-center justify-between gap-3 p-6 ${tone}`}
+      >
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest">
+            {skill.category}
           </p>
-          <p className="truncate text-xs text-muted-foreground">
-            {skill.author.role}
-          </p>
+          <span className="mt-3 flex size-10 items-center justify-center rounded-xl bg-white/60">
+            <Sparkles className="size-5" aria-hidden />
+          </span>
         </div>
-        {isExample ? <span className="text-right text-[10px] font-medium text-primary">Preview only</span> : skill.metadata ? <span className="text-right text-[10px] leading-tight text-muted-foreground">Install tracking<br />not connected</span> : <span className="flex items-center gap-1 font-mono text-xs text-muted-foreground"><Download className="size-3.5" aria-hidden />{formatInstalls(skill.installs)}</span>}
+        <ArrowUpRight
+          className="size-5 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 motion-reduce:transform-none"
+          aria-hidden
+        />
+      </div>
+      <div className="flex flex-1 flex-col p-6">
+        <div className="flex flex-wrap items-center gap-2">
+          <TrustBadge tier={skill.trustTier} />
+          {skill.adminApproved && (
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#285f4c]">
+              <BadgeCheck className="size-3.5" aria-hidden />
+              Admin approved
+            </span>
+          )}
+        </div>
+        <h3 className="mt-4 text-xl font-semibold tracking-tight group-hover:text-primary">
+          {skill.name}
+        </h3>
+        <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+          {skill.summary}
+        </p>
+        <div className="mt-5">
+          <RatingSummary
+            average={skill.ratingAverage ?? 0}
+            count={skill.ratingCount ?? 0}
+          />
+        </div>
+        <div className="mt-5 flex items-center justify-between gap-3 border-t border-border pt-4 text-xs text-muted-foreground">
+          <span className="truncate">By {skill.author.name}</span>
+          <span className="inline-flex shrink-0 items-center gap-1">
+            <Download className="size-3.5" aria-hidden />
+            {skill.installs.toLocaleString()} downloads
+          </span>
+        </div>
       </div>
     </Link>
   );
