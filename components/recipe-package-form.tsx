@@ -38,6 +38,11 @@ export function RecipePackageUpload() {
       <p role="status" className="text-sm text-muted-foreground">
         {state.message}
       </p>
+      <p className="text-xs text-muted-foreground">
+        Private drafts can be saved even when inspection finds issues. Review
+        the report, correct the source files, then upload a new version when
+        ready.
+      </p>
     </form>
   );
 }

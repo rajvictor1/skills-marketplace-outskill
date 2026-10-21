@@ -105,6 +105,26 @@ export default async function RecipeWorkbench() {
               <p className="mt-2 break-all font-mono text-xs text-muted-foreground">
                 SHA-256 {v.package_hash}
               </p>
+              {v.inspection.issues.length > 0 && (
+                <div className="mt-4 rounded-xl border border-border bg-category-peach p-4">
+                  <p className="text-sm font-semibold">
+                    {v.inspection.issues.length} compatibility issue
+                    {v.inspection.issues.length === 1 ? "" : "s"} to resolve
+                  </p>
+                  <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
+                    {v.inspection.issues.slice(0, 5).map((issue, index) => (
+                      <li key={`${issue.file}-${issue.path}-${index}`}>
+                        {issue.file}
+                        {issue.path ? ` · ${issue.path}` : ""}: {issue.message}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    The private draft stays available for review. Corrected
+                    source files need a new version number.
+                  </p>
+                </div>
+              )}
               <details className="mt-4">
                 <summary className="cursor-pointer text-sm font-semibold">
                   Inspect validation report and runtime blockers

@@ -51,6 +51,15 @@ export const CATEGORY_GROUPS = [
         name: "Human Resources",
         subcategories: ["Recruiting", "People operations", "Learning"],
       },
+      {
+        name: "Healthcare",
+        subcategories: [
+          "Appointments & intake",
+          "Clinical support",
+          "Billing & insurance",
+          "Personal health",
+        ],
+      },
     ],
   },
   {
@@ -150,6 +159,8 @@ export const CATEGORY_DESCRIPTIONS: Record<SkillCategory, string> = {
   "Legal & Compliance":
     "Organize contract, policy, and compliance review tasks.",
   "Human Resources": "Help with recruiting, learning, and people operations.",
+  Healthcare:
+    "Explore appointment, intake, billing, and personal health workflows with human oversight.",
   Technology: "Connect software, APIs, and everyday technical workflows.",
   "Software Development":
     "Assist with building, reviewing, and maintaining software.",
