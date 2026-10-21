@@ -631,3 +631,11 @@ main article {
     radial-gradient(ellipse 34rem 26rem at 95% 24%, #98dace20, transparent 75%),
     var(--background);
 }
+
+/* Full-width FAQ disclosure rows, shared by every public FAQ section. */
+.faq-row > summary::-webkit-details-marker {
+  display: none;
+}
+.faq-row > summary:hover h3 {
+  color: var(--primary);
+}

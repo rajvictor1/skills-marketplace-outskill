@@ -1,3 +1,4 @@
+import { CircleHelp, Plus } from "lucide-react";
 import Link from "next/link";
 import { absoluteUrl, REPOSITORY } from "@/lib/seo/site";
 import type { Faq } from "@/lib/seo/content";
@@ -122,15 +123,33 @@ export function FaqSection({ items }: { items: Faq[] }) {
       <h2 id="faq-heading" className="text-2xl font-semibold tracking-tight">
         Frequently asked questions
       </h2>
-      <div className="mt-6 grid gap-5 md:grid-cols-2">
-        {items.map((f) => (
-          <section
+      <div className="faq-list mt-8 divide-y divide-border border-y border-border">
+        {items.map((f, index) => (
+          <details
             key={f.question}
-            className="rounded-2xl border border-border bg-card p-6"
+            className="faq-row group"
+            name="skillbuffet-faq"
+            open={index === 0}
           >
-            <h3 className="text-lg font-semibold">{f.question}</h3>
-            <p className="mt-3 leading-7 text-muted-foreground">{f.answer}</p>
-          </section>
+            <summary className="flex min-h-20 cursor-pointer list-none items-start gap-4 py-6 marker:hidden sm:items-center sm:gap-5">
+              <CircleHelp
+                className="mt-0.5 size-6 shrink-0 text-muted-foreground sm:mt-0"
+                aria-hidden="true"
+              />
+              <h3 className="flex-1 text-base font-semibold leading-7 sm:text-xl">
+                {f.question}
+              </h3>
+              <Plus
+                className="mt-0.5 size-6 shrink-0 text-muted-foreground transition-transform group-open:rotate-45 motion-reduce:transition-none sm:mt-0"
+                aria-hidden="true"
+              />
+            </summary>
+            <div className="pb-7 pl-10 pr-10 sm:pl-11 sm:pr-12">
+              <p className="max-w-5xl text-base leading-8 text-muted-foreground">
+                {f.answer}
+              </p>
+            </div>
+          </details>
         ))}
       </div>
     </section>

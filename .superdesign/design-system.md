@@ -25,3 +25,7 @@ Applies to public pages, catalog/categories, skills, auth, publishing, creator w
 ## Light mode extension
 
 The owner requested a header toggle with light/dark modes and persistence. Dark remains the default. Light uses ivory #f6f7fb canvas, white cards, slate #20263b text, violet #5b46c5 links and #604bd6 actions. Category surfaces retain violet, teal, peach and blue hues with deeper ink colors. Dashboard charts and KPI accents keep their multicolor meaning with stronger light-mode contrast. All pages inherit the chosen palette, including admin, auth, code, docs and native controls. Primary action labels remain white. Theme choice is stored locally as `skillbuffet-theme` and applies before hydration through the existing next-themes dependency. No layout redesign, catalog mutation or permission change is part of this extension.
+
+## FAQ alignment
+
+Use the owner's approved Devtron reference pattern for every existing FAQ section: one full-width column with thin row dividers, question icon at left, question text aligned consistently, and a plus that becomes a close icon when expanded. The first answer starts open; opening another closes it. Use native keyboard-operable details/summary so answers remain in server-rendered HTML and match FAQ structured data. Preserve Skillbuffet typography, light/dark tokens and reduced-motion support. No individual FAQ cards or two-column boxes.
