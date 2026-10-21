@@ -10,6 +10,7 @@ export async function GET(request: Request) {
   const offset = Math.max(0, Math.floor(Number(query.get("offset")) || 0));
   const rows = catalog.skills.filter(
     (s) =>
+      !s.metadata?.isSample &&
       (!category || s.category === category) &&
       (!q ||
         `${s.name} ${s.summary} ${(s.tags ?? []).join(" ")}`
@@ -20,20 +21,18 @@ export async function GET(request: Request) {
     total: rows.length,
     limit,
     offset,
-    skills: rows
-      .slice(offset, offset + limit)
-      .map((s) => ({
-        slug: s.slug,
-        name: s.name,
-        summary: s.summary,
-        category: s.category,
-        subcategory: s.subcategory,
-        version: s.version,
-        downloads: s.installs,
-        ratingAverage: s.ratingAverage ?? 0,
-        ratingCount: s.ratingCount ?? 0,
-        adminApproved: true,
-        url: `/skills/${s.slug}`,
-      })),
+    skills: rows.slice(offset, offset + limit).map((s) => ({
+      slug: s.slug,
+      name: s.name,
+      summary: s.summary,
+      category: s.category,
+      subcategory: s.subcategory,
+      version: s.version,
+      downloads: s.installs,
+      ratingAverage: s.ratingAverage ?? 0,
+      ratingCount: s.ratingCount ?? 0,
+      adminApproved: true,
+      url: `/skills/${s.slug}`,
+    })),
   });
 }

@@ -220,8 +220,9 @@ export default async function SkillDetailPage({
         <div className="mt-6">
           <DemoDataNotice>
             This is an example for the marketplace preview. It is not a creator
-            submission, has not been security scanned, and cannot be installed
-            from Skillbuffet.
+            submission and has not been security scanned or execution tested.
+            Download the example instructions for inspection; it is not an
+            n8n-importable workflow.
           </DemoDataNotice>
         </div>
       )}
@@ -245,8 +246,9 @@ export default async function SkillDetailPage({
                 access declarations for version {skill.version}.
               </li>
               <li>
-                Sign in and download the approved SKILL.md. Follow your agent
-                application’s skill installation instructions.
+                {isExample
+                  ? "Download the example SKILL.md for inspection. Review and adapt it in an isolated environment before use."
+                  : "Sign in and download the approved SKILL.md. Follow your agent application’s skill installation instructions."}
               </li>
               <li>
                 Use the creator’s declared inputs, check the result, and keep
@@ -319,38 +321,43 @@ export default async function SkillDetailPage({
             </section>
           )}
 
-          <section
-            id="reviews"
-            className="rounded-2xl border border-border bg-caution/10 p-6"
-          >
-            <h2 className="text-xl font-semibold">Community reviews</h2>
-            <div className="mt-3">
-              <RatingSummary average={ratings.average} count={ratings.count} />
-            </div>
-            {!ratings.count && (
-              <p className="mt-3 text-sm text-muted-foreground">
-                No reviews yet. Download and try this skill, then share your
-                experience.
-              </p>
-            )}
-            {ratings.reviews.map((review) => (
-              <article
-                key={review.id}
-                className="mt-5 border-t border-border pt-4"
-              >
-                <p className="text-sm font-semibold">
-                  {review.name} · {review.stars}/5{" "}
-                  <span className="font-normal text-muted-foreground">
-                    · Recorded downloader
-                  </span>
+          {!isExample && (
+            <section
+              id="reviews"
+              className="rounded-2xl border border-border bg-caution/10 p-6"
+            >
+              <h2 className="text-xl font-semibold">Community reviews</h2>
+              <div className="mt-3">
+                <RatingSummary
+                  average={ratings.average}
+                  count={ratings.count}
+                />
+              </div>
+              {!ratings.count && (
+                <p className="mt-3 text-sm text-muted-foreground">
+                  No reviews yet. Download and try this skill, then share your
+                  experience.
                 </p>
-                <p className="mt-2 whitespace-pre-wrap text-sm">
-                  {review.comment || "Star rating only"}
-                </p>
-              </article>
-            ))}
-            <ReviewForm target={skill.id} />
-          </section>
+              )}
+              {ratings.reviews.map((review) => (
+                <article
+                  key={review.id}
+                  className="mt-5 border-t border-border pt-4"
+                >
+                  <p className="text-sm font-semibold">
+                    {review.name} · {review.stars}/5{" "}
+                    <span className="font-normal text-muted-foreground">
+                      · Recorded downloader
+                    </span>
+                  </p>
+                  <p className="mt-2 whitespace-pre-wrap text-sm">
+                    {review.comment || "Star rating only"}
+                  </p>
+                </article>
+              ))}
+              <ReviewForm target={skill.id} />
+            </section>
+          )}
           {/* SKILL.md */}
           <section>
             <h2 className="text-lg font-semibold text-foreground">SKILL.md</h2>
@@ -371,18 +378,25 @@ export default async function SkillDetailPage({
           {isExample ? (
             <div className="rounded-2xl border border-border bg-card p-5">
               <h2 className="text-sm font-semibold text-foreground">
-                Build a real skill
+                Inspect this example
               </h2>
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                Use this example for inspiration, then submit your own SKILL.md
-                for security review.
+                Original Markdown adaptation inspired by Mutasem’s RSS-to-email
+                recipe. The source workflow JSON is not included.
               </p>
-              <Link
-                href="/publish"
-                className="mt-4 inline-flex text-sm font-semibold text-primary hover:underline"
+              <a
+                href="/examples/rss-email/SKILL.md"
+                download="SKILL.md"
+                className="cta-primary mt-4 inline-flex rounded-full px-4 py-3 text-sm font-semibold"
               >
-                Open publishing form
-              </Link>
+                Download example SKILL.md
+              </a>
+              <a
+                href={skill.metadata?.documentationUrl}
+                className="mt-4 block text-xs text-primary underline"
+              >
+                Source recipe by Mutasem on n8n
+              </a>
             </div>
           ) : (
             <div className="rounded-2xl border border-border bg-card p-5">

@@ -41,7 +41,13 @@ export function SkillCard({ skill }: { skill: SampleSkill }) {
       </div>
       <div className="flex flex-1 flex-col p-6">
         <div className="flex flex-wrap items-center gap-2">
-          <TrustBadge tier={skill.trustTier} />
+          {skill.metadata?.isSample ? (
+            <span className="text-xs font-semibold text-primary">
+              Curated example · Untested
+            </span>
+          ) : (
+            <TrustBadge tier={skill.trustTier} />
+          )}
           {skill.adminApproved && (
             <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-safe">
               <BadgeCheck className="size-3.5" aria-hidden />
@@ -56,16 +62,24 @@ export function SkillCard({ skill }: { skill: SampleSkill }) {
           {skill.summary}
         </p>
         <div className="mt-5">
-          <RatingSummary
-            average={skill.ratingAverage ?? 0}
-            count={skill.ratingCount ?? 0}
-          />
+          {!skill.metadata?.isSample && (
+            <RatingSummary
+              average={skill.ratingAverage ?? 0}
+              count={skill.ratingCount ?? 0}
+            />
+          )}
         </div>
         <div className="mt-5 flex items-center justify-between gap-3 border-t border-border pt-4 text-xs text-muted-foreground">
           <span className="truncate">By {skill.author.name}</span>
           <span className="inline-flex shrink-0 items-center gap-1">
-            <Download className="size-3.5" aria-hidden />
-            {skill.installs.toLocaleString()} downloads
+            {skill.metadata?.isSample ? (
+              "Preview example"
+            ) : (
+              <>
+                <Download className="size-3.5" aria-hidden />
+                {skill.installs.toLocaleString()} downloads
+              </>
+            )}
           </span>
         </div>
       </div>

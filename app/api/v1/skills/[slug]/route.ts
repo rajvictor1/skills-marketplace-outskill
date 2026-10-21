@@ -16,6 +16,8 @@ export async function GET(
       { status: result.status === "unavailable" ? 503 : 404 },
     );
   const s = result.skill;
+  if (s.metadata?.isSample)
+    return Response.json({ error: "Skill not found" }, { status: 404 });
   return Response.json({
     slug: s.slug,
     name: s.name,

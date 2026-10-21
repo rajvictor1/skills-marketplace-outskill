@@ -41,13 +41,13 @@ export default async function Home() {
     getCatalogState(),
     getRatings("marketplace"),
   ]);
+  const realSkills = catalog.skills.filter((item) => !item.metadata?.isSample);
   const featured = catalog.skills.slice(0, 3);
   const exampleCount = catalog.skills.filter(
     (skill) => skill.metadata?.isSample,
   ).length;
-  const coveredCategories = new Set(
-    catalog.skills.map((skill) => skill.category),
-  ).size;
+  const coveredCategories = new Set(realSkills.map((skill) => skill.category))
+    .size;
 
   return (
     <main className="overflow-hidden">
@@ -289,14 +289,11 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl">
           {exampleCount > 0 && (
             <div className="mb-5 max-w-3xl">
-              <DemoDataNotice>{`Catalog counts include ${exampleCount} local preview examples. They are not customer activity or live adoption data.`}</DemoDataNotice>
+              <DemoDataNotice>{`${exampleCount} curated preview example is shown separately. Catalog metrics exclude examples.`}</DemoDataNotice>
             </div>
           )}
           <div className="grid grid-cols-2 gap-8 border-t border-border pt-10 lg:grid-cols-4">
-            <Stat
-              value={String(catalog.skills.length)}
-              label="Catalog skills"
-            />
+            <Stat value={String(realSkills.length)} label="Catalog skills" />
             <Stat
               value={String(coveredCategories)}
               label="Covered categories"
@@ -307,7 +304,7 @@ export default async function Home() {
             />
             <Stat
               value={String(
-                catalog.skills.reduce((sum, skill) => sum + skill.installs, 0),
+                realSkills.reduce((sum, skill) => sum + skill.installs, 0),
               )}
               label="Recorded downloads"
             />

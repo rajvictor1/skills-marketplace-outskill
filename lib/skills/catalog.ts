@@ -1,4 +1,5 @@
 import "server-only";
+import { getCuratedExamples } from "@/lib/curated-examples";
 import { cache } from "react";
 
 import { and, eq, inArray, avg, count } from "drizzle-orm";
@@ -15,7 +16,6 @@ import {
 } from "@/lib/db/schema";
 import {
   SAMPLE_SKILLS,
-  getSkillBySlug as getSampleSkillBySlug,
   type SampleFinding,
   type SampleSkill,
 } from "@/lib/sample-data";
@@ -32,6 +32,15 @@ export type CatalogSkillLookup =
   | { status: "unavailable" };
 
 const DEMO_SKILLS = SAMPLE_SKILLS.filter((item) => item.status === "published");
+function previewExamples() {
+  return [
+    ...(demoCatalogEnabled() ? DEMO_SKILLS : []),
+    ...getCuratedExamples(),
+  ];
+}
+function previewExample(slug: string) {
+  return previewExamples().find((item) => item.slug === slug);
+}
 
 function initials(name: string) {
   return (
@@ -214,16 +223,20 @@ async function loadPublishedSkills(slug?: string): Promise<SampleSkill[]> {
 export const getCatalogState = cache(
   async function getCatalogState(): Promise<CatalogState> {
     if (!process.env.DATABASE_URL) {
-      return demoCatalogEnabled()
-        ? { skills: DEMO_SKILLS, source: "demo", hasSampleContent: true }
+      return previewExamples().length
+        ? {
+            skills: previewExamples(),
+            source: "unavailable",
+            hasSampleContent: true,
+          }
         : { skills: [], source: "unavailable", hasSampleContent: false };
     }
     try {
       const published = await loadPublishedSkills();
       const slugs = new Set(published.map((item) => item.slug));
-      const examples = demoCatalogEnabled()
-        ? DEMO_SKILLS.filter((item) => !slugs.has(item.slug))
-        : [];
+      const examples = previewExamples().filter(
+        (item) => !slugs.has(item.slug),
+      );
       return {
         skills: [...published, ...examples],
         source: "database",
@@ -233,9 +246,9 @@ export const getCatalogState = cache(
       };
     } catch {
       return {
-        skills: demoCatalogEnabled() ? DEMO_SKILLS : [],
+        skills: previewExamples(),
         source: "unavailable",
-        hasSampleContent: demoCatalogEnabled(),
+        hasSampleContent: previewExamples().length > 0,
       };
     }
   },
@@ -245,9 +258,7 @@ export const getCatalogSkillBySlug = cache(async function getCatalogSkillBySlug(
   slug: string,
 ): Promise<CatalogSkillLookup> {
   if (!process.env.DATABASE_URL) {
-    const sample = demoCatalogEnabled()
-      ? getSampleSkillBySlug(slug)
-      : undefined;
+    const sample = previewExample(slug);
     return sample
       ? { status: "found", skill: sample, source: "demo" }
       : { status: "not_found" };
@@ -255,16 +266,12 @@ export const getCatalogSkillBySlug = cache(async function getCatalogSkillBySlug(
   try {
     const result = (await loadPublishedSkills(slug))[0];
     if (result) return { status: "found", skill: result, source: "database" };
-    const sample = demoCatalogEnabled()
-      ? getSampleSkillBySlug(slug)
-      : undefined;
+    const sample = previewExample(slug);
     return sample
       ? { status: "found", skill: sample, source: "demo" }
       : { status: "not_found" };
   } catch {
-    const sample = demoCatalogEnabled()
-      ? getSampleSkillBySlug(slug)
-      : undefined;
+    const sample = previewExample(slug);
     return sample
       ? { status: "found", skill: sample, source: "demo" }
       : { status: "unavailable" };
