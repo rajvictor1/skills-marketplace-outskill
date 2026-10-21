@@ -30,6 +30,7 @@ export async function rateSkill(
       return {
         message: "Choose 1–5 stars and keep your review within 800 characters.",
       };
+    let recipePath: string | null = null;
     if (target === "marketplace") {
       if (await isAdmin(session.user.id))
         return {
@@ -43,6 +44,7 @@ export async function rateSkill(
         .limit(1);
       if (!listing)
         return { message: "This recipe is not available for review." };
+      recipePath = `/skills/${listing.slug}`;
       const [approval] = await db
         .select({ id: skillSubmission.id })
         .from(skillSubmission)
@@ -101,12 +103,24 @@ export async function rateSkill(
         target: [communityRating.userId, communityRating.target],
         set: { stars, comment, updatedAt: new Date() },
       });
-    revalidatePath("/", "layout");
+    try {
+      revalidatePath(recipePath ?? "/reviews");
+      revalidatePath("/");
+    } catch (error) {
+      console.error(
+        "Review was saved but page refresh failed:",
+        error instanceof Error ? error.message : "Unknown error",
+      );
+    }
     return {
       message: "Your review is saved. Thank you for sharing your experience.",
       ok: true,
     };
-  } catch {
+  } catch (error) {
+    console.error(
+      "Review submission failed:",
+      error instanceof Error ? error.message : "Unknown error",
+    );
     return { message: "We could not save your review. Please try again." };
   }
 }

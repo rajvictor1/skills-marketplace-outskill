@@ -1,7 +1,10 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import Link from "next/link";
 import { Star } from "lucide-react";
+import { toast } from "sonner";
 import { rateSkill } from "@/app/actions/rate";
+import type { RecipeReviewAccess } from "@/lib/community";
 export function RatingSummary({
   average,
   count,
@@ -28,11 +31,61 @@ export function RatingSummary({
     </span>
   );
 }
-export function ReviewForm({ target }: { target: string }) {
+export function ReviewForm({
+  target,
+  access = "ready",
+}: {
+  target: string;
+  access?: RecipeReviewAccess;
+}) {
   const [state, action, pending] = useActionState(rateSkill, { message: "" });
+  useEffect(() => {
+    if (!state.message) return;
+    if (state.ok) toast.success(state.message);
+    else toast.error(state.message);
+  }, [state]);
+
+  if (access === "signed_out")
+    return (
+      <p className="mt-5 rounded-xl border border-border bg-card p-4 text-sm">
+        <Link
+          className="font-semibold text-primary underline"
+          href="/auth/sign-in"
+        >
+          Sign in
+        </Link>{" "}
+        and download this recipe before leaving a review.
+      </p>
+    );
+  if (access === "creator")
+    return (
+      <p className="mt-5 rounded-xl border border-border bg-card p-4 text-sm">
+        You published this recipe, so your account cannot review it. Other
+        signed-in users can review it after downloading it.
+      </p>
+    );
+  if (access === "unavailable")
+    return (
+      <p className="mt-5 rounded-xl border border-border bg-card p-4 text-sm">
+        Reviews are temporarily unavailable. Please try again later.
+      </p>
+    );
+
   return (
     <form action={action} className="mt-5 space-y-4">
       <input type="hidden" name="target" value={target} />
+      {access === "download_required" && (
+        <p className="rounded-xl border border-primary/30 bg-primary/10 p-4 text-sm">
+          First{" "}
+          <a
+            className="font-semibold text-primary underline"
+            href="#download-recipe"
+          >
+            download this recipe
+          </a>
+          , then return here to submit your review.
+        </p>
+      )}
       <fieldset disabled={pending}>
         <legend className="text-sm font-semibold">
           How was your experience?
@@ -74,12 +127,20 @@ export function ReviewForm({ target }: { target: string }) {
       >
         {pending ? "Saving…" : "Submit review"}
       </button>
-      <p role="status" className="text-sm text-muted-foreground">
-        {state.message}
-      </p>
+      {state.message && (
+        <p
+          role={state.ok ? "status" : "alert"}
+          className={`rounded-xl border p-4 text-sm font-medium ${
+            state.ok
+              ? "border-primary/40 bg-primary/10 text-foreground"
+              : "border-destructive/40 bg-destructive/10 text-foreground"
+          }`}
+        >
+          {state.message}
+        </p>
+      )}
       <p className="text-xs text-muted-foreground">
-        Sign-in required. One editable rating per account. Recipe reviews require
-        a recorded download; creators cannot review their own recipe.
+        One editable rating per account. Reviews are public.
       </p>
     </form>
   );

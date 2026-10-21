@@ -21,7 +21,7 @@ import { TrustBadge } from "@/components/trust-badge";
 import { FindingsList } from "@/components/findings-list";
 import { Markdown } from "@/components/markdown";
 import { RatingSummary, ReviewForm } from "@/components/community-reviews";
-import { getRatings } from "@/lib/community";
+import { getRatings, getRecipeReviewAccess } from "@/lib/community";
 import { DemoDataNotice } from "@/components/dashboard/demo-data-notice";
 import { SEVERITY_META } from "@/lib/trust";
 import { getCatalogSkillBySlug } from "@/lib/skills/catalog";
@@ -72,9 +72,10 @@ export default async function SkillDetailPage({
     );
   const { skill } = lookup;
   const isPackage = skill.metadata?.format === "recipe_package";
-  const [ratings, catalog] = await Promise.all([
+  const [ratings, catalog, reviewAccess] = await Promise.all([
     getRatings(skill.id),
     getCatalogState(),
+    getRecipeReviewAccess(skill.id),
   ]);
   const related = catalog.skills
     .filter(
@@ -364,7 +365,7 @@ export default async function SkillDetailPage({
                   </p>
                 </article>
               ))}
-              <ReviewForm target={skill.id} />
+              <ReviewForm target={skill.id} access={reviewAccess} />
             </section>
           )}
           {/* SKILL.md */}
@@ -416,7 +417,10 @@ export default async function SkillDetailPage({
               </a>
             </div>
           ) : (
-            <div className="rounded-2xl border border-border bg-card p-5">
+            <div
+              id="download-recipe"
+              className="rounded-2xl border border-border bg-card p-5"
+            >
               <h2 className="text-lg font-semibold text-foreground">
                 Make it part of your toolkit.
               </h2>
