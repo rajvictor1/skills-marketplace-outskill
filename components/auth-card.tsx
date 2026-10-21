@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowRight, CircleAlert, LockKeyhole, ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { signIn, signUp } from "@/lib/auth-client";
 
 export function AuthCard({ mode, databaseConfigured }: { mode: "sign-in" | "sign-up"; databaseConfigured: boolean }) {
+  const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const isSignUp = mode === "sign-up";
@@ -31,7 +33,8 @@ export function AuthCard({ mode, databaseConfigured }: { mode: "sign-in" | "sign
         setError(result.error.message || (isSignUp ? "We could not create this account." : "Email or password was not accepted."));
         return;
       }
-      window.location.assign("/dashboard/skills");
+      router.push("/dashboard/skills");
+      router.refresh();
     } catch {
       setError("Authentication could not reach the marketplace database. Please try again shortly.");
     } finally {
