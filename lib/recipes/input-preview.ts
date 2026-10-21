@@ -79,9 +79,9 @@ export async function inspectPrivateRecipeInput(id: string, form: FormData) {
     ...source.payload,
     input: sample,
   });
-  if (!report.structuralValid || !report.inputValidation)
+  if (!report.inputValidation)
     throw new RecipePackageError(
-      "The bundled input schema needs correction before sample validation.",
+      "The bundled input schema could not be checked. Review its schema findings.",
     );
   return report.inputValidation;
 }
