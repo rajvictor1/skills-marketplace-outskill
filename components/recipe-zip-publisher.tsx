@@ -10,7 +10,8 @@ const categoryNames: string[] = CATEGORY_GROUPS.flatMap((group) => group.categor
 function suggestedCategory(id: string | null, fallback: string) {
   if (/^(healthcare|health|personal\.tracking)/.test(id ?? "")) return "Healthcare";
   if (/^(advertising|marketing|social)/.test(id ?? "")) return "Marketing";
-  if (/^(sales|customer|payment|inventory)/.test(id ?? "")) return "Sales";
+  if (/^(payment|banking|loan)/.test(id ?? "")) return "Banking";
+  if (/^(sales|customer|inventory)/.test(id ?? "")) return "Sales";
   if (/^(research)/.test(id ?? "")) return "Research";
   if (/^(writing|brief)/.test(id ?? "")) return "Writing & Communication";
   return categoryNames.includes(fallback) ? fallback : "Other";

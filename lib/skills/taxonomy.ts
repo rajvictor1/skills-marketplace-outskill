@@ -44,6 +44,10 @@ export const CATEGORY_GROUPS = [
         subcategories: ["Accounting", "Financial analysis", "Billing"],
       },
       {
+        name: "Banking",
+        subcategories: ["Retail banking", "Payments", "Lending", "Risk & compliance"],
+      },
+      {
         name: "Legal & Compliance",
         subcategories: ["Contract review", "Policy", "Compliance"],
       },
@@ -156,6 +160,7 @@ export const CATEGORY_DESCRIPTIONS: Record<SkillCategory, string> = {
   Operations: "Make repeatable business processes easier to run and manage.",
   "Finance & Accounting":
     "Support financial analysis, billing, and accounting work.",
+  Banking: "Explore banking, payment, lending, and risk workflows with human oversight.",
   "Legal & Compliance":
     "Organize contract, policy, and compliance review tasks.",
   "Human Resources": "Help with recruiting, learning, and people operations.",
