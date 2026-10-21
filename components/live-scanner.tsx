@@ -52,7 +52,7 @@ export function LiveScanner() {
       <div>
         <div className="mb-2 flex flex-wrap items-center gap-2">
           <span className="text-sm font-medium text-foreground">
-            Paste a SKILL.md
+            Paste recipe instructions (legacy Markdown format)
           </span>
           <div className="ml-auto flex gap-1.5">
             <button
@@ -76,7 +76,7 @@ export function LiveScanner() {
           onChange={(e) => setText(e.target.value)}
           spellCheck={false}
           className="h-72 font-mono text-xs"
-          aria-label="SKILL.md content to scan"
+          aria-label="Recipe instructions to scan"
         />
         <Button onClick={run} disabled={pending} className="mt-3">
           {pending ? (
@@ -100,16 +100,16 @@ export function LiveScanner() {
         <div className="rounded-2xl border border-border bg-card p-5">
           {!res && !pending && (
             <p className="text-sm text-muted-foreground">
-              This runs the real scanner on the server and returns live
-              findings. Try the malicious example, then edit it and watch the
-              verdict change.
+              This scans pasted text on the server and returns live findings.
+              It does not inspect a full recipe ZIP. Try the malicious example,
+              then edit it and watch the verdict change.
             </p>
           )}
 
           {pending && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
-              Running four layers over your recipe...
+              Checking the pasted recipe instructions...
             </div>
           )}
 

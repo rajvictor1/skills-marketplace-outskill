@@ -27,7 +27,7 @@ export function ScanPreview() {
       <div className="grid gap-0 sm:grid-cols-2">
         <div className="border-b border-border p-4 sm:border-b-0 sm:border-r">
           <p className="font-mono text-[11px] uppercase tracking-wide text-muted-foreground">
-            SKILL.md · what a reviewer sees
+            Legacy Markdown example · what a reviewer sees
           </p>
           <pre className="mt-3 overflow-x-auto font-mono text-xs leading-relaxed text-foreground/85">
             <code>{`---
