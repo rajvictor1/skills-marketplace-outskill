@@ -6,7 +6,7 @@ Status: first implementation slice, 21 October 2026. Existing catalog and publis
 
 | Requirement                             | Existing implementation                                           | Current work / gap                                                                                                          |
 | --------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Human accounts                          | Better Auth, Neon/Postgres                                        | Supabase project does not exist yet; migration is pending                                                                   |
+| Human accounts                          | Better Auth, Neon/Postgres                                        | Free Supabase development resource provisioned separately; app connection and migration are pending                         |
 | Catalog, categories, search, ratings    | Existing marketplace and controlled taxonomy                      | Reuse presentation; move taxonomy to data when schema migration is agreed                                                   |
 | Publishing and immutable saved versions | Existing listing/version/file/submission records and admin review | Existing uploader accepts SKILL.md; structured-package persistence remains pending                                          |
 | Recipe package contract                 | New lib/recipes/package.ts                                        | Reads original recipe.yaml, local schemas, optional SKILL.md and text adapters                                              |
@@ -64,7 +64,7 @@ node --import tsx scripts/inspect-recipe-package.ts /private/tmp/recipe-package.
 
 ## Minimum next migration and runtime handoff
 
-1. Create/connect a Supabase development project; retain the working Preview until authentication and data migration are reviewed. Map existing opaque IDs, accounts, versions, ratings and reviews before any migration. Do not silently replace authentication providers.
+1. Connect the separately provisioned free Supabase development resource to Preview using isolated configuration; retain the working Preview until authentication and data migration are reviewed. Map existing opaque IDs, accounts, versions, ratings and reviews before any migration. Do not silently replace authentication providers.
 2. Introduce only the normalized catalog/version/capability/recipe records needed for one selected capability, with profiles and ownership policies. Keep immutable package files and hashes attached to a version. Public discovery policy remains an explicit decision.
 3. Add installations, consents, provider-connection references and runtime bindings with owner scope. No provider secrets in manifests or public metadata.
 4. Agree a versioned execution request/result contract with the runtime engineer. Include canonical capability/function/version, actor scope, input schema, idempotency and correlation IDs.
