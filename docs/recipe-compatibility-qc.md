@@ -1,7 +1,6 @@
 # Recipe compatibility QC — 21 October 2026
 
-This report checks the supplied VDX recipe pack and the canonical
-`skillport-packages` directory in the healthcare pack against the same
+This report checks the supplied VDX and healthcare archives against the same
 Skillbuffet `recipe.yaml` importer. The pack files are not committed here.
 Both supplied ZIP archives passed `unzip -tq` integrity checks.
 
@@ -9,6 +8,7 @@ Both supplied ZIP archives passed `unzip -tq` integrity checks.
 | --- | ---: | ---: | --- | --- |
 | VDX pack | 53 | 53 | 53 passed after removing a JSON Schema dialect URL false positive | All 53 declare contract-only placeholder adapters; none verified |
 | Healthcare canonical pack | 11 | 0 | 11 passed static checks | None verified; 4 personal-tracking adapters are placeholders |
+| Healthcare full archive | 25, including sample and global variants | 0 | Source-level contract issues remain | None verified |
 
 Structural validity means the manifest, local JSON Schemas, references,
 documentation version, and bounded package shape passed inspection. Static
@@ -20,13 +20,15 @@ installed, activated, or executed by this QC.
 - A `recipe.yaml` plus bundled JSON Schemas is the shared source format across
   all categories. Category selection is listing metadata and does not change
   manifest rules.
-- The private owner workbench stores immutable package versions, runs the same
-  structural and static-security inspection, and supports private review and
-  listing previews. Existing public listings still use a separate SKILL.md
-  submission path.
-- The collection preparation command creates a separate JSON envelope for
-  each `recipe.yaml`. Shared schemas are copied only as needed. This avoids
-  treating an entire 53-recipe ZIP as one recipe.
+- The `/publish` ZIP form discovers each `recipe.yaml`, shows its QC result,
+  and lets a signed-in creator submit up to 10 valid recipes at a time. Each
+  selected recipe gets its own title, category and subcategory. It enters the
+  admin review queue privately; approval is a separate action.
+- The private owner workbench still stores drafts in Preview Supabase. The
+  creator ZIP flow saves submissions in the Neon-backed catalog review queue.
+  They share the inspector but do not yet share storage.
+- The offline collection preparation command creates a separate JSON envelope
+  for each `recipe.yaml`, with shared schemas only as needed.
 - `SKILL.md` is optional documentation in a structured package. It is not the
   required recipe manifest.
 
@@ -57,26 +59,23 @@ pending.
 
 **Required now**
 
-1. Replace the split public SKILL.md publisher and private recipe workbench
-   with one creator-facing structured-package submission flow. Keep legacy
-   SKILL.md listings readable during migration, then retire that upload path.
-2. Let the owner inspect a ZIP, choose one or more discovered manifests, see
-   each validation report, assign a category, and submit corrected versions
-   for review without running a command-line conversion.
-3. Resolve the healthcare manifest issues at source. Do not present a failed
-   contract as valid because of its category.
+1. Correct the healthcare manifest and schema conflicts in the team's source
+   files. The publisher will not silently rewrite them.
+2. Verify one creator ZIP submission and its administrator decision on Preview
+   with an authorized sample package. The legacy SKILL.md uploader remains
+   available under a collapsed section during migration.
 
 **Recommended**
 
-4. Add cross-package dependency checks and publisher identity/rights records
+3. Add cross-package dependency checks and publisher identity/rights records
    to the online batch submission flow; the offline QC only checks the
    individual source packages and the VDX collection's declared graph.
-5. Add an explicit readiness badge: contract valid, security reviewed,
+4. Add an explicit readiness badge: contract valid, security reviewed,
    adapter bound, runtime tested, and published are separate states.
 
 **Future / optional**
 
-6. Implement the specification's installation, authorization/consent,
+5. Implement the specification's installation, authorization/consent,
    execution adapter, usage events, and personalized analytics only after one
    recipe completes a verified end-to-end runtime journey.
 

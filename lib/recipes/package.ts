@@ -590,6 +590,8 @@ export async function inspectRecipePackage(raw: unknown) {
         )
       : [],
     recipeId: manifestId,
+    title: typeof manifest.title === "string" ? manifest.title : null,
+    description: typeof manifest.description === "string" ? manifest.description : null,
     version: typeof manifest.version === "string" ? manifest.version : null,
     valid: issues.length === 0 && scan.trustTier !== "blocked",
     structuralValid: issues.length === 0,

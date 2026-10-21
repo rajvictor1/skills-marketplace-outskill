@@ -100,7 +100,7 @@ export default async function AdminPage({
                 skillFile.skillVersionId,
                 pending.map((row) => row.version.id),
               ),
-              eq(skillFile.path, "SKILL.md"),
+              inArray(skillFile.path, ["SKILL.md", "recipe-package.json"]),
             ),
           ),
       ])
@@ -389,13 +389,15 @@ function ReviewCard({
       </details>
       <details className="mt-5">
         <summary className="cursor-pointer text-sm font-semibold">
-          Inspect instructions and content hash
+          {data.metadata.format === "recipe_package" ? "Inspect package files and content hash" : "Inspect instructions and content hash"}
         </summary>
         <p className="mt-2 break-all font-mono text-xs">
           SHA-256 {row.version.contentHash}
         </p>
         <div className="mt-4 max-h-[36rem] overflow-auto rounded-xl border border-border p-5">
-          <Markdown>{raw}</Markdown>
+          {data.metadata.format === "recipe_package"
+            ? <pre className="whitespace-pre-wrap break-words text-xs">{raw}</pre>
+            : <Markdown>{raw}</Markdown>}
         </div>
       </details>
       {data.metadata.format === "recipe_package" && (
@@ -405,12 +407,12 @@ function ReviewCard({
             and enables authenticated download of all bundled files. Runtime is
             not verified.
           </p>
-          <a
+          {data.metadata.packageVersionId && <a
             className="mt-2 inline-block font-semibold text-primary underline"
             href={`/api/v1/recipes/packages/${data.metadata.packageVersionId}`}
           >
             Inspect original private package and full validation report
-          </a>
+          </a>}
         </div>
       )}
       <AdminReviewForm id={row.review.id} />

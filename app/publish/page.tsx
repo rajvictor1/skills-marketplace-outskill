@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { PublishForm } from "@/components/publish-form";
+import { RecipeZipPublisher } from "@/components/recipe-zip-publisher";
 import { getCategoryBySlug } from "@/lib/skills/taxonomy";
 import { SCAN_LAYERS } from "@/lib/trust";
 
@@ -58,10 +59,9 @@ export default async function PublishPage({
           Publish a recipe
         </h1>
         <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-          This page submits a single-file instruction recipe in SKILL.md format.
-          It is scanned and sent to the administrator for review. The recipe
-          stays private until that version is approved. Critical scanner
-          findings block submission.
+          Upload a recipe ZIP, inspect every recipe.yaml inside it, then submit
+          selected recipes to the administrator. Each version stays private
+          until approved. Uploading does not install or run a recipe.
         </p>
       </div>
 
@@ -71,15 +71,14 @@ export default async function PublishPage({
         </h2>
         <div className="mt-3 grid gap-4 text-sm leading-relaxed text-muted-foreground sm:grid-cols-2">
           <p>
-            <strong className="text-foreground">One SKILL.md file:</strong> Use the
-            form below. This older format contains agent instructions in Markdown.
-            The lowercase ID and YAML header apply to this file only.
+            <strong className="text-foreground">A recipe.yaml package:</strong> Use
+            the ZIP publisher below. It can find several recipes in one archive
+            and check each manifest with its own schemas and source files.
           </p>
           <p>
-            <strong className="text-foreground">A recipe.yaml package:</strong> This
-            may include JSON schemas, documentation, and other files. It is
-            currently inspected in the private owner workbench, not submitted
-            through the form below. See the{" "}
+            <strong className="text-foreground">One SKILL.md file:</strong> The
+            older instruction-only uploader remains under Legacy format while
+            existing listings migrate. See the{" "}
             <Link href="/docs/recipe-packages" className="font-medium text-primary underline underline-offset-4">
               package guide
             </Link>.
@@ -87,7 +86,12 @@ export default async function PublishPage({
         </div>
       </section>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:gap-10">
+      <div className="mt-10"><RecipeZipPublisher initialCategory={selectedCategory} /></div>
+
+      <details className="mt-10 rounded-2xl border border-border bg-card p-5 sm:p-7">
+        <summary className="cursor-pointer text-base font-semibold text-foreground">Legacy format: single SKILL.md instruction file</summary>
+        <p className="mt-3 text-sm text-muted-foreground">Use this only for an existing SKILL.md recipe. New multi-file recipes belong in the ZIP publisher above.</p>
+      <div className="mt-6 grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:gap-10">
         <PublishForm
           initialCategory={selectedCategory}
           initialSource={initialSource}
@@ -130,6 +134,7 @@ export default async function PublishPage({
           </ul>
         </aside>
       </div>
+      </details>
     </main>
   );
 }
