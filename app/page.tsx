@@ -1,3 +1,7 @@
+import { staticMetadata, PUBLIC_PAGES, INDEXING_ENABLED } from "@/lib/seo/site";
+import { PageSeo, FaqSection } from "@/components/seo/page-seo";
+import { HOME_FAQ } from "@/lib/seo/content";
+export const metadata = staticMetadata("/");
 import Link from "next/link";
 import { headers } from "next/headers";
 import {
@@ -47,6 +51,7 @@ export default async function Home() {
 
   return (
     <main className="overflow-hidden">
+      <PageSeo path="/" {...PUBLIC_PAGES["/"]} faq={HOME_FAQ} />
       <section className="brand-hero dark-surface relative px-5 pb-24 pt-20 text-foreground sm:px-8 sm:pt-28 lg:pb-32">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-5xl text-center">
@@ -55,13 +60,16 @@ export default async function Home() {
               more thoughtful home for AI agent skills
             </span>
             <h1 className="mt-9 text-balance text-[clamp(2.4rem,5.5vw,4.8rem)] font-semibold leading-[0.99] tracking-[-0.065em] text-white">
-              Discover skills.
+              Discover AI agent skills.
               <br />
               <span className="text-[#b9c6ff]">Know what&apos;s inside.</span>
             </h1>
             <p className="mx-auto mt-8 max-w-2xl text-balance text-lg leading-relaxed text-[#d9dbf0] sm:text-xl">
-              Explore useful AI agent skills, see how each one was reviewed, and
-              publish your own expertise in one curated marketplace.
+              Skillbuffet is a marketplace of reusable AI agent instructions.
+              Browse by category, read each SKILL.md and its review results, and
+              download an approved version for your own agent. Creators can
+              submit skills for administrator review; approval reduces risk but
+              does not guarantee safety.
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
@@ -136,7 +144,7 @@ export default async function Home() {
 
       <CategoryDirectory compact />
 
-      <SampleReviews />
+      {!INDEXING_ENABLED && <SampleReviews />}
 
       <section className="bg-background px-5 py-24 sm:px-8 lg:py-32">
         <div className="mx-auto max-w-7xl">
@@ -327,6 +335,7 @@ export default async function Home() {
           </Link>
         </div>
       </section>
+      <FaqSection items={HOME_FAQ} />
     </main>
   );
 }

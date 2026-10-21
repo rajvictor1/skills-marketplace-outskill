@@ -1,0 +1,37 @@
+import { pageMetadata } from "@/lib/seo/site";
+import { getCatalogState } from "@/lib/skills/catalog";
+import { Catalog } from "@/components/catalog";
+import { Breadcrumbs } from "@/components/seo/page-seo";
+export const metadata = pageMetadata(
+  "/search",
+  "Search AI Agent Skills by Task, Creator or Category",
+  "Search the Skillbuffet catalog by task, skill name, creator or tag. Compare approved listings, declared permissions and supported agents before downloading.",
+  false,
+);
+export const dynamic = "force-dynamic";
+export default async function Search({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const [catalog, params] = await Promise.all([
+    getCatalogState(),
+    searchParams,
+  ]);
+  return (
+    <main className="mx-auto max-w-7xl px-5 py-12">
+      <Breadcrumbs items={[{ name: "Search skills", path: "/search" }]} />
+      <h1 className="text-4xl font-semibold">Search AI agent skills</h1>
+      <p className="my-6 text-lg text-muted-foreground">
+        Search approved listings by task, creator or tag. A matching result is a
+        starting point: read its instructions and review before downloading.
+      </p>
+      <Catalog
+        skills={catalog.skills}
+        initialQuery={
+          typeof params.q === "string" ? params.q.slice(0, 200) : ""
+        }
+      />
+    </main>
+  );
+}

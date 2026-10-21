@@ -1,4 +1,7 @@
-import type { Metadata } from "next";
+import { Breadcrumbs, PageSeo } from "@/components/seo/page-seo";
+import { PUBLIC_PAGES } from "@/lib/seo/site";
+import { staticMetadata } from "@/lib/seo/site";
+
 import Link from "next/link";
 import {
   ArrowRight,
@@ -17,11 +20,7 @@ import { TrustBadge } from "@/components/trust-badge";
 import { LiveScanner } from "@/components/live-scanner";
 import { SCAN_LAYERS, type TrustTier } from "@/lib/trust";
 
-export const metadata: Metadata = {
-  title: "How vetting works",
-  description:
-    "How the security scanner reads every skill: four independent layers, three trust outcomes, and an honest account of what automated vetting can and cannot catch.",
-};
+export const metadata = staticMetadata("/security", true);
 
 const LAYER_ICONS: Record<(typeof SCAN_LAYERS)[number]["key"], LucideIcon> = {
   hidden_text: Eye,
@@ -37,6 +36,16 @@ const OUTCOME_TIERS: TrustTier[] = ["verified_safe", "caution", "blocked"];
 export default function SecurityPage() {
   return (
     <main>
+      <PageSeo
+        path="/security"
+        {...PUBLIC_PAGES["/security"]}
+        crumbs={[{ name: "Security and review", path: "/security" }]}
+      />
+      <div className="col-span-full mx-auto w-full max-w-7xl px-5 pt-6">
+        <Breadcrumbs
+          items={[{ name: "Security and review", path: "/security" }]}
+        />
+      </div>
       {/* --------------------------------------------------------------- hero */}
       <section className="mx-auto grid max-w-7xl items-center gap-12 px-4 pb-16 pt-16 sm:px-6 lg:grid-cols-[1fr_1.05fr] lg:gap-10 lg:pt-24">
         <div>

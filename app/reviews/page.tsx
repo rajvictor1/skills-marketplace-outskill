@@ -1,16 +1,25 @@
+import { Breadcrumbs, PageSeo } from "@/components/seo/page-seo";
+import { PUBLIC_PAGES } from "@/lib/seo/site";
+import { staticMetadata } from "@/lib/seo/site";
 export const dynamic = "force-dynamic";
-import type { Metadata } from "next";
+
 import { getRatings } from "@/lib/community";
 import { RatingSummary, ReviewForm } from "@/components/community-reviews";
-export const metadata: Metadata = {
-  title: "Community reviews",
-  description:
-    "Read community feedback and share your experience with Skillbuffet.",
-};
+export const metadata = staticMetadata("/reviews", true);
 export default async function ReviewsPage() {
   const data = await getRatings("marketplace");
   return (
     <main className="mx-auto max-w-4xl px-5 py-16">
+      <PageSeo
+        path="/reviews"
+        {...PUBLIC_PAGES["/reviews"]}
+        crumbs={[{ name: "Community reviews", path: "/reviews" }]}
+      />
+      <div className="col-span-full mx-auto w-full max-w-7xl px-5 pt-6">
+        <Breadcrumbs
+          items={[{ name: "Community reviews", path: "/reviews" }]}
+        />
+      </div>
       <p className="editorial-kicker text-primary">From the community</p>
       <h1 className="mt-4 text-5xl font-semibold tracking-tight">
         Help shape a better buffet.

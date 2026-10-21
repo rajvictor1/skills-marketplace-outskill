@@ -25,13 +25,15 @@ const TIER_RANK: Record<string, number> = {
 export function Catalog({
   skills,
   focusedCategory,
+  initialQuery = "",
 }: {
   skills: SampleSkill[];
   focusedCategory?: SkillCategory;
+  initialQuery?: string;
 }) {
   const allExamples =
     skills.length > 0 && skills.every((skill) => skill.metadata?.isSample);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [group, setGroup] = useState("All");
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>(
     focusedCategory ?? "All",

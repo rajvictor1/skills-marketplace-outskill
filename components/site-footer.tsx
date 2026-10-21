@@ -5,6 +5,8 @@ const GROUPS = [
     title: "Explore",
     links: [
       ["Browse skills", "/skills"],
+      ["All categories", "/categories"],
+      ["Search skills", "/search"],
       ["Submit a skill", "/publish"],
       ["Creator workspace", "/dashboard/skills"],
       ["Community reviews", "/reviews"],
@@ -22,6 +24,8 @@ const GROUPS = [
   {
     title: "Trust",
     links: [
+      ["About Skillbuffet", "/about"],
+      ["How it works", "/how-it-works"],
       ["Review & security", "/docs/security"],
       ["Privacy policy", "/privacy"],
       ["Terms & conditions", "/terms"],

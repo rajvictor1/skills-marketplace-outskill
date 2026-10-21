@@ -1,3 +1,4 @@
+import { privateRobots } from "@/lib/seo/site";
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -19,8 +20,9 @@ import {
 import { AdminReviewForm } from "@/components/admin-review-form";
 import { Markdown } from "@/components/markdown";
 export const metadata: Metadata = {
+  robots: privateRobots,
+  alternates: { canonical: null },
   title: "Admin review desk",
-  robots: { index: false, follow: false },
 };
 export default async function AdminPage({
   searchParams,

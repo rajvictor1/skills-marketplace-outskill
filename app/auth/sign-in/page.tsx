@@ -1,9 +1,12 @@
+import { privateRobots } from "@/lib/seo/site";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 
 import { AuthCard } from "@/components/auth-card";
 
 export const metadata: Metadata = {
+  robots: privateRobots,
+  alternates: { canonical: null },
   title: "Sign in",
   description:
     "Sign in to publish and install security-scanned AI agent skills.",

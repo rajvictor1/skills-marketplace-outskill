@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { SITE_ORIGIN, staticMetadata } from "@/lib/seo/site";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -17,13 +18,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "Skillbuffet — the security-first skills marketplace",
-    template: "%s · Skillbuffet",
+  ...staticMetadata("/"),
+  alternates: { canonical: null },
+  metadataBase: new URL(SITE_ORIGIN),
+  applicationName: "Skillbuffet",
+  authors: [{ name: "Skillbuffet" }],
+  icons: { icon: "/icon.svg", apple: "/brand/180" },
+  manifest: "/manifest.webmanifest",
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    other: process.env.BING_SITE_VERIFICATION
+      ? { "msvalidate.01": process.env.BING_SITE_VERIFICATION }
+      : undefined,
   },
-  description:
-    "A marketplace for AI agent skills where every skill is scanned for prompt injection and malicious code before it can be published.",
-  icons: { icon: "/icon.svg" },
+};
+export const viewport: Viewport = {
+  themeColor: "#101522",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -37,8 +49,13 @@ export default function RootLayout({
       className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
         <SiteNav />
-        <div className="flex-1">{children}</div>
+        <div id="main-content" tabIndex={-1} className="flex-1">
+          {children}
+        </div>
         <SiteFooter />
         <Toaster />
       </body>

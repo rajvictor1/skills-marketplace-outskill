@@ -1,4 +1,7 @@
-import type { Metadata } from "next";
+import { Breadcrumbs, PageSeo } from "@/components/seo/page-seo";
+import { PUBLIC_PAGES } from "@/lib/seo/site";
+import { staticMetadata } from "@/lib/seo/site";
+
 import {
   Eye,
   FileWarning,
@@ -11,11 +14,7 @@ import { PublishForm } from "@/components/publish-form";
 import { getCategoryBySlug } from "@/lib/skills/taxonomy";
 import { SCAN_LAYERS } from "@/lib/trust";
 
-export const metadata: Metadata = {
-  title: "Publish a skill",
-  description:
-    "Submit an AI agent skill. Every submission is scanned across four layers before it can reach the catalog, and a critical finding blocks publication.",
-};
+export const metadata = staticMetadata("/publish", false);
 
 const LAYER_ICONS = {
   hidden_text: Eye,
@@ -41,6 +40,14 @@ export default async function PublishPage({
       : undefined;
   return (
     <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-16">
+      <PageSeo
+        path="/publish"
+        {...PUBLIC_PAGES["/publish"]}
+        crumbs={[{ name: "Submit a skill", path: "/publish" }]}
+      />
+      <div className="col-span-full mx-auto w-full max-w-7xl px-5 pt-6">
+        <Breadcrumbs items={[{ name: "Submit a skill", path: "/publish" }]} />
+      </div>
       <div className="max-w-2xl">
         <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
           <ShieldCheck className="size-3.5 text-primary" aria-hidden />

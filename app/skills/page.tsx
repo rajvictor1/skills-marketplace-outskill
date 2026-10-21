@@ -1,4 +1,7 @@
-import type { Metadata } from "next";
+import { Breadcrumbs, PageSeo } from "@/components/seo/page-seo";
+import { PUBLIC_PAGES } from "@/lib/seo/site";
+import { staticMetadata } from "@/lib/seo/site";
+
 import { headers } from "next/headers";
 
 import { Catalog } from "@/components/catalog";
@@ -6,17 +9,21 @@ import { CategoryDirectory } from "@/components/category-directory";
 import { getCatalogState } from "@/lib/skills/catalog";
 import { DemoDataNotice } from "@/components/dashboard/demo-data-notice";
 
-export const metadata: Metadata = {
-  title: "Browse skills",
-  description:
-    "Browse security-scanned AI agent skills by category, permissions, compatibility, and trust tier.",
-};
+export const metadata = staticMetadata("/skills", true);
 
 export default async function SkillsPage() {
   await headers();
   const catalog = await getCatalogState();
   return (
     <main className="bg-card pb-24">
+      <PageSeo
+        path="/skills"
+        {...PUBLIC_PAGES["/skills"]}
+        crumbs={[{ name: "All skills", path: "/skills" }]}
+      />
+      <div className="col-span-full mx-auto w-full max-w-7xl px-5 pt-6">
+        <Breadcrumbs items={[{ name: "All skills", path: "/skills" }]} />
+      </div>
       <section className="brand-hero dark-surface px-5 py-20 text-foreground sm:px-8 sm:py-24">
         <div className="mx-auto max-w-7xl">
           <p className="editorial-kicker text-[#bbc7ff]">

@@ -1,3 +1,5 @@
+import { Breadcrumbs, PageSeo } from "@/components/seo/page-seo";
+import { PUBLIC_PAGES } from "@/lib/seo/site";
 import Link from "next/link";
 export function PolicyPage({
   title,
@@ -8,9 +10,13 @@ export function PolicyPage({
   intro: string;
   sections: { title: string; body: string }[];
 }) {
+  const path = title === "Privacy policy" ? "/privacy" : "/terms";
+  const crumbs = [{ name: title, path }];
   const contact = process.env.PRIVACY_CONTACT_EMAIL;
   return (
     <main className="mx-auto max-w-3xl px-5 py-16">
+      <PageSeo path={path} {...PUBLIC_PAGES[path]} crumbs={crumbs} />
+      <Breadcrumbs items={crumbs} />
       <p className="editorial-kicker text-primary">
         Skillbuffet / Beta policies
       </p>

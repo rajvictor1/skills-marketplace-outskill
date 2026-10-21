@@ -1,7 +1,10 @@
+import { privateRobots } from "@/lib/seo/site";
 import type { Metadata } from "next";
 import { DashboardNav } from "@/components/dashboard-nav";
 
 export const metadata: Metadata = {
+  robots: privateRobots,
+  alternates: { canonical: null },
   title: { default: "Dashboard", template: "%s · Dashboard" },
 };
 

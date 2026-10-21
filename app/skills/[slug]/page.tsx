@@ -1,3 +1,9 @@
+import { skillFaq } from "@/lib/seo/content";
+import { pageMetadata, absoluteUrl } from "@/lib/seo/site";
+import { PageSeo, Breadcrumbs, FaqSection } from "@/components/seo/page-seo";
+import { categorySlug } from "@/lib/skills/taxonomy";
+import { SkillCard } from "@/components/skill-card";
+import { getCatalogState } from "@/lib/skills/catalog";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { headers } from "next/headers";
@@ -29,13 +35,20 @@ export async function generateMetadata({
   const lookup = await getCatalogSkillBySlug(slug);
   if (lookup.status !== "found")
     return {
+      robots: { index: false, follow: true },
+      alternates: { canonical: null },
       title:
         lookup.status === "unavailable"
           ? "Catalog unavailable"
           : "Skill not found",
     };
   const { skill } = lookup;
-  return { title: skill.name, description: skill.summary };
+  return pageMetadata(
+    `/skills/${slug}`,
+    `${skill.name}: ${skill.category} AI Skill`,
+    skill.summary,
+    lookup.source !== "demo" && !skill.metadata?.isSample,
+  );
 }
 
 export default async function SkillDetailPage({
@@ -58,7 +71,27 @@ export default async function SkillDetailPage({
       </main>
     );
   const { skill } = lookup;
-  const ratings = await getRatings(skill.id);
+  const [ratings, catalog] = await Promise.all([
+    getRatings(skill.id),
+    getCatalogState(),
+  ]);
+  const related = catalog.skills
+    .filter(
+      (s) =>
+        s.slug !== skill.slug &&
+        s.category === skill.category &&
+        !s.metadata?.isSample,
+    )
+    .slice(0, 3);
+  const path = `/skills/${slug}`;
+  const crumbs = [
+    { name: "All skills", path: "/skills" },
+    {
+      name: skill.category,
+      path: `/skills/categories/${categorySlug(skill.category)}`,
+    },
+    { name: skill.name, path },
+  ];
   const isExample =
     lookup.source === "demo" || Boolean(skill.metadata?.isSample);
 
@@ -72,6 +105,42 @@ export default async function SkillDetailPage({
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <PageSeo
+        path={path}
+        title={skill.name}
+        description={skill.summary}
+        crumbs={crumbs}
+        faq={skillFaq(skill.name)}
+        entities={
+          isExample
+            ? []
+            : [
+                {
+                  "@type": "SoftwareApplication",
+                  "@id": absoluteUrl(`${path}#skill`),
+                  name: skill.name,
+                  description: skill.summary,
+                  url: absoluteUrl(path),
+                  applicationCategory: skill.category,
+                  softwareVersion: skill.version,
+                  dateModified: skill.updatedAt,
+                  author: { "@type": "Person", name: skill.author.name },
+                  ...(ratings.count > 0
+                    ? {
+                        aggregateRating: {
+                          "@type": "AggregateRating",
+                          ratingValue: ratings.average,
+                          ratingCount: ratings.count,
+                          bestRating: 5,
+                          worstRating: 1,
+                        },
+                      }
+                    : {}),
+                },
+              ]
+        }
+      />
+      <Breadcrumbs items={crumbs} />
       <Link
         href="/skills"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -139,7 +208,8 @@ export default async function SkillDetailPage({
             {!isExample && (
               <span className="flex items-center gap-1.5">
                 <Clock className="size-4" aria-hidden />
-                Updated {skill.updatedAt}
+                Updated{" "}
+                <time dateTime={skill.updatedAt}>{skill.updatedAt}</time>
               </span>
             )}
           </div>
@@ -156,15 +226,51 @@ export default async function SkillDetailPage({
         </div>
       )}
 
-      <div className="mt-6 flex flex-wrap items-center gap-4 rounded-2xl border border-safe/25 bg-category-teal px-5 py-4">
-        <span className="text-sm font-semibold text-safe">
-          ✓ Admin approved version {skill.version}
-        </span>
-        <RatingSummary average={ratings.average} count={ratings.count} />
-      </div>
+      {!isExample && (
+        <div className="mt-6 flex flex-wrap items-center gap-4 rounded-2xl border border-safe/25 bg-category-teal px-5 py-4">
+          <span className="text-sm font-semibold text-safe">
+            ✓ Admin approved version {skill.version}
+          </span>
+          <RatingSummary average={ratings.average} count={ratings.count} />
+        </div>
+      )}
       <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_20rem] lg:gap-12">
         {/* main column */}
         <div className="min-w-0 space-y-10">
+          <section>
+            <h2 className="text-xl font-semibold">How to use this skill</h2>
+            <ol className="mt-4 list-decimal space-y-3 pl-5 leading-7 text-muted-foreground">
+              <li>
+                Read the complete instructions, license, compatibility and
+                access declarations for version {skill.version}.
+              </li>
+              <li>
+                Sign in and download the approved SKILL.md. Follow your agent
+                application’s skill installation instructions.
+              </li>
+              <li>
+                Use the creator’s declared inputs, check the result, and keep
+                sensitive data out until you understand the workflow.
+              </li>
+            </ol>
+            <p className="mt-4 leading-7 text-muted-foreground">
+              Skillbuffet does not execute this skill. Approval and scanning
+              cannot guarantee safety, compatibility or output quality.{" "}
+              {skill.metadata?.inputs
+                ? `Declared input: ${skill.metadata.inputs}`
+                : "The creator has not supplied a separate input example."}{" "}
+              {skill.metadata?.outputs
+                ? `Declared output: ${skill.metadata.outputs}`
+                : "The creator has not supplied a separate output example."}{" "}
+              These declarations are not independently tested outputs.
+            </p>
+            <Link
+              href="/how-it-works"
+              className="mt-4 inline-block text-primary underline"
+            >
+              Read the installation and review guide
+            </Link>
+          </section>
           {/* scan report */}
           {!isExample && (
             <section>
@@ -264,9 +370,9 @@ export default async function SkillDetailPage({
           <MarketplaceDetails metadata={skill.metadata} />
           {isExample ? (
             <div className="rounded-2xl border border-border bg-card p-5">
-              <h3 className="text-sm font-semibold text-foreground">
+              <h2 className="text-sm font-semibold text-foreground">
                 Build a real skill
-              </h3>
+              </h2>
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
                 Use this example for inspiration, then submit your own SKILL.md
                 for security review.
@@ -280,9 +386,9 @@ export default async function SkillDetailPage({
             </div>
           ) : (
             <div className="rounded-2xl border border-border bg-card p-5">
-              <h3 className="text-lg font-semibold text-foreground">
+              <h2 className="text-lg font-semibold text-foreground">
                 Make it part of your toolkit.
-              </h3>
+              </h2>
               <p className="mt-3 text-sm text-muted-foreground">
                 Download the approved SKILL.md, read its instructions, and add
                 it to your agent&apos;s skills folder.
@@ -305,10 +411,10 @@ export default async function SkillDetailPage({
           )}
 
           <div className="rounded-2xl border border-border bg-card p-5">
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
               <Package className="size-4 text-muted-foreground" aria-hidden />
               Bundle contents
-            </h3>
+            </h2>
             <ul className="mt-3 grid gap-2">
               {skill.files.map((f) => (
                 <li key={f.path} className="flex items-center gap-2 text-sm">
@@ -341,6 +447,19 @@ export default async function SkillDetailPage({
           </div>
         </aside>
       </div>
+      {related.length > 0 && (
+        <section className="mt-14">
+          <h2 className="text-2xl font-semibold">
+            Related {skill.category.toLowerCase()} skills
+          </h2>
+          <div className="mt-6 grid gap-5 md:grid-cols-3">
+            {related.map((s) => (
+              <SkillCard key={s.slug} skill={s} />
+            ))}
+          </div>
+        </section>
+      )}
+      <FaqSection items={skillFaq(skill.name)} />
     </main>
   );
 }
@@ -371,9 +490,9 @@ function MarketplaceDetails({
       className="rounded-2xl border border-border bg-card p-5"
       aria-labelledby="skill-profile-title"
     >
-      <h3 id="skill-profile-title" className="text-sm font-semibold">
+      <h2 id="skill-profile-title" className="text-sm font-semibold">
         Skill profile
-      </h3>
+      </h2>
       {metadata.license && (
         <DetailField label="License" value={metadata.license} />
       )}

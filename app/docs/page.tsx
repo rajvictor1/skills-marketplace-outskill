@@ -1,14 +1,21 @@
+import { Breadcrumbs, PageSeo } from "@/components/seo/page-seo";
+import { PUBLIC_PAGES } from "@/lib/seo/site";
+import { staticMetadata } from "@/lib/seo/site";
 import Link from "next/link";
-import type { Metadata } from "next";
+
 import { DOCS } from "@/lib/docs-content";
-export const metadata: Metadata = {
-  title: "Documentation",
-  description:
-    "Learn to discover, submit, review and download AI agent skills on Skillbuffet.",
-};
+export const metadata = staticMetadata("/docs", true);
 export default function DocsPage() {
   return (
     <main className="mx-auto max-w-6xl px-5 py-16">
+      <PageSeo
+        path="/docs"
+        {...PUBLIC_PAGES["/docs"]}
+        crumbs={[{ name: "Documentation", path: "/docs" }]}
+      />
+      <div className="col-span-full mx-auto w-full max-w-7xl px-5 pt-6">
+        <Breadcrumbs items={[{ name: "Documentation", path: "/docs" }]} />
+      </div>
       <p className="editorial-kicker text-primary">Skillbuffet docs</p>
       <h1 className="mt-4 text-5xl font-semibold tracking-tight">
         Build with a little more clarity.

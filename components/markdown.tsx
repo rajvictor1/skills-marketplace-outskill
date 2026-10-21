@@ -13,6 +13,13 @@ export function Markdown({ children }: { children: string }) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeSanitize]}
+        components={{
+          h1: (props) => <h3 {...props} />,
+          h2: (props) => <h3 {...props} />,
+          h3: (props) => <h4 {...props} />,
+          h4: (props) => <h5 {...props} />,
+          h5: (props) => <h6 {...props} />,
+        }}
       >
         {children}
       </ReactMarkdown>

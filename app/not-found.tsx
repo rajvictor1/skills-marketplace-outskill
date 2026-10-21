@@ -20,6 +20,28 @@ export default function NotFound() {
         scanner. The link just does not lead anywhere.
       </p>
 
+      <form action="/search" className="mt-6 flex w-full max-w-md gap-2">
+        <label htmlFor="missing-search" className="sr-only">
+          Search AI agent skills
+        </label>
+        <input
+          id="missing-search"
+          name="q"
+          placeholder="Search AI agent skills"
+          className="min-w-0 flex-1 rounded-xl border border-input bg-card px-4 py-3"
+        />
+        <button className="cta-primary px-5">Search</button>
+      </form>
+      <nav
+        aria-label="Popular categories"
+        className="mt-5 flex flex-wrap justify-center gap-5 text-primary underline"
+      >
+        <Link href="/skills/categories/marketing">Marketing</Link>
+        <Link href="/skills/categories/software-development">
+          Software Development
+        </Link>
+        <Link href="/skills/categories/research">Research</Link>
+      </nav>
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
         <Button size="lg" asChild>
           <Link href="/">Back to home</Link>

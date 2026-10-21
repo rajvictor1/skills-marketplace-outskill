@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import { staticMetadata } from "@/lib/seo/site";
+
 import { PolicyPage } from "@/components/policy-page";
-export const metadata: Metadata = { title: "Terms and conditions" };
+export const metadata = staticMetadata("/terms");
 export default function TermsPage() {
   return (
     <PolicyPage

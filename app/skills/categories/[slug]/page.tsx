@@ -1,3 +1,6 @@
+import { pageMetadata } from "@/lib/seo/site";
+import { Breadcrumbs, PageSeo, FaqSection } from "@/components/seo/page-seo";
+import { categoryFaq } from "@/lib/seo/content";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { headers } from "next/headers";
@@ -23,13 +26,16 @@ export async function generateMetadata({
   const { slug } = await params;
   const match = getCategoryBySlug(slug);
   if (!match) return { title: "Category not found" };
-  const hasWorkflows = WORKFLOW_TEMPLATES.some(
-    (template) => template.category === match.category.name,
+  const catalog = await getCatalogState();
+  const hasReal = catalog.skills.some(
+    (s) => s.category === match.category.name && !s.metadata?.isSample,
   );
-  return {
-    title: `${match.category.name} skills${hasWorkflows ? " and workflows" : ""}`,
-    description: `Explore ${match.category.name.toLowerCase()} AI agent skills${hasWorkflows ? " and workflow templates" : ""} on Skillbuffet. ${CATEGORY_DESCRIPTIONS[match.category.name]}`,
-  };
+  return pageMetadata(
+    `/skills/categories/${slug}`,
+    `${match.category.name} AI Skills and Task Guides`,
+    `Explore ${match.category.name.toLowerCase()} AI agent skills. ${CATEGORY_DESCRIPTIONS[match.category.name]} Read the instructions before use.`,
+    hasReal,
+  );
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
@@ -53,18 +59,22 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     <main className="bg-card pb-24">
       <section className="brand-hero dark-surface px-5 pb-18 pt-12 text-foreground sm:px-8 sm:pb-22">
         <div className="mx-auto max-w-7xl">
-          <nav
-            aria-label="Breadcrumb"
-            className="flex flex-wrap items-center gap-2 text-xs font-medium text-[#c3caec]"
-          >
-            <Link href="/skills" className="hover:text-white hover:underline">
-              All skills
-            </Link>
-            <span aria-hidden>/</span>
-            <span>{match.group.name}</span>
-            <span aria-hidden>/</span>
-            <span className="text-white">{match.category.name}</span>
-          </nav>
+          <PageSeo
+            path={`/skills/categories/${slug}`}
+            title={`${match.category.name} AI skills`}
+            description={CATEGORY_DESCRIPTIONS[match.category.name]}
+            crumbs={[
+              { name: "All skills", path: "/skills" },
+              { name: match.category.name, path: `/skills/categories/${slug}` },
+            ]}
+            faq={categoryFaq(match.category.name)}
+          />
+          <Breadcrumbs
+            items={[
+              { name: "All skills", path: "/skills" },
+              { name: match.category.name, path: `/skills/categories/${slug}` },
+            ]}
+          />
 
           <div className="mt-16 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
             <div>
@@ -72,10 +82,14 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 {match.group.name} / Skills
               </p>
               <h1 className="mt-5 max-w-4xl text-balance text-5xl font-semibold leading-[1.02] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
-                {match.category.name}
+                {match.category.name} skills
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#d4d6eb]">
-                {CATEGORY_DESCRIPTIONS[match.category.name]}
+                {CATEGORY_DESCRIPTIONS[match.category.name]} Browse specialties
+                including {match.category.subcategories.join(", ")}. Compare
+                each skill’s declared inputs, outputs, compatible agents and
+                requested access. Read its saved instructions and review before
+                using it with your own data.
               </p>
             </div>
             <Link
@@ -89,6 +103,20 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </div>
       </section>
 
+      <section className="mx-auto max-w-7xl px-5 pt-12 sm:px-8">
+        <h2 className="text-2xl font-semibold">Browse by specialty</h2>
+        <div className="mt-5 flex flex-wrap gap-3">
+          {match.category.subcategories.map((sub) => (
+            <Link
+              key={sub}
+              className="cta-secondary px-4 py-3 text-sm"
+              href={`/skills/categories/${slug}/${categorySlug(sub)}`}
+            >
+              {sub}
+            </Link>
+          ))}
+        </div>
+      </section>
       {workflowTemplates.length > 0 && (
         <section
           id="workflow-templates"
@@ -184,6 +212,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </div>
         </section>
       )}
+      <FaqSection items={categoryFaq(match.category.name)} />
     </main>
   );
 }
