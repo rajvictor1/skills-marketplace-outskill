@@ -38,7 +38,7 @@ export function AccountActions() {
         </Button>
         <Button
           size="sm"
-          className="brand-button h-9 rounded-full px-5"
+          className="brand-button h-9 rounded-full px-3 sm:px-5"
           asChild
         >
           <Link href="/auth/sign-up">

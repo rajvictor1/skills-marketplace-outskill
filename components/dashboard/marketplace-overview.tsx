@@ -155,7 +155,7 @@ export function MarketplaceOverview({
       </div>
 
       <section
-        className="mt-5 grid grid-cols-2 gap-3 xl:grid-cols-4"
+        className="mt-5 grid grid-cols-1 gap-3 min-[375px]:grid-cols-2 xl:grid-cols-4"
         aria-label="Illustrative marketplace key metrics"
       >
         {kpis.map(({ icon: Icon, ...item }) => (
