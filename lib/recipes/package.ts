@@ -591,7 +591,11 @@ export async function inspectRecipePackage(raw: unknown) {
     warnings,
     packageHash: createHash("sha256")
       .update(
-        JSON.stringify([...files].sort((a, b) => a.path.localeCompare(b.path))),
+        JSON.stringify(
+          [...files].sort((a, b) =>
+            a.path < b.path ? -1 : a.path > b.path ? 1 : 0,
+          ),
+        ),
       )
       .digest("hex"),
     files: files.map((f) => ({
