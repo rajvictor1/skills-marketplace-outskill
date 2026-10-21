@@ -260,133 +260,140 @@ export function MarketplaceOverview({
         </section>
       </section>
 
-      <section
-        id="creator-pulse"
-        className="mt-5 scroll-mt-24 rounded-xl border border-border bg-card p-5"
-        aria-labelledby="pulse-title"
-      >
-        <SectionHeading
-          kicker="Marketplace health"
-          title="Creator & adoption pulse"
-          id="pulse-title"
-        />
-        <div className="mt-4 grid gap-3 md:grid-cols-3">
-          {[
-            {
-              icon: Users,
-              value: number(model.creators),
-              label: "Active creators",
-              detail: "Sample creator community",
-              tone: "violet",
-            },
-            {
-              icon: Download,
-              value: number(model.installs),
-              label: "Agent installs",
-              detail: "Illustrative enabled skills; not file downloads",
-              tone: "teal",
-            },
-            {
-              icon: Clock3,
-              value: `${number(model.hours)} hrs`,
-              label: "Estimated time saved",
-              detail: "Sample estimate, not measured customer savings",
-              tone: "peach",
-            },
-          ].map(({ icon: Icon, ...item }) => (
-            <article
-              key={item.label}
-              data-tone={item.tone}
-              className="dashboard-metric rounded-xl border border-border bg-background/50 p-4"
-            >
-              <div className="flex items-center gap-3">
-                <span className="dashboard-metric-icon flex size-9 items-center justify-center rounded-lg">
-                  <Icon className="size-4" aria-hidden />
-                </span>
-                <div>
-                  <p className="text-xl font-semibold tabular-nums">
-                    {item.value}
-                  </p>
-                  <h3 className="text-xs font-medium text-muted-foreground">
-                    {item.label}
-                  </h3>
-                </div>
-              </div>
-              <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
-                {item.detail}
-              </p>
-            </article>
-          ))}
-        </div>
-        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-muted-foreground">
-          <span>Sample creator mix</span>
-          {[
-            ["Developer", 34],
-            ["Marketing", 26],
-            ["Sales", 18],
-            ["Operations", 14],
-            ["Other", 8],
-          ].map(([label, value]) => (
-            <span key={label}>
-              {label}{" "}
-              <strong className="font-medium text-foreground">{value}%</strong>
-            </span>
-          ))}
-        </div>
-      </section>
-
-      <section
-        className="mt-5 rounded-xl border border-border bg-card p-5"
-        aria-labelledby="marketplace-activity-title"
-      >
-        <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,.85fr)]">
+        <section
+          id="creator-pulse"
+          className="min-w-0 scroll-mt-24 rounded-xl border border-border bg-card p-5"
+          aria-labelledby="pulse-title"
+        >
           <SectionHeading
-            kicker="Operational events"
-            title="Marketplace activity"
-            id="marketplace-activity-title"
+            kicker="Marketplace health"
+            title="Creator & adoption pulse"
+            id="pulse-title"
           />
-          <span className="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
-            Sample events
-          </span>
-        </div>
-        <ol className="mt-4 divide-y divide-border">
-          {SAMPLE_ACTIVITY.map((item) => (
-            <li key={item.title} className="py-3 first:pt-0 last:pb-0">
-              <details>
-                <summary className="flex cursor-pointer list-none items-center gap-3 rounded-lg outline-offset-4 marker:hidden focus-visible:outline-2 focus-visible:outline-primary">
-                  <span
-                    className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${item.type === "review" ? "bg-caution/10 text-caution" : "bg-primary/10 text-primary"}`}
-                  >
-                    {item.type === "review" ? (
-                      <ShieldCheck className="size-4" aria-hidden />
-                    ) : item.type === "install" ? (
-                      <Download className="size-4" aria-hidden />
-                    ) : (
-                      <CheckCircle2 className="size-4" aria-hidden />
-                    )}
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {[
+              {
+                icon: Users,
+                value: number(model.creators),
+                label: "Active creators",
+                detail: "Sample creator community",
+                tone: "violet",
+              },
+              {
+                icon: Download,
+                value: number(model.installs),
+                label: "Agent installs",
+                detail: "Illustrative enabled skills; not file downloads",
+                tone: "teal",
+              },
+              {
+                icon: Clock3,
+                value: `${number(model.hours)} hrs`,
+                label: "Estimated time saved",
+                detail: "Sample estimate, not measured customer savings",
+                tone: "peach",
+              },
+            ].map(({ icon: Icon, ...item }) => (
+              <article
+                key={item.label}
+                data-tone={item.tone}
+                className="dashboard-metric rounded-xl border border-border bg-background/50 p-4"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="dashboard-metric-icon flex size-9 items-center justify-center rounded-lg">
+                    <Icon className="size-4" aria-hidden />
                   </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[13px] leading-relaxed">{item.title}</p>
-                    <p className="mt-0.5 text-[11px] text-muted-foreground">
-                      {item.detail}
+                  <div>
+                    <p className="text-xl font-semibold tabular-nums">
+                      {item.value}
                     </p>
+                    <h3 className="text-xs font-medium text-muted-foreground">
+                      {item.label}
+                    </h3>
                   </div>
-                  <span className="text-right text-[10px] text-muted-foreground">
-                    {item.time}
-                    <span className="block text-primary">Inspect example</span>
-                  </span>
-                </summary>
-                <p className="ml-11 mt-3 rounded-lg bg-background p-3 text-xs leading-relaxed text-muted-foreground">
-                  Design example only. This event was not generated by a real
-                  agent or customer. No approval, external action or run
-                  occurred.
+                </div>
+                <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+                  {item.detail}
                 </p>
-              </details>
-            </li>
-          ))}
-        </ol>
-      </section>
+              </article>
+            ))}
+          </div>
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-muted-foreground">
+            <span>Sample creator mix</span>
+            {[
+              ["Developer", 34],
+              ["Marketing", 26],
+              ["Sales", 18],
+              ["Operations", 14],
+              ["Other", 8],
+            ].map(([label, value]) => (
+              <span key={label}>
+                {label}{" "}
+                <strong className="font-medium text-foreground">
+                  {value}%
+                </strong>
+              </span>
+            ))}
+          </div>
+        </section>
 
+        <section
+          className="min-w-0 rounded-xl border border-border bg-card p-5"
+          aria-labelledby="marketplace-activity-title"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <SectionHeading
+              kicker="Operational events"
+              title="Marketplace activity"
+              id="marketplace-activity-title"
+            />
+            <span className="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
+              Sample events
+            </span>
+          </div>
+          <ol className="mt-4 divide-y divide-border">
+            {SAMPLE_ACTIVITY.map((item) => (
+              <li key={item.title} className="py-3 first:pt-0 last:pb-0">
+                <details>
+                  <summary className="flex cursor-pointer list-none items-center gap-3 rounded-lg outline-offset-4 marker:hidden focus-visible:outline-2 focus-visible:outline-primary">
+                    <span
+                      className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${item.type === "review" ? "bg-caution/10 text-caution" : "bg-primary/10 text-primary"}`}
+                    >
+                      {item.type === "review" ? (
+                        <ShieldCheck className="size-4" aria-hidden />
+                      ) : item.type === "install" ? (
+                        <Download className="size-4" aria-hidden />
+                      ) : (
+                        <CheckCircle2 className="size-4" aria-hidden />
+                      )}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13px] leading-relaxed">
+                        {item.title}
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-muted-foreground">
+                        {item.detail}
+                      </p>
+                    </div>
+                    <span className="text-right text-[10px] text-muted-foreground">
+                      {item.time}
+                      <span className="block text-primary">
+                        Inspect example
+                      </span>
+                    </span>
+                  </summary>
+                  <p className="ml-11 mt-3 rounded-lg bg-background p-3 text-xs leading-relaxed text-muted-foreground">
+                    Design example only. This event was not generated by a real
+                    agent or customer. No approval, external action or run
+                    occurred.
+                  </p>
+                </details>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
       <section
         className="mt-5 rounded-xl border border-[#7dd3b2]/25 bg-[#7dd3b2]/5 px-5 py-4"
         aria-labelledby="real-catalog-title"
