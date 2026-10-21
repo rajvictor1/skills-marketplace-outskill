@@ -2,6 +2,29 @@ export const DOCS: Record<
   string,
   { title: string; intro: string; sections: { title: string; body: string }[] }
 > = {
+  "recipe-packages": {
+    title: "Structured recipe packages",
+    intro:
+      "The recipe backend now supports private owner/team package inspection. A package may contain recipe.yaml, shared JSON Schemas, optional SKILL.md documentation and adapter source files. Inspection does not publish, install or execute a recipe.",
+    sections: [
+      {
+        title: "Supported package layouts",
+        body: "Inspect a standalone recipe folder or select one capabilities/<id>/recipe.yaml inside a shared schema package. Original IDs and source files are preserved. Adapter and test code is read as text and never executed.",
+      },
+      {
+        title: "Owner/team inspection endpoint",
+        body: "POST /api/v1/recipes/validate accepts { files: [{ path, content }], manifestPath?, input? }. It requires a signed-in platform administrator and a same-origin JSON request. The request limit is 1 MB and 256 text files. Paths, manifests, local schema references and declared approval requirements are checked before a report is returned.",
+      },
+      {
+        title: "What the report tells you",
+        body: "The report contains file integrity information, structural issues, required input fields, optional input validation, static scanner findings and runtime blockers. A contract can be structurally valid while its adapter remains unimplemented. Report readiness flags stay false; successful validation is not evidence of a live integration.",
+      },
+      {
+        title: "Current limits and next stage",
+        body: "Structured-package persistence, the upload interface, Supabase migration, registered agent access, installation and runtime activation are pending. The existing SKILL.md publishing flow remains available. The schema profile permits bundled local references and reviewed patterns; remote schemas, executable custom validators and arbitrary code execution are unsupported.",
+      },
+    ],
+  },
   "getting-started": {
     title: "Start with a useful recipe",
     intro:
@@ -103,6 +126,10 @@ export const DOCS: Record<
     intro:
       "Product changes and release notes. Feature availability follows the deployed version.",
     sections: [
+      {
+        title: "2026-10-21 · Recipe package inspection",
+        body: "Added owner/team-only inspection for standalone recipe folders and capability packages with shared JSON Schemas. Reports distinguish contract validation, static scanning and runtime readiness. Source files are preserved; no recipe is automatically published or executed. Supabase migration and runtime activation remain pending.",
+      },
       {
         title: "2026-10-21 · Curated publishing",
         body: "Added a private admin review queue, approve/publish, request changes, reject, unpublish and review history. New versions retain the previously approved public version while waiting. Legacy auto-published recipes return to review. Removed catalog fixtures and illustrative dashboard activity.",
