@@ -31,7 +31,7 @@ BACKUP_FILE="/private/approved/location/skillbuffet-prod-$(date -u +%Y%m%dT%H%M%
 
 pg_dump --format=custom --no-owner --no-acl --password \
   --host='<PRODUCTION_DB_HOST>' --port=5432 \
-  --username='<PRODUCTION_DB_USER>' --dbname=postgres --file=- \
+  --username='<PRODUCTION_DB_USER>' --dbname=postgres \
 | gpg --symmetric --cipher-algo AES256 --output "$BACKUP_FILE"
 
 shasum -a 256 "$BACKUP_FILE"
