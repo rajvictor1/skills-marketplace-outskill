@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
+    "test:integration": "playwright test",
     "test:watch": "vitest",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -43,6 +44,7 @@
   },
   "devDependencies": {
     "@better-auth/cli": "^1.4.21",
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/js-yaml": "4.0.9",
     "@types/node": "^20.19.43",
