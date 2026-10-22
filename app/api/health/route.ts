@@ -11,7 +11,7 @@ export async function GET(request: Request) {
       if (!hasDatabaseConnection()) throw new Error("Database is not configured.");
       await db.execute(sql`select 1`);
       return Response.json(
-        { status: "ok" },
+        { status: "healthy" },
         { headers: { "Cache-Control": "no-store" } },
       );
     } catch {

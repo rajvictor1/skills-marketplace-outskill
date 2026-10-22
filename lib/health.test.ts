@@ -21,7 +21,7 @@ describe("/api/health", () => {
   it("reports database readiness after a successful query", async () => {
     const response = await GET(new Request("https://skillbuffet.test/api/health?check=db"));
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ status: "ok" });
+    expect(await response.json()).toEqual({ status: "healthy" });
     expect(mocks.execute).toHaveBeenCalledTimes(1);
   });
   it("returns only a generic unhealthy status when the query fails", async () => {
