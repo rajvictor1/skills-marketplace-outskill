@@ -70,4 +70,29 @@ describe("recipe ZIP intake", () => {
     damaged.writeUInt32LE(0, damaged.length - 22 - (46 + "recipe.yaml".length) + 16);
     expect(() => readRecipeZip(damaged)).toThrow(/integrity/);
   });
+  it("rejects duplicate names, including case collisions", () => {
+    expect(() => readRecipeZip(zip([
+      { name: "recipe.yaml", content: "id: example" },
+      { name: "RECIPE.yaml", content: "id: other" },
+    ]))).toThrow(/duplicate/);
+  });
+  it("rejects encrypted, truncated and oversized archives", () => {
+    const encrypted = zip([{ name: "recipe.yaml", content: "id: example" }]);
+    const centralOffset = encrypted.readUInt32LE(encrypted.length - 6);
+    encrypted.writeUInt16LE(1, centralOffset + 8);
+    expect(() => readRecipeZip(encrypted)).toThrow(/encrypted/);
+
+    const truncated = zip([{ name: "recipe.yaml", content: "id: example" }]);
+    expect(() => readRecipeZip(truncated.subarray(0, -1))).toThrow(/supported ZIP/);
+
+    const oversized = zip([{ name: "recipe.yaml", content: "a".repeat(256 * 1024 + 1) }]);
+    expect(() => readRecipeZip(oversized)).toThrow(/safe text extraction/);
+  });
+  it("rejects more than 512 supported text files", () => {
+    const many = zip([
+      { name: "recipe.yaml", content: "id: example" },
+      ...Array.from({ length: 512 }, (_, i) => ({ name: `note-${i}.txt`, content: "x" })),
+    ]);
+    expect(() => readRecipeZip(many)).toThrow(/safe text extraction/);
+  });
 });

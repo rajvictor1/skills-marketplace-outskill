@@ -33,6 +33,11 @@ jobs:
       - run: pnpm exec eslint . --max-warnings=0
       - run: pnpm exec tsc --noEmit
       - run: pnpm test
+      # This build checks compilation only; it is never deployed or connected
+      # to a database. Use a fresh throwaway server secret for each CI run.
+      - name: Create build-only auth secret
+        run: echo "BETTER_AUTH_SECRET=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+      - run: pnpm build
 
   production-dependencies:
     name: Production dependencies

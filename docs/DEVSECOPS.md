@@ -9,8 +9,8 @@ contest or bonus-prize requirements.
 
 1. A contributor opens a pull request against `main`. Vercel builds a Preview
    deployment from that branch.
-2. GitHub Actions runs **Code quality** (ESLint and TypeScript) and **Production
-   dependencies** (high-or-worse advisory audit). The workflow
+2. GitHub Actions runs **Code quality** (ESLint, TypeScript, regression tests and
+   a production build) and **Production dependencies** (high-or-worse advisory audit). The workflow
    installs the committed lockfile and uses read-only repository permissions.
 3. Review the changed code, both check results, and the Vercel Preview.
    The checks do not themselves prevent a merge until the GitHub branch rule
@@ -24,14 +24,17 @@ contest or bonus-prize requirements.
    check database access, login, or skill publishing. Review Vercel deployment
    and function logs for those failures.
 
-## What runs for a skill submission
+## What runs for a recipe submission
 
-The publishing form validates metadata and parses one `SKILL.md`. The existing
-scanner checks hidden text, dangerous instructions, static script patterns,
-and optionally an LLM classifier. A critical finding blocks publication, and
-the scan report is stored with the version in Postgres. The LLM check can be
-skipped if its API key is absent or the call fails; the displayed layer status
-is the source of truth. A scan reduces risk but cannot guarantee safety.
+The primary publisher reads a ZIP of text-only source files, finds each
+`recipe.yaml`, checks local schemas and file integrity, and lets the creator
+submit one valid recipe at a time. Deterministic scanning checks hidden text,
+dangerous instructions and static script patterns; it never runs submitted
+code. Critical findings block submission. The legacy `SKILL.md` uploader also
+supports an optional LLM classifier, which can be skipped when unavailable.
+The displayed scan report states which layers ran. Every submitted version
+remains private until administrator approval. Static checks and approval do
+not establish runtime safety or successful execution.
 
 ## Controls still needing an account setting or service
 
@@ -79,9 +82,9 @@ liveness probe so a database incident is diagnosed accurately.
 
 | Area | Current state |
 | --- | --- |
-| Code review and verification | GitHub pull request workflow added; branch rule pending |
+| Code review and verification | GitHub pull request workflow includes lint, types, regression tests and build; branch rule pending |
 | Package and dependency security | Frozen lockfile and production audit added; GitHub Dependency Graph setting pending for the separate review action |
-| User-submitted skill security | Four-layer scanner already in the application; LLM layer is best effort |
+| User-submitted recipe security | ZIP importer and deterministic scanner; legacy LLM layer is best effort |
 | Preview release | Existing Vercel Git integration |
 | Production release approval | Pending team policy and account setting |
 | Runtime monitoring | `/api/health` liveness route added; external alerting pending |

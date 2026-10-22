@@ -25,7 +25,7 @@ export const DOCS: Record<
       },
       {
         title: "Private upload and review",
-        body: "Platform administrators can use /admin/recipes to inspect and save private drafts, including packages with compatibility issues, in the Preview Supabase registry. Creators use /publish to inspect a ZIP and submit selected valid recipes to the existing Neon-backed admin review desk. These are separate storage paths that share the package inspector. Source issues must be corrected before submission; a saved draft is not public. The administrator reviews the original package JSON and static findings before approving a listing. An approved package offers an authenticated JSON download of its original files. Agent registration, installation and runtime activation remain pending. The older SKILL.md uploader remains under Legacy format. Remote schemas, executable custom validators and arbitrary code execution are unsupported.",
+        body: "Platform administrators can use /admin/recipes to inspect and save private drafts, including packages with compatibility issues, in the Preview Supabase registry. Creators use /publish to inspect a ZIP and submit one valid recipe at a time to the administrator review desk. Private drafts and marketplace submissions use separate schemas in the same Supabase Postgres database and share the package inspector. Source issues must be corrected before submission; a saved draft is not public. The administrator reviews the original package JSON and static findings before approving a listing. An approved package offers an authenticated JSON download of its original files. Agent registration, installation and runtime activation remain pending. The older SKILL.md uploader remains under Legacy format. Remote schemas, executable custom validators and arbitrary code execution are unsupported.",
       },
     ],
   },
@@ -131,12 +131,16 @@ export const DOCS: Record<
       "Product changes and release notes. Feature availability follows the deployed version.",
     sections: [
       {
+        title: "2026-10-22 · One Preview database",
+        body: "Preview account, catalog, review and private package records now use one Supabase Postgres database. Better Auth remains the sign-in system and existing account IDs were preserved. Supabase Auth, recipe activation and runtime execution are not enabled. The previous Neon database is retained as a rollback copy while the migration is verified.",
+      },
+      {
         title: "2026-10-21 · ZIP recipe submissions",
         body: "Creators can inspect a VDX-style ZIP, choose one valid recipe, assign its category and submit it to the administrator review desk. A larger collection ZIP may be inspected, but each submission selects one recipe. Its original files are saved in a versioned JSON package. Inspection and download do not execute or activate recipes. The legacy SKILL.md form remains available during migration.",
       },
       {
         title: "2026-10-21 · Recipe package inspection",
-        body: "Added owner/team-only inspection for standalone recipe folders and capability packages with shared JSON Schemas. Reports distinguish contract validation, static scanning and runtime readiness. Source files are preserved; no recipe is automatically published or executed. Private structured-package storage, an administrator upload/review workbench and a marketplace submission handoff have been added on Preview. Full package downloads preserve the original files and share the existing authenticated download counters. Current accounts remain on Better Auth and Neon; auth migration and runtime activation are pending.",
+        body: "Added owner/team-only inspection for standalone recipe folders and capability packages with shared JSON Schemas. Reports distinguish contract validation, static scanning and runtime readiness. Source files are preserved; no recipe is automatically published or executed. Private structured-package storage, an administrator upload/review workbench and a marketplace submission handoff were added on Preview. Full package downloads preserve the original files and share the existing authenticated download counters. This historical release initially used Better Auth with Neon; the 2026-10-22 update moved Preview records to Supabase Postgres. Runtime activation remains pending.",
       },
       {
         title: "2026-10-21 · Curated publishing",

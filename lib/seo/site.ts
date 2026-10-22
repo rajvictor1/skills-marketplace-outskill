@@ -24,7 +24,7 @@ export const INDEXING_ENABLED =
   production &&
   Boolean(safeOrigin(configured)) &&
   process.env.SEO_INDEXING_ENABLED === "true";
-export const CONTENT_UPDATED = "2026-10-21";
+export const CONTENT_UPDATED = "2026-10-22";
 export const REPOSITORY =
   "https://github.com/rajvictor1/skills-marketplace-outskill";
 export function absoluteUrl(path: string) {
