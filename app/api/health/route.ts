@@ -10,6 +10,7 @@ export async function GET(request: Request) {
   if (new URL(request.url).searchParams.get("check") === "db") {
     try {
       if (!hasDatabaseConnection()) throw new Error("Database is not configured.");
+      // This shared limit is a backstop to an edge rate rule, not a monitor quota.
       if (!(await consumeHealthDbCheckLimit()))
         return Response.json(
           { status: "rate_limited" },

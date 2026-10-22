@@ -63,6 +63,8 @@ Use the Vercel deployment page for build and function errors. Connect an uptime
 monitor to the production `/api/health` URL and configure an alert destination
 owned by the team. Keep database and publishing checks separate from the
 liveness probe so a database incident is diagnosed accurately.
+The uptime monitor should use plain `/api/health`, not `?check=db`; an edge rate
+rule should cover `/api/health?check=db` before requests reach the shared limit.
 
 ### Handle a failed check or bad release
 

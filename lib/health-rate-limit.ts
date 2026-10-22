@@ -5,7 +5,7 @@ import { and, count, eq, gte, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { reviewEvent } from "@/lib/db/schema";
 
-/** Shared global cap for the anonymous database readiness probe. */
+/** Shared global cap for the anonymous database probe; backstop to an edge rate rule. */
 export async function consumeHealthDbCheckLimit() {
   const configured = Number(process.env.HEALTH_DB_CHECKS_PER_MINUTE ?? 30);
   const limit =
