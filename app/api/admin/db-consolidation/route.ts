@@ -220,7 +220,7 @@ async function copy() {
                   const value = row[column];
                   values.push(
                     value && typeof value === "object" && !(value instanceof Date)
-                      ? JSON.stringify(value)
+                      ? dst.json(value as postgres.JSONValue)
                       : value,
                   );
                   return `$${values.length}`;
