@@ -79,6 +79,27 @@ function digest(rows: Record<string, unknown>[], key: string) {
     .digest("hex");
 }
 
+function changedColumns(
+  sourceRows: Record<string, unknown>[],
+  targetRows: Record<string, unknown>[],
+  key: string,
+) {
+  const targetById = new Map(targetRows.map((row) => [String(row[key]), row]));
+  const changed = new Set<string>();
+  for (const sourceRow of sourceRows) {
+    const targetRow = targetById.get(String(sourceRow[key]));
+    if (!targetRow) {
+      changed.add("missing_record");
+      continue;
+    }
+    for (const column of Object.keys(sourceRow)) {
+      if (JSON.stringify(canonical(sourceRow[column])) !== JSON.stringify(canonical(targetRow[column])))
+        changed.add(column);
+    }
+  }
+  return [...changed].sort();
+}
+
 async function counts(connectionString: string, schema: string) {
   const sql = connection(connectionString);
   try {
@@ -221,7 +242,7 @@ async function copy() {
             `select * from public."${table}"`,
           );
           if (rows.length !== targetRows.length || digest(rows, key) !== digest(targetRows, key))
-            throw new Error(`Integrity check failed for ${table}`);
+            throw new Error(`Integrity check failed for ${table}: ${changedColumns(rows, targetRows, key).join(",")}`);
           copied[table] = rows.length;
         }
         return { copied, verified: true };
@@ -246,7 +267,7 @@ export async function POST(request: Request) {
     return Response.json(result, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     const safeDetail =
-      error instanceof Error && /^Integrity check failed for [a-z_]+$/.test(error.message)
+      error instanceof Error && /^Integrity check failed for [a-z_]+: [a-z_,]*$/.test(error.message)
         ? error.message
         : error && typeof error === "object" && "code" in error
           ? String(error.code)
