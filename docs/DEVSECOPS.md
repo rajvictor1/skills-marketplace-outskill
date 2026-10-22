@@ -1,8 +1,8 @@
 # Skillbuffet delivery and security controls
 
-This guide covers the Skillbuffet application and its user-submitted skills.
-The website source is in GitHub, Preview releases are built by Vercel, and the
-Neon database is connected to Preview. These controls are separate from any
+This guide covers the Skillbuffet application and its user-submitted recipes.
+The website source is in GitHub, Preview releases are built by Vercel, and one
+Supabase Postgres database stores Preview accounts and recipes. These controls are separate from any
 contest or bonus-prize requirements.
 
 ## What runs for a code change

@@ -1,5 +1,9 @@
 # Recipe compatibility QC — 21 October 2026
 
+Database update, 22 October 2026: Preview account, catalog, review and private
+recipe records now share one Supabase Postgres database. The compatibility
+findings below remain an historical snapshot of the supplied package files.
+
 This report checks the supplied VDX and healthcare archives against the same
 Skillbuffet `recipe.yaml` importer. The pack files are not committed here.
 Both supplied ZIP archives passed `unzip -tq` integrity checks.
@@ -25,9 +29,8 @@ installed, activated, or executed by this QC.
   gives it a title, category and subcategory. It enters the admin review queue
   privately; approval is a separate action. A larger ZIP may be used as a
   source collection, but never as a single recipe listing.
-- The private owner workbench still stores drafts in Preview Supabase. The
-  creator ZIP flow saves submissions in the Neon-backed catalog review queue.
-  They share the inspector but do not yet share storage.
+- The private owner workbench and creator submission queue now use separate
+  schemas within the same Preview Supabase database.
 - The offline collection preparation command creates a separate JSON envelope
   for each `recipe.yaml`, with shared schemas only as needed.
 - `SKILL.md` is optional documentation in a structured package. It is not the
@@ -81,9 +84,9 @@ pending.
    recipe completes a verified end-to-end runtime journey.
 
 The integrated master specification describes a broader control plane than
-the current Preview. Supabase is currently the private Preview recipe registry;
-the public catalog and login still use Neon and Better Auth. That database
-split is a migration task, not evidence that the full specification is live.
+the current Preview. Supabase stores the account and recipe records, while
+Better Auth continues to manage login. The single database does not imply
+that installation, execution or runtime analytics are live.
 
 ## Reproduce the offline QC
 

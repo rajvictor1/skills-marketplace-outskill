@@ -77,7 +77,7 @@ TypeScript and lint checks are required for this slice. Source package inspectio
 
 Migration supabase/migrations/20261021124104_recipe_package_versions.sql adds recipe_private.package_versions, package_reviews and append-only review_events. The private schema is not exposed to PostgREST. RLS is enabled and all public/anon/authenticated grants are revoked. Server operations enforce the existing admin role; Preview-only server credentials access this isolated store. Immutable file payloads and reports cannot be updated or deleted through normal SQL operations; corrections require a new semantic version. Mutable review status is separate and transitions are locked in a transaction.
 
-To roll back application access, remove the workbench/actions/download route or disconnect its RECIPE_DEV configuration. Retain the private records until the owner agrees a data retention/deletion policy; do not drop them as an automatic rollback. Existing catalog and accounts are unchanged.
+The Preview Supabase connection now serves all account, catalog and private recipe records. Disconnecting it would disable login and publishing. For rollback, restore the previous application deployment and database connection together from the retained Neon snapshot; do not delete either database while verifying the move. Retain private records until the owner agrees a data retention policy.
 
 ## Private workbench
 
