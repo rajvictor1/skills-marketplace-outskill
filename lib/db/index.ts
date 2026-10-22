@@ -25,9 +25,10 @@ function createDb() {
   const client =
     globalForDb.__pgClient ??
     postgres(connectionString, {
-      max: process.env.VERCEL ? 1 : 10,
+      max: process.env.VERCEL ? 3 : 10,
       prepare: false,
       connect_timeout: 10,
+      idle_timeout: 10,
       ssl:
         connectionString === process.env.RECIPE_DEV_POSTGRES_URL
           ? "require"
