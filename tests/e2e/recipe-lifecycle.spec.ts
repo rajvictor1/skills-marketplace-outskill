@@ -87,7 +87,10 @@ test("creator upload requires admin approval before an authenticated package dow
       select id from public."user" where email = ${reviewerEmail}`;
     await sql`insert into public.marketplace_admin (user_id) values (${adminUser.id})`;
     await reviewerPage.goto("/admin");
-    const reviewCard = reviewerPage.locator("article").filter({ hasText: title });
+    const reviewCard = reviewerPage.locator("article").filter({
+      hasText: title,
+      has: reviewerPage.getByRole("button", { name: "Approve and publish" }),
+    });
     await expect(reviewCard).toContainText("Pending admin review");
     await reviewCard.getByRole("button", { name: "Approve and publish" }).click();
     await expect.poll(async () => {
