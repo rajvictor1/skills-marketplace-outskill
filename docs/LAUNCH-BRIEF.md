@@ -1,6 +1,6 @@
-# Skillbuffet: final steps before Production launch
+# Skillbuffet: final steps before wider public launch
 
-**Context.** Skillbuffet is a curated marketplace for AI agent recipes. Creators submit a recipe package, security checks scan it, and an admin approves it before it's public. Better Auth 1.7.12 (PR #3) is merged as `e61d6b5`. Production is deployed and `/api/health` returns `{"status":"ok"}`. Preview sign-in works.
+**Context.** Skillbuffet is a curated marketplace for AI agent recipes. Creators submit a recipe package, security checks scan it, and an admin approves it before it's public. Better Auth 1.7.12 (PR #3) is merged as `e61d6b5`. Production is deployed and `/api/health` returns `{"status":"ok"}`. Preview sign-in works. The separate `skillbuffet-production` Supabase project and first administrator account were created during the earlier rollout; verify their current state before wider public launch.
 
 **Goal.** Complete the six items in `docs/PRELAUNCH-REVIEW.md` so the site can open publicly. Don't change product features during this work. Limit changes to setup, verification, legal text, and configuration.
 
@@ -16,13 +16,13 @@ The team can't finish these without the owner's answers. Send them all in one me
 | Owned domain (e.g. `skillbuffet.com`) and DNS access | Canonical URL, HTTPS |
 | Manager reviewer name | Preview approval record |
 | Rollback owner name | Release record |
-| Production database host, or approval to provision one | Section B |
-| Monitoring/alert destination (email or Slack channel) | Section F |
+| Confirm the existing Production database and admin ownership | Section B; do not send a database URL or password |
+| Confirm the previously selected alert destination still has an active recipient | Section F |
 
 Owner decisions and defaults:
 - **Email verification:** default is to enable it before open sign-up. If the owner wants to launch invite-only, state that instead.
 - **Search indexing:** default is off (`noindex`) until content is approved.
-- **Production data:** default is no Preview data in Production. Start with an empty catalog.
+- **Production data:** do not copy Preview accounts or QA content into Production. Confirm the current Production catalog before launch.
 
 ## A. Manager review of Preview (gate)
 
@@ -30,15 +30,14 @@ Owner decisions and defaults:
 - Any requested changes are fixed on a branch, opened as a PR, and verified before this item is closed.
 - **Done when:** a written approval exists in the repo or the launch record.
 
-## B. Production database (blocker)
+## B. Production database (verification gate)
 
-1. Confirm whether Production currently uses the same Postgres database as Preview. If it does, this is a launch blocker. Production needs its own database.
-2. If separate: provision the Production Postgres database. Use separate credentials. Keep Preview credentials Preview-only.
-3. Run the migrations with `pnpm db:migrate` against Production. Use the intended migration set. Do not seed demo catalog data.
-4. Create a restore point (backup) and test restoring it into a scratch database.
+1. Verify that Production still uses the separate `skillbuffet-production` Supabase project and Preview uses its own database. Shared credentials or data are a launch blocker.
+2. Inspect the Production migration history against the intended `drizzle/` and `supabase/migrations/` sets. Apply only missing migrations through the documented process; do not re-provision the existing database or seed demo data.
+3. Confirm a current restore point (backup), and test restoring it into a scratch database.
+4. Confirm the existing first administrator can sign in and open `/admin`; use `docs/ADMIN-OPERATIONS.md` only if access needs repair. Registration alone cannot grant admin rights.
 5. Verify `/api/health` against Production, including the database check.
-6. Create the first admin user using the process in `docs/ADMIN-OPERATIONS.md`. Registration cannot grant admin rights.
-- **Done when:** Production DB is separate, migrated, backed up, restore is tested, and an admin account can sign in.
+- **Done when:** the separate Production database, schema, backup and restore, health responses, and admin access are confirmed with evidence.
 
 ## C. Full end-to-end QA on Preview
 
@@ -85,9 +84,9 @@ Record results with screenshots or a test log. Any failure is a blocker.
 ## F. Release hygiene and monitoring
 
 1. Confirm branch protection on `main`: require PR review and passing checks before merge.
-2. Confirm checks are green on the release commit: code quality, build, production dependency audit, CodeQL, and secret scanning/push protection.
+2. Confirm checks are green on the release commit: code quality, build, production dependency audit, CodeQL, and secret scanning/push protection. Review the open Dependabot alerts, including the older development CLI dependency tree addressed in PR #5, and record the disposition of any remaining alerts. Do not dismiss alerts in bulk.
 3. Set up runtime error monitoring for Production.
-4. Set up an uptime alert on `/api/health` and the homepage. Route alerts to the owner's destination.
+4. Verify the existing external uptime monitor uses plain `/api/health`, its alert reaches the approved recipient, and homepage coverage is configured. Add or repair coverage if a check is missing; keep `?check=db` out of routine uptime polling.
 5. Name the rollback owner. Document how to roll back to the previous Vercel deployment.
 6. Create a release record: release commit SHA, deployment URL, date, approver names, and the QA test log.
 - **Done when:** protections are on, alerts are tested with one forced failure, rollback steps are written, and the release record exists.
@@ -127,6 +126,7 @@ Run `pnpm test:integration` if the Playwright suite is set up for the release.
 - [ ] Final Terms and Privacy approved by owner
 - [ ] Owned domain on HTTPS, canonicals correct, indexing per decision
 - [ ] Branch protection on, release-commit checks green
+- [ ] Dependabot alerts reviewed and remaining risks recorded
 - [ ] Error monitoring and uptime alerts working
 - [ ] Rollback owner named, rollback steps documented
 - [ ] Release record written (commit, URL, approver, QA log)
