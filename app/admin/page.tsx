@@ -2,7 +2,7 @@ import { privateRobots } from "@/lib/seo/site";
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { and, desc, eq, inArray, count } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { getViewer, isAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
@@ -17,6 +17,7 @@ import {
   skillVersion,
   user,
 } from "@/lib/db/schema";
+import { getMarketplaceCounters } from "@/lib/db/marketplace-counters";
 import { AdminReviewForm } from "@/components/admin-review-form";
 import { AdminTabs } from "@/components/admin-tabs";
 import { Markdown } from "@/components/markdown";
@@ -28,13 +29,15 @@ export const metadata: Metadata = {
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; publishedPage?: string }>;
 }) {
-  const page = Math.max(0, Math.floor(Number((await searchParams).page) || 0));
+  const params = await searchParams;
+  const page = Math.min(10_000, Math.max(0, Math.floor(Number(params.page) || 0)));
+  const publishedPage = Math.min(10_000, Math.max(0, Math.floor(Number(params.publishedPage) || 0)));
   const session = await getViewer();
   if (!session?.user) redirect("/auth/sign-in");
   if (!(await isAdmin(session.user.id))) notFound();
-  const [submissions, published, events, ratings, counts, blocked] =
+  const [submissions, published, events, ratings, blocked, counters] =
     await Promise.all([
       db
         .select({
@@ -53,7 +56,18 @@ export default async function AdminPage({
         .orderBy(desc(skillSubmission.createdAt))
         .limit(20)
         .offset(page * 20),
-      db.select().from(skill).where(eq(skill.status, "published")),
+      db.select({
+        id: skill.id,
+        slug: skill.slug,
+        name: skill.name,
+        category: skill.category,
+        downloadCount: skill.downloadCount,
+      })
+        .from(skill)
+        .where(eq(skill.status, "published"))
+        .orderBy(desc(skill.updatedAt), desc(skill.id))
+        .limit(20)
+        .offset(publishedPage * 20),
       db
         .select({ event: reviewEvent, actor: user.name })
         .from(reviewEvent)
@@ -68,30 +82,27 @@ export default async function AdminPage({
         .orderBy(desc(communityRating.createdAt))
         .limit(30),
       db
-        .select({ status: skillSubmission.status, count: count() })
-        .from(skillSubmission)
-        .groupBy(skillSubmission.status),
-      db
         .select({ id: skillSubmission.id, snapshot: skillSubmission.snapshot })
         .from(skillSubmission)
         .where(eq(skillSubmission.status, "blocked"))
         .orderBy(desc(skillSubmission.createdAt))
         .limit(20),
+      getMarketplaceCounters(),
     ]);
   const pending = submissions;
-  const pendingCount =
-    counts.find((row) => row.status === "pending")?.count ?? 0;
+  const pendingCount = counters.pending;
   const [allFindings, allFiles] = pending.length
     ? await Promise.all([
         db
           .select()
           .from(finding)
-          .where(
+        .where(
             inArray(
               finding.scanResultId,
               pending.flatMap((row) => (row.scan ? [row.scan.id] : [])),
-            ),
           ),
+        )
+        .limit(20 * 500),
         db
           .select()
           .from(skillFile)
@@ -102,8 +113,9 @@ export default async function AdminPage({
                 pending.map((row) => row.version.id),
               ),
               inArray(skillFile.path, ["SKILL.md", "recipe-package.json"]),
-            ),
           ),
+        )
+        .limit(20 * 2),
       ])
     : [[], []];
   return (
@@ -125,11 +137,11 @@ export default async function AdminPage({
             <strong className="text-3xl">{pendingCount}</strong> awaiting review
           </span>
           <span>
-            <strong className="text-3xl">{published.length}</strong> published
+            <strong className="text-3xl">{counters.published}</strong> published
           </span>
           <span>
             <strong className="text-3xl">
-              {counts.find((row) => row.status === "blocked")?.count ?? 0}
+              {counters.blocked}
             </strong>{" "}
             scan blocked
           </span>
@@ -218,6 +230,10 @@ export default async function AdminPage({
             </article>
           ))}
         </div>
+        <nav className="mt-5 flex gap-5 text-sm font-semibold text-primary" aria-label="Published recipes">
+          {publishedPage > 0 && <Link href={`/admin?publishedPage=${publishedPage - 1}`}>← Previous page</Link>}
+          {(publishedPage + 1) * 20 < counters.published && <Link href={`/admin?publishedPage=${publishedPage + 1}`}>Next page →</Link>}
+        </nav>
       </section>
       <section id="reviews" className="mt-12 scroll-mt-24">
         <h2 className="text-2xl font-semibold">Community review moderation</h2>

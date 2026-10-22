@@ -32,7 +32,8 @@ export default async function SubmissionPage({
   const findings = await db
     .select()
     .from(finding)
-    .where(eq(finding.scanResultId, row.version.scanResultId ?? ""));
+    .where(eq(finding.scanResultId, row.version.scanResultId ?? ""))
+    .limit(500);
   return (
     <main className="mx-auto max-w-4xl p-6 sm:p-10">
       <Link href="/dashboard/skills" className="text-primary underline">

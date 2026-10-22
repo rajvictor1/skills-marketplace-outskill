@@ -24,7 +24,7 @@ import { ScanPreview } from "@/components/scan-preview";
 import { SkillCard } from "@/components/skill-card";
 import { DemoDataNotice } from "@/components/dashboard/demo-data-notice";
 import { CategoryDirectory } from "@/components/category-directory";
-import { getCatalogState } from "@/lib/skills/catalog";
+import { getCatalogCounters, getCatalogState } from "@/lib/skills/catalog";
 import { WORKFLOW_TEMPLATES } from "@/lib/workflows/templates";
 import { SCAN_LAYERS } from "@/lib/trust";
 
@@ -37,9 +37,10 @@ const LAYER_ICONS = {
 
 export default async function Home() {
   await headers();
-  const [catalog, reviews] = await Promise.all([
-    getCatalogState(),
+  const [catalog, reviews, counters] = await Promise.all([
+    getCatalogState({ pageSize: 6 }),
     getRatings("marketplace"),
+    getCatalogCounters(),
   ]);
   const realSkills = catalog.skills.filter((item) => !item.metadata?.isSample);
   const featured = catalog.skills.slice(0, 3);
@@ -296,9 +297,9 @@ export default async function Home() {
             </div>
           )}
           <div className="grid grid-cols-2 gap-8 border-t border-border pt-10 lg:grid-cols-4">
-            <Stat value={String(realSkills.length)} label="Catalog recipes" />
+            <Stat value={String(counters.published || realSkills.length)} label="Catalog recipes" />
             <Stat
-              value={String(coveredCategories)}
+              value={String(counters.categories || coveredCategories)}
               label="Covered categories"
             />
             <Stat
@@ -307,7 +308,7 @@ export default async function Home() {
             />
             <Stat
               value={String(
-                realSkills.reduce((sum, skill) => sum + skill.installs, 0),
+                counters.downloads || realSkills.reduce((sum, skill) => sum + skill.installs, 0),
               )}
               label="Recorded downloads"
             />

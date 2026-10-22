@@ -2,7 +2,7 @@ import "server-only";
 import { getCuratedExamples } from "@/lib/curated-examples";
 import { cache } from "react";
 
-import { and, eq, inArray, avg, count } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, inArray, avg, count, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { hasDatabaseConnection } from "@/lib/db/connection";
 import {
@@ -21,12 +21,28 @@ import {
   type SampleSkill,
 } from "@/lib/sample-data";
 import { demoCatalogEnabled } from "@/lib/demo-mode";
+import { getMarketplaceCounters } from "@/lib/db/marketplace-counters";
 
 export type CatalogState = {
   skills: SampleSkill[];
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
   source: "demo" | "database" | "unavailable";
   hasSampleContent: boolean;
 };
+export type CatalogPageOptions = {
+  page?: number;
+  pageSize?: number;
+  category?: string;
+  categories?: string[];
+  subcategory?: string;
+  search?: string;
+  sort?: "popular" | "recent" | "safest";
+  slug?: string;
+};
+export type CatalogIndexEntry = Pick<SampleSkill, "slug" | "category" | "subcategory" | "updatedAt" | "adminApproved" | "metadata">;
 export type CatalogSkillLookup =
   | { status: "found"; skill: SampleSkill; source: "demo" | "database" }
   | { status: "not_found" }
@@ -66,8 +82,54 @@ function sizeLabel(bytes: number) {
   return bytes >= 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${bytes} B`;
 }
 
-async function loadPublishedSkills(slug?: string): Promise<SampleSkill[]> {
-  const rows = await db
+const DEFAULT_PAGE_SIZE = 24;
+const MAX_PAGE_SIZE = 48;
+const MAX_FILES_PER_VERSION = 512;
+const MAX_FINDINGS_PER_VERSION = 500;
+
+function normalizePageOptions(options: CatalogPageOptions = {}) {
+  const page = Math.min(10_000, Math.max(0, Math.floor(Number(options.page) || 0)));
+  const pageSize = Math.min(MAX_PAGE_SIZE, Math.max(1, Math.floor(Number(options.pageSize) || DEFAULT_PAGE_SIZE)));
+  const search = (options.search ?? "").trim().slice(0, 100);
+  return { ...options, page, pageSize, search };
+}
+
+async function loadPublishedSkills(
+  options: CatalogPageOptions = {},
+): Promise<{ skills: SampleSkill[]; total: number; hasMore: boolean }> {
+  const normalized = normalizePageOptions(options);
+  const filters = [eq(skill.status, "published")];
+  if (normalized.category) filters.push(eq(skill.category, normalized.category));
+  if (normalized.categories?.length) filters.push(inArray(skill.category, normalized.categories));
+  if (normalized.subcategory) filters.push(eq(skill.subcategory, normalized.subcategory));
+  if (normalized.slug) filters.push(eq(skill.slug, normalized.slug));
+  if (normalized.search) {
+    const pattern = `%${normalized.search.replace(/[\\%_]/g, "\\$&")}%`;
+    filters.push(or(
+      ilike(skill.name, pattern),
+      ilike(skill.description, pattern),
+      ilike(skill.summary, pattern),
+      sql`${skill.tags}::text ILIKE ${pattern}`,
+      ilike(user.name, pattern),
+    )!);
+  }
+  const where = and(...filters);
+  const totalPromise = async () => {
+    if (!normalized.category && !normalized.categories?.length && !normalized.subcategory && !normalized.search && !normalized.slug) {
+      return (await getMarketplaceCounters()).published;
+    }
+    const [row] = await db.select({ total: count() })
+      .from(skill)
+      .innerJoin(user, eq(skill.authorId, user.id))
+      .where(where);
+    return Number(row?.total ?? 0);
+  };
+  const order = normalized.sort === "recent"
+    ? [desc(skill.updatedAt), desc(skill.id)]
+    : normalized.sort === "safest"
+      ? [asc(skillVersion.riskScore), desc(skill.updatedAt), desc(skill.id)]
+      : [desc(skill.downloadCount), desc(skill.updatedAt), desc(skill.id)];
+  const [rows, total] = await Promise.all([db
     .select({
       id: skill.id,
       slug: skill.slug,
@@ -103,13 +165,14 @@ async function loadPublishedSkills(slug?: string): Promise<SampleSkill[]> {
     )
     .innerJoin(user, eq(skill.authorId, user.id))
     .leftJoin(scanResult, eq(skillVersion.scanResultId, scanResult.id))
-    .where(
-      slug
-        ? and(eq(skill.status, "published"), eq(skill.slug, slug))
-        : eq(skill.status, "published"),
-    );
+    .where(where)
+    .orderBy(...order)
+    .limit(normalized.pageSize + 1)
+    .offset(normalized.page * normalized.pageSize), totalPromise()]);
 
-  if (rows.length === 0) return [];
+  const hasMore = rows.length > normalized.pageSize;
+  rows.splice(normalized.pageSize);
+  if (rows.length === 0) return { skills: [], total, hasMore };
   const versionIds = rows.map((row) => row.currentVersionId);
   const files = await db
     .select({
@@ -119,7 +182,8 @@ async function loadPublishedSkills(slug?: string): Promise<SampleSkill[]> {
       isExecutable: skillFile.isExecutable,
     })
     .from(skillFile)
-    .where(inArray(skillFile.skillVersionId, versionIds));
+    .where(inArray(skillFile.skillVersionId, versionIds))
+    .limit(versionIds.length * MAX_FILES_PER_VERSION);
   const scanIds = rows.flatMap((row) =>
     row.scanResultId ? [row.scanResultId] : [],
   );
@@ -139,6 +203,7 @@ async function loadPublishedSkills(slug?: string): Promise<SampleSkill[]> {
         })
         .from(finding)
         .where(inArray(finding.scanResultId, scanIds))
+        .limit(scanIds.length * MAX_FINDINGS_PER_VERSION)
     : [];
 
   const ratings = await db
@@ -157,8 +222,9 @@ async function loadPublishedSkills(slug?: string): Promise<SampleSkill[]> {
         eq(communityRating.hidden, false),
       ),
     )
-    .groupBy(communityRating.target);
-  return rows
+    .groupBy(communityRating.target)
+    .limit(rows.length);
+  const skills = rows
     .filter((row) => !row.metadata.isSample)
     .map((row) => {
       const displayName = row.authorName;
@@ -219,37 +285,54 @@ async function loadPublishedSkills(slug?: string): Promise<SampleSkill[]> {
         classifierModel: row.classifierModel ?? "Not used",
       } satisfies SampleSkill;
     });
+  return { skills, total, hasMore };
 }
 
 export const getCatalogState = cache(
-  async function getCatalogState(): Promise<CatalogState> {
+  async function getCatalogState(options: CatalogPageOptions = {}): Promise<CatalogState> {
+    const normalized = normalizePageOptions(options);
     if (!hasDatabaseConnection()) {
-      return previewExamples().length
+      const examples = filterExamples(previewExamples(), normalized);
+      return examples.length || previewExamples().length
         ? {
-            skills: previewExamples(),
+            skills: examples.slice(normalized.page * normalized.pageSize, (normalized.page + 1) * normalized.pageSize),
+            total: examples.length,
+            page: normalized.page,
+            pageSize: normalized.pageSize,
+            hasMore: (normalized.page + 1) * normalized.pageSize < examples.length,
             source: "unavailable",
             hasSampleContent: true,
           }
-        : { skills: [], source: "unavailable", hasSampleContent: false };
+        : { skills: [], total: 0, page: normalized.page, pageSize: normalized.pageSize, hasMore: false, source: "unavailable", hasSampleContent: false };
     }
     try {
-      const published = await loadPublishedSkills();
-      const slugs = new Set(published.map((item) => item.slug));
-      const examples = previewExamples().filter(
+      const result = await loadPublishedSkills(normalized);
+      const slugs = new Set(result.skills.map((item) => item.slug));
+      const examples = filterExamples(previewExamples(), normalized).filter(
         (item) => !slugs.has(item.slug),
       );
+      const visibleExamples = result.skills.length < normalized.pageSize
+        ? examples.slice(0, normalized.pageSize - result.skills.length)
+        : [];
       return {
-        skills: [...published, ...examples],
+        skills: [...result.skills, ...visibleExamples],
+        total: result.total + examples.length,
+        page: normalized.page,
+        pageSize: normalized.pageSize,
+        hasMore: result.hasMore || (normalized.page + 1) * normalized.pageSize < result.total + examples.length,
         source: "database",
-        hasSampleContent:
-          examples.length > 0 ||
-          published.some((item) => item.metadata?.isSample),
+        hasSampleContent: examples.length > 0 || result.skills.some((item) => item.metadata?.isSample),
       };
     } catch {
+      const examples = filterExamples(previewExamples(), normalized);
       return {
-        skills: previewExamples(),
+        skills: examples.slice(normalized.page * normalized.pageSize, (normalized.page + 1) * normalized.pageSize),
+        total: examples.length,
+        page: normalized.page,
+        pageSize: normalized.pageSize,
+        hasMore: (normalized.page + 1) * normalized.pageSize < examples.length,
         source: "unavailable",
-        hasSampleContent: previewExamples().length > 0,
+        hasSampleContent: examples.length > 0,
       };
     }
   },
@@ -265,7 +348,7 @@ export const getCatalogSkillBySlug = cache(async function getCatalogSkillBySlug(
       : { status: "not_found" };
   }
   try {
-    const result = (await loadPublishedSkills(slug))[0];
+    const result = (await loadPublishedSkills({ slug, pageSize: 1 })).skills[0];
     if (result) return { status: "found", skill: result, source: "database" };
     const sample = previewExample(slug);
     return sample
@@ -278,3 +361,76 @@ export const getCatalogSkillBySlug = cache(async function getCatalogSkillBySlug(
       : { status: "unavailable" };
   }
 });
+
+function filterExamples(items: SampleSkill[], options: CatalogPageOptions) {
+  return items.filter((item) =>
+    (!options.category || item.category === options.category) &&
+    (!options.categories?.length || options.categories.includes(item.category)) &&
+    (!options.subcategory || item.subcategory === options.subcategory) &&
+    (!options.search || `${item.name} ${item.summary} ${item.description} ${item.author.name} ${(item.tags ?? []).join(" ")}`.toLowerCase().includes(options.search.toLowerCase()))
+  );
+}
+
+export async function getCatalogCounters() {
+  if (!hasDatabaseConnection()) return { published: 0, downloads: 0, categories: 0, available: false };
+  try {
+    const [counters, [categoryRow]] = await Promise.all([
+      getMarketplaceCounters(),
+      db.select({ total: sql<number>`count(distinct ${skill.category})` })
+        .from(skill)
+        .where(eq(skill.status, "published")),
+    ]);
+    return {
+      published: counters.published,
+      downloads: counters.downloads,
+      categories: Number(categoryRow?.total ?? 0),
+      available: true,
+    };
+  } catch {
+    return { published: 0, downloads: 0, categories: 0, available: false };
+  }
+}
+
+export async function getPublishedCatalogIndex(page = 0, pageSize = 500) {
+  const boundedSize = Math.min(500, Math.max(1, Math.floor(pageSize) || 500));
+  const boundedPage = Math.min(100_000, Math.max(0, Math.floor(page) || 0));
+  if (!hasDatabaseConnection()) {
+    const fallback = previewExamples().map((item) => ({
+      slug: item.slug, category: item.category, subcategory: item.subcategory,
+      updatedAt: item.updatedAt, adminApproved: item.adminApproved,
+      metadata: item.metadata,
+    }));
+    const entries = fallback.slice(boundedPage * boundedSize, (boundedPage + 1) * boundedSize);
+    return { entries, hasMore: (boundedPage + 1) * boundedSize < fallback.length, source: "unavailable" as const };
+  }
+  try {
+    const rows = await db.select({
+      slug: skill.slug,
+      category: skill.category,
+      subcategory: skill.subcategory,
+      updatedAt: skill.updatedAt,
+      metadata: skill.metadata,
+    })
+      .from(skill)
+      .where(eq(skill.status, "published"))
+      .orderBy(desc(skill.updatedAt), desc(skill.id))
+      .limit(boundedSize + 1)
+      .offset(boundedPage * boundedSize);
+    return {
+      entries: rows.slice(0, boundedSize).map((row) => ({
+        ...row,
+        subcategory: row.subcategory ?? undefined,
+        updatedAt: row.updatedAt.toISOString().slice(0, 10),
+        adminApproved: true,
+      })),
+      hasMore: rows.length > boundedSize,
+      source: "database" as const,
+    };
+  } catch {
+    return { entries: [], hasMore: false, source: "unavailable" as const };
+  }
+}
+
+export function getCatalogPage(options: CatalogPageOptions = {}) {
+  return getCatalogState(options);
+}

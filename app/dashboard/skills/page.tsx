@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { desc, eq } from "drizzle-orm";
+import { countDistinct, desc, eq, sql } from "drizzle-orm";
 import { getViewer, isAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { skill, skillSubmission, skillVersion } from "@/lib/db/schema";
@@ -10,7 +10,13 @@ export const metadata: Metadata = {
   title: "My recipes",
   robots: { index: false },
 };
-export default async function MySkillsPage() {
+const PAGE_SIZE = 20;
+
+export default async function MySkillsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   const session = await getViewer();
   if (!session?.user)
     return (
@@ -27,7 +33,8 @@ export default async function MySkillsPage() {
         </Link>
       </main>
     );
-  const [rows, admin] = await Promise.all([
+  const page = Math.min(10_000, Math.max(0, Math.floor(Number((await searchParams).page) || 0)));
+  const [pageRows, admin, [summary]] = await Promise.all([
     db
       .select({
         listing: skill,
@@ -38,12 +45,22 @@ export default async function MySkillsPage() {
       .leftJoin(skillSubmission, eq(skillSubmission.skillId, skill.id))
       .leftJoin(skillVersion, eq(skillSubmission.versionId, skillVersion.id))
       .where(eq(skill.authorId, session.user.id))
-      .orderBy(desc(skillSubmission.createdAt)),
+      .orderBy(desc(skillSubmission.createdAt), desc(skill.id))
+      .limit(PAGE_SIZE + 1)
+      .offset(page * PAGE_SIZE),
     isAdmin(session.user.id),
+    db.select({
+      recipes: countDistinct(skill.id),
+      published: sql<number>`count(distinct ${skill.id}) filter (where ${skill.status} = 'published')`,
+      pending: sql<number>`count(distinct ${skillSubmission.id}) filter (where ${skillSubmission.status} = 'pending')`,
+    })
+      .from(skill)
+      .leftJoin(skillSubmission, eq(skillSubmission.skillId, skill.id))
+      .where(eq(skill.authorId, session.user.id))
+      .limit(1),
   ]);
-  const unique = [
-    ...new Map(rows.map((row) => [row.listing.id, row.listing])).values(),
-  ];
+  const hasMore = pageRows.length > PAGE_SIZE;
+  const rows = pageRows.slice(0, PAGE_SIZE);
   return (
     <main className="mx-auto max-w-6xl px-5 py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -77,12 +94,9 @@ export default async function MySkillsPage() {
       </div>
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
         {[
-          [unique.length, "Recipes"],
-          [unique.filter((s) => s.status === "published").length, "Published"],
-          [
-            rows.filter((r) => r.submission?.status === "pending").length,
-            "Pending reviews",
-          ],
+          [summary?.recipes ?? 0, "Recipes"],
+          [summary?.published ?? 0, "Published"],
+          [summary?.pending ?? 0, "Pending reviews"],
         ].map(([value, label]) => (
           <div
             key={label}
@@ -155,6 +169,10 @@ export default async function MySkillsPage() {
           </article>
         ))}
       </div>
+      <nav className="mt-7 flex gap-5 text-sm font-semibold text-primary" aria-label="Your recipe submissions">
+        {page > 0 && <Link href={`/dashboard/skills?page=${page - 1}`}>← Previous page</Link>}
+        {hasMore && <Link href={`/dashboard/skills?page=${page + 1}`}>Next page →</Link>}
+      </nav>
       {!rows.length && (
         <div className="mt-8 rounded-2xl border border-dashed border-border p-10">
           <h2 className="text-xl font-semibold">

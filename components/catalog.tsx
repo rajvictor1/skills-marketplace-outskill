@@ -1,34 +1,34 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search, SlidersHorizontal } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
-import { SkillCard } from "@/components/skill-card";
+import { SkillCard, type CatalogCardSkill } from "@/components/skill-card";
 import { cn } from "@/lib/utils";
 import {
   CATEGORY_GROUPS,
   getSubcategories,
   type SkillCategory,
 } from "@/lib/skills/taxonomy";
-import { CATEGORIES, type SampleSkill } from "@/lib/sample-data";
+import { CATEGORIES } from "@/lib/sample-data";
 
 type SortKey = "popular" | "recent" | "safest";
-
-const TIER_RANK: Record<string, number> = {
-  verified_safe: 0,
-  caution: 1,
-  blocked: 2,
-  pending: 3,
-};
+const PAGE_SIZE = 24;
 
 export function Catalog({
   skills,
+  initialTotal,
+  initialPage = 0,
   focusedCategory,
+  initialSubcategory,
   initialQuery = "",
 }: {
-  skills: SampleSkill[];
+  skills: CatalogCardSkill[];
+  initialTotal?: number;
+  initialPage?: number;
   focusedCategory?: SkillCategory;
+  initialSubcategory?: string;
   initialQuery?: string;
 }) {
   const allExamples =
@@ -38,45 +38,47 @@ export function Catalog({
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>(
     focusedCategory ?? "All",
   );
-  const [subcategory, setSubcategory] = useState("All subcategories");
+  const [subcategory, setSubcategory] = useState(initialSubcategory ?? "All subcategories");
   const [sort, setSort] = useState<SortKey>("popular");
+  const [page, setPage] = useState(initialPage);
+  const [total, setTotal] = useState(initialTotal ?? skills.length);
+  const [pageSkills, setPageSkills] = useState<CatalogCardSkill[]>(skills);
+  const [loading, setLoading] = useState(false);
 
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    let list = skills.filter((s) => {
-      const matchesGroup =
-        group === "All" ||
-        CATEGORY_GROUPS.some(
-          (item) =>
-            item.name === group &&
-            item.categories.some((entry) => entry.name === s.category),
-        );
-      const matchesCategory = category === "All" || s.category === category;
-      const matchesSubcategory =
-        subcategory === "All subcategories" || s.subcategory === subcategory;
-      const matchesQuery =
-        q === "" ||
-        s.name.toLowerCase().includes(q) ||
-        s.summary.toLowerCase().includes(q) ||
-        s.description.toLowerCase().includes(q) ||
-        s.author.name.toLowerCase().includes(q) ||
-        (s.tags ?? []).some((tag) => tag.toLowerCase().includes(q));
-      return (
-        matchesGroup && matchesCategory && matchesSubcategory && matchesQuery
-      );
-    });
+  useEffect(() => {
+    let active = true;
+    const timer = window.setTimeout(async () => {
+      const params = new URLSearchParams({
+        limit: String(PAGE_SIZE),
+        offset: String(page * PAGE_SIZE),
+        sort,
+      });
+      if (query.trim()) params.set("q", query.trim());
+      if (category !== "All") params.set("category", category);
+      if (subcategory !== "All subcategories") params.set("subcategory", subcategory);
+      if (group !== "All") params.set("group", group);
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/v1/skills?${params.toString()}`);
+        if (!response.ok) return;
+        const result = await response.json() as { total: number; skills: CatalogCardSkill[] };
+        if (active) {
+          setPageSkills(result.skills);
+          setTotal(result.total);
+        }
+      } catch {
+        // Keep the server-rendered first page visible when the API is unavailable.
+      } finally {
+        if (active) setLoading(false);
+      }
+    }, query === initialQuery ? 0 : 250);
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [category, group, initialQuery, page, query, sort, subcategory]);
 
-    list = [...list].sort((a, b) => {
-      if (sort === "popular")
-        return allExamples
-          ? a.name.localeCompare(b.name)
-          : b.installs - a.installs;
-      if (sort === "recent") return b.updatedAt.localeCompare(a.updatedAt);
-      return TIER_RANK[a.trustTier] - TIER_RANK[b.trustTier];
-    });
-
-    return list;
-  }, [skills, query, group, category, subcategory, sort, allExamples]);
+  const results = useMemo(() => [...pageSkills], [pageSkills]);
 
   const visibleCategories =
     group === "All"
@@ -94,7 +96,7 @@ export function Catalog({
           />
           <Input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => { setPage(0); setQuery(e.target.value); }}
             placeholder="Search recipes, authors, or use cases"
             className="h-13 rounded-full border-border bg-background pl-13 pr-5 text-sm"
             aria-label="Search recipes"
@@ -121,7 +123,7 @@ export function Catalog({
               <button
                 key={key}
                 type="button"
-                onClick={() => setSort(key)}
+                onClick={() => { setPage(0); setSort(key); }}
                 className={cn(
                   "rounded-full px-4 py-2 text-sm transition-colors",
                   sort === key
@@ -146,6 +148,7 @@ export function Catalog({
               key={item}
               type="button"
               onClick={() => {
+                setPage(0);
                 setGroup(item);
                 setCategory("All");
                 setSubcategory("All subcategories");
@@ -170,6 +173,7 @@ export function Catalog({
               key={item.name}
               type="button"
               onClick={() => {
+                setPage(0);
                 setCategory(item.name);
                 setSubcategory("All subcategories");
               }}
@@ -204,7 +208,7 @@ export function Catalog({
               <button
                 key={item}
                 type="button"
-                onClick={() => setSubcategory(item)}
+                onClick={() => { setPage(0); setSubcategory(item); }}
                 className={cn(
                   "rounded-full border px-4 py-2 text-sm transition-colors",
                   subcategory === item
@@ -226,7 +230,7 @@ export function Catalog({
               <select
                 id="subcategory-filter"
                 value={subcategory}
-                onChange={(event) => setSubcategory(event.target.value)}
+                onChange={(event) => { setPage(0); setSubcategory(event.target.value); }}
                 className="h-9 rounded-lg border border-border bg-card px-3 text-sm text-foreground"
               >
                 <option>All subcategories</option>
@@ -241,7 +245,7 @@ export function Catalog({
 
       {/* results */}
       <p className="mt-8 text-sm text-muted-foreground">
-        {`${results.length} ${allExamples ? "example " : ""}${results.length === 1 ? "recipe" : "recipes"}`}
+        {`${total.toLocaleString()} ${allExamples ? "example " : ""}${total === 1 ? "recipe" : "recipes"}`}
         {category !== "All"
           ? ` in ${category}`
           : group !== "All"
@@ -249,7 +253,7 @@ export function Catalog({
             : ""}
       </p>
 
-      {results.length === 0 ? (
+      {results.length === 0 && !loading ? (
         <div className="mt-6 rounded-2xl border border-dashed border-border bg-card/40 p-12 text-center">
           <p className="text-sm font-medium text-foreground">
             {query || subcategory !== "All subcategories"
@@ -267,12 +271,21 @@ export function Catalog({
           </p>
         </div>
       ) : (
-        <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={cn("mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3", loading && "opacity-60")}>
           {results.map((skill) => (
             <SkillCard key={skill.id} skill={skill} />
           ))}
         </div>
       )}
+      <nav className="mt-8 flex items-center justify-between gap-4 text-sm" aria-label="Recipe pages">
+        <span className="text-muted-foreground">
+          {total === 0 ? "No recipes" : `Showing ${page * PAGE_SIZE + 1}–${Math.min((page + 1) * PAGE_SIZE, total)} of ${total.toLocaleString()}`}
+        </span>
+        <div className="flex gap-3">
+          <button type="button" disabled={page === 0 || loading} onClick={() => setPage((current) => Math.max(0, current - 1))} className="rounded-full border border-border px-4 py-2 disabled:opacity-40">Previous</button>
+          <button type="button" disabled={(page + 1) * PAGE_SIZE >= total || loading} onClick={() => setPage((current) => current + 1)} className="rounded-full border border-border px-4 py-2 disabled:opacity-40">Next</button>
+        </div>
+      </nav>
     </div>
   );
 }

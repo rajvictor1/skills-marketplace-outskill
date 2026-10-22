@@ -48,16 +48,19 @@ function database() {
     ssl: "require",
   }));
 }
-export async function listPrivateRecipeVersions() {
+export async function listPrivateRecipeVersions(page = 0, requestedPageSize = 20) {
   await requireAdmin();
-  return database()<PrivateRecipeVersion[]>`
+  const pageSize = Math.min(40, Math.max(1, Math.floor(requestedPageSize) || 20));
+  const offset = Math.min(10_000_000, Math.max(0, Math.floor(page) || 0)) * pageSize;
+  const rows = await database()<PrivateRecipeVersion[]>`
     select v.id, v.recipe_id, v.version, v.manifest_path, v.package_hash,
       v.created_at, r.status, r.review_note, v.inspection,
       case when d.version_id is null then null else jsonb_build_object('title',d.title,'summary',d.summary,'category',d.category,'subcategory',d.subcategory) end as listing_draft
     from recipe_private.package_versions v
     join recipe_private.package_reviews r on r.version_id=v.id
     left join recipe_private.package_listing_drafts d on d.version_id=v.id
-    order by v.created_at desc limit 50`;
+    order by v.created_at desc, v.id desc limit ${pageSize + 1} offset ${offset}`;
+  return { items: rows.slice(0, pageSize), hasMore: rows.length > pageSize, pageSize };
 }
 export async function getPrivateRecipeVersion(id: string) {
   await requireAdmin();

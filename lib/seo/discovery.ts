@@ -7,16 +7,18 @@ import {
 } from "@/lib/seo/site";
 import { DOCS } from "@/lib/docs-content";
 import { CATEGORY_GROUPS, categorySlug } from "@/lib/skills/taxonomy";
-import { getCatalogState } from "@/lib/skills/catalog";
+import { getPublishedCatalogIndex } from "@/lib/skills/catalog";
 export async function discoveryEntries() {
   if (!INDEXING_ENABLED) return [];
-  const catalog = await getCatalogState();
-  // Fail closed rather than publish an incomplete sitemap on a database outage.
-  if (catalog.source === "unavailable")
-    throw new Error("Catalog unavailable for sitemap generation");
-  const real = catalog.skills.filter(
-    (s) => s.adminApproved && !s.metadata?.isSample,
-  );
+  const real = [] as Awaited<ReturnType<typeof getPublishedCatalogIndex>>["entries"];
+  for (let page = 0; ; page += 1) {
+    const result = await getPublishedCatalogIndex(page);
+    // Fail closed rather than publish an incomplete sitemap on a database outage.
+    if (result.source === "unavailable")
+      throw new Error("Catalog unavailable for sitemap generation");
+    real.push(...result.entries.filter((entry) => entry.adminApproved && !entry.metadata?.isSample));
+    if (!result.hasMore) break;
+  }
   const pages = Object.keys(PUBLIC_PAGES)
     .filter((p) => p !== "/publish")
     .map((path) => ({ url: absoluteUrl(path), lastModified: CONTENT_UPDATED }));

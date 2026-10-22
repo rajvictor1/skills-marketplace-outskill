@@ -10,7 +10,12 @@ const TONES = [
   "bg-category-peach text-peach",
   "bg-category-blue text-blue",
 ];
-export function SkillCard({ skill }: { skill: SampleSkill }) {
+export type CatalogCardSkill = Pick<SampleSkill,
+  "id" | "slug" | "name" | "description" | "summary" | "category" | "tags" |
+  "metadata" | "trustTier" | "installs" | "ratingAverage" | "ratingCount" | "adminApproved"
+> & { author: Pick<SampleSkill["author"], "name"> };
+
+export function SkillCard({ skill }: { skill: CatalogCardSkill }) {
   const tone =
     TONES[
       Math.max(

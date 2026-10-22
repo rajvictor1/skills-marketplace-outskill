@@ -62,7 +62,7 @@ export default async function SkillsPage() {
             <DemoDataNotice>{`The database is unavailable. Real submissions cannot be shown right now${catalog.hasSampleContent ? ", but preview examples remain visible." : "."}`}</DemoDataNotice>
           </div>
         )}
-        <Catalog skills={catalog.skills} />
+        <Catalog skills={catalog.skills} initialTotal={catalog.total} initialPage={catalog.page} />
       </div>
     </main>
   );

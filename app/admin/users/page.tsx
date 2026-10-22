@@ -13,6 +13,7 @@ import {
   user,
 } from "@/lib/db/schema";
 import { privateRobots } from "@/lib/seo/site";
+import { getMarketplaceCounters } from "@/lib/db/marketplace-counters";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -38,7 +39,7 @@ export default async function AdminUsersPage({
   const filter = query
     ? or(ilike(user.name, `%${query}%`), ilike(user.email, `%${query}%`))
     : undefined;
-  const [people, [totalRow]] = await Promise.all([
+  const [people, total] = await Promise.all([
     db
       .select({
         id: user.id,
@@ -52,7 +53,9 @@ export default async function AdminUsersPage({
       .orderBy(desc(user.createdAt), desc(user.id))
       .limit(PAGE_SIZE)
       .offset(page * PAGE_SIZE),
-    db.select({ total: count() }).from(user).where(filter),
+    filter
+      ? db.select({ total: count() }).from(user).where(filter).then(([row]) => Number(row?.total ?? 0))
+      : getMarketplaceCounters().then((counters) => counters.users),
   ]);
   const ids = people.map((person) => person.id);
   const [admins, recipes, reviews, downloads] = ids.length
@@ -60,7 +63,8 @@ export default async function AdminUsersPage({
         db
           .select({ userId: marketplaceAdmin.userId })
           .from(marketplaceAdmin)
-          .where(inArray(marketplaceAdmin.userId, ids)),
+          .where(inArray(marketplaceAdmin.userId, ids))
+          .limit(ids.length),
         db
           .select({ userId: skill.authorId, total: count() })
           .from(skill)
@@ -82,7 +86,6 @@ export default async function AdminUsersPage({
   const recipeCounts = new Map(recipes.map((row) => [row.userId, row.total]));
   const reviewCounts = new Map(reviews.map((row) => [row.userId, row.total]));
   const downloadCounts = new Map(downloads.map((row) => [row.userId, row.total]));
-  const total = totalRow?.total ?? 0;
   const pageHref = (next: number) =>
     `/admin/users?page=${next}${query ? `&q=${encodeURIComponent(query)}` : ""}`;
 

@@ -14,10 +14,9 @@ export default async function Search({
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
-  const [catalog, params] = await Promise.all([
-    getCatalogState(),
-    searchParams,
-  ]);
+  const params = await searchParams;
+  const initialQuery = typeof params.q === "string" ? params.q.slice(0, 100) : "";
+  const catalog = await getCatalogState({ search: initialQuery });
   return (
     <main className="mx-auto max-w-7xl px-5 py-12">
       <PageSeo
@@ -34,9 +33,9 @@ export default async function Search({
       </p>
       <Catalog
         skills={catalog.skills}
-        initialQuery={
-          typeof params.q === "string" ? params.q.slice(0, 200) : ""
-        }
+        initialQuery={initialQuery}
+        initialTotal={catalog.total}
+        initialPage={catalog.page}
       />
     </main>
   );

@@ -353,3 +353,10 @@ export const communityRating = pgTable(
     uniqueIndex("community_rating_user_target_idx").on(t.userId, t.target),
   ],
 );
+
+/** Trigger-maintained totals used by admin dashboards to avoid repeated full scans. */
+export const marketplaceCounter = pgTable("marketplace_counter", {
+  key: text("key").primaryKey(),
+  value: integer("value").notNull().default(0),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});

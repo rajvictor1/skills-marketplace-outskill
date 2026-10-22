@@ -26,7 +26,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const match = getCategoryBySlug(slug);
   if (!match) return { title: "Category not found" };
-  const catalog = await getCatalogState();
+  const catalog = await getCatalogState({ category: match.category.name });
   const hasReal = catalog.skills.some(
     (s) => s.category === match.category.name && !s.metadata?.isSample,
   );
@@ -44,10 +44,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   if (!match) notFound();
 
   await headers();
-  const catalog = await getCatalogState();
-  const skills = catalog.skills.filter(
-    (skill) => skill.category === match.category.name,
-  );
+  const catalog = await getCatalogState({ category: match.category.name });
+  const skills = catalog.skills;
   const workflowTemplates = WORKFLOW_TEMPLATES.filter(
     (template) => template.category === match.category.name,
   );
@@ -175,7 +173,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </div>
         )}
         <div className="mt-9">
-          <Catalog skills={skills} focusedCategory={match.category.name} />
+          <Catalog skills={skills} initialTotal={catalog.total} focusedCategory={match.category.name} />
         </div>
         {skills.length === 0 && catalog.source !== "unavailable" && (
           <Link

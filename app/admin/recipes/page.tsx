@@ -21,14 +21,22 @@ export const metadata: Metadata = {
   robots: privateRobots,
   alternates: { canonical: null },
 };
-export default async function RecipeWorkbench() {
+export default async function RecipeWorkbench({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   const viewer = await getViewer();
   if (!viewer?.user) redirect("/auth/sign-in");
   if (!(await isAdmin(viewer.user.id))) notFound();
   let versions: PrivateRecipeVersion[] = [];
   let unavailable = false;
+  let hasMore = false;
+  const page = Math.min(10_000, Math.max(0, Math.floor(Number((await searchParams).page) || 0)));
   try {
-    versions = await listPrivateRecipeVersions();
+    const result = await listPrivateRecipeVersions(page);
+    versions = result.items;
+    hasMore = result.hasMore;
   } catch {
     unavailable = true;
   }
@@ -73,7 +81,7 @@ export default async function RecipeWorkbench() {
       <section className="mt-9">
         <h2 className="text-xl font-semibold">Saved versions</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Latest 50 versions. Files and inspection reports are immutable;
+          20 versions per page. Files and inspection reports are immutable;
           corrections require a new version number.
         </p>
         {!unavailable && !versions.length && (
@@ -179,6 +187,10 @@ export default async function RecipeWorkbench() {
             </article>
           ))}
         </div>
+        <nav className="mt-6 flex justify-between gap-4 text-sm font-semibold text-primary" aria-label="Private recipe versions">
+          {page > 0 ? <Link href={`/admin/recipes?page=${page - 1}`}>← Previous page</Link> : <span />}
+          {hasMore && <Link href={`/admin/recipes?page=${page + 1}`}>Next page →</Link>}
+        </nav>
       </section>
     </main>
   );
