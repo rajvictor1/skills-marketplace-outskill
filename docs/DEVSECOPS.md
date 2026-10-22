@@ -10,9 +10,10 @@ contest or bonus-prize requirements.
 1. A contributor opens a pull request against `main`. Vercel builds a Preview
    deployment from that branch.
 2. GitHub Actions runs **Code quality** (ESLint, TypeScript, regression tests and
-   a production build) and **Production dependencies** (high-or-worse advisory audit). The workflow
+   a production build), **Recipe lifecycle integration** (real browser flow against
+   an isolated Postgres service), and **Production dependencies** (high-or-worse advisory audit). The workflow
    installs the committed lockfile and uses read-only repository permissions.
-3. Review the changed code, both check results, and the Vercel Preview.
+3. Review the changed code, all three check results, and the Vercel Preview.
    The checks do not themselves prevent a merge until the GitHub branch rule
    described below is enabled. Vercel's Git integration can build a Preview
    while checks are running.
@@ -79,7 +80,11 @@ in the target Supabase database during an approved release; check the Cron job
 and recent run history in Supabase afterward. This policy does not change the
 separate immutable `recipe_private.review_events` table.
 
-Run `pnpm test:integration` with `TEST_DATABASE_URL` pointing to a disposable
+The `Recipe lifecycle integration` GitHub Actions job runs `pnpm test:integration`
+for every pull request and `main` push against a disposable Postgres service named
+`skillbuffet_e2e`. This job is a required release check: verify it passed before
+merging, and add its exact status name to the `main` branch ruleset. For local
+verification, run the same command with `TEST_DATABASE_URL` pointing to a disposable
 local Postgres database named `skillbuffet_e2e`. The browser test creates test
 accounts and checks creator ZIP upload, admin approval, public listing, and
 signed-in package download using real SQL. It refuses remote databases and
@@ -105,7 +110,7 @@ pending migrations safely.
 
 | Area | Current state |
 | --- | --- |
-| Code review and verification | GitHub pull request workflow includes lint, types, regression tests and build; branch rule pending |
+| Code review and verification | GitHub pull request workflow includes lint, types, regression tests, real database/browser lifecycle integration and build; branch rule pending |
 | Package and dependency security | Frozen lockfile and production audit added; GitHub Dependency Graph setting pending for the separate review action |
 | User-submitted recipe security | ZIP importer and deterministic scanner; legacy LLM layer is best effort |
 | Preview release | Existing Vercel Git integration |
