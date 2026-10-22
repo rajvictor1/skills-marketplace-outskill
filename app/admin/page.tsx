@@ -18,6 +18,7 @@ import {
   user,
 } from "@/lib/db/schema";
 import { AdminReviewForm } from "@/components/admin-review-form";
+import { AdminTabs } from "@/components/admin-tabs";
 import { Markdown } from "@/components/markdown";
 export const metadata: Metadata = {
   robots: privateRobots,
@@ -107,6 +108,7 @@ export default async function AdminPage({
     : [[], []];
   return (
     <main className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
+      <AdminTabs active="submissions" />
       <div className="rounded-3xl bg-category-violet p-8 text-foreground">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-safe">
           Skillbuffet / Admin
@@ -141,7 +143,7 @@ export default async function AdminPage({
           Open private recipe workbench →
         </Link>
       </div>
-      <section className="mt-10">
+      <section id="submissions" className="mt-10 scroll-mt-24">
         <h2 className="text-2xl font-semibold">Review queue</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           20 pending submissions per page. Scan-blocked versions cannot be
@@ -217,7 +219,7 @@ export default async function AdminPage({
           ))}
         </div>
       </section>
-      <section className="mt-12">
+      <section id="reviews" className="mt-12 scroll-mt-24">
         <h2 className="text-2xl font-semibold">Community review moderation</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Hide abuse, personal information or irrelevant content. Do not remove
@@ -243,7 +245,7 @@ export default async function AdminPage({
           ))}
         </div>
       </section>
-      <section className="mt-12">
+      <section id="activity" className="mt-12 scroll-mt-24">
         <h2 className="text-2xl font-semibold">Review history</h2>
         <div className="mt-5 overflow-x-auto rounded-2xl border border-border bg-card">
           <table className="w-full text-left text-sm">

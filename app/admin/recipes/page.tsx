@@ -7,6 +7,7 @@ import {
   type PrivateRecipeVersion,
 } from "@/lib/recipes/storage";
 import { privateRobots } from "@/lib/seo/site";
+import { AdminTabs } from "@/components/admin-tabs";
 import {
   RecipePublicationForm,
   RecipeListingDraftForm,
@@ -33,6 +34,7 @@ export default async function RecipeWorkbench() {
   }
   return (
     <main className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
+      <AdminTabs active="recipes" />
       <Link href="/admin" className="text-sm font-semibold text-primary">
         ← Admin review desk
       </Link>
