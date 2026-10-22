@@ -4,6 +4,7 @@ import { desc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { hasDatabaseConnection } from "@/lib/db/connection";
 import { skill, skillVersion } from "@/lib/db/schema";
 
 export type CreatorSkillRow = {
@@ -28,7 +29,7 @@ export type CreatorWorkspace =
   | { status: "unavailable"; email?: string; skills: [] };
 
 export async function getCreatorWorkspace(): Promise<CreatorWorkspace> {
-  if (!process.env.DATABASE_URL) return { status: "no_database", skills: [] };
+  if (!hasDatabaseConnection()) return { status: "no_database", skills: [] };
   try {
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session?.user) return { status: "signed_out", skills: [] };

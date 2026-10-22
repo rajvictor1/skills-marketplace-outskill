@@ -1,3 +1,4 @@
+import { hasDatabaseConnection } from "@/lib/db/connection";
 import { privateRobots } from "@/lib/seo/site";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
@@ -21,7 +22,7 @@ export default async function SignInPage({ searchParams }: {
     <main className="bg-background px-5 py-12 sm:px-8 sm:py-20">
       <AuthCard
         mode="sign-in"
-        databaseConfigured={Boolean(process.env.DATABASE_URL)}
+        databaseConfigured={hasDatabaseConnection()}
         inviteToken={invite && /^[a-f0-9]{64}$/.test(invite) ? invite : undefined}
       />
     </main>

@@ -4,10 +4,11 @@ import { and, count, eq, gte, sql } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { isAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
+import { hasDatabaseConnection } from "@/lib/db/connection";
 import { reviewEvent } from "@/lib/db/schema";
 
 export async function recipeInspectionAccess(request: Request) {
-  if (!process.env.DATABASE_URL)
+  if (!hasDatabaseConnection())
     return {
       status: 503,
       error: "Recipe inspection requires the configured account database.",

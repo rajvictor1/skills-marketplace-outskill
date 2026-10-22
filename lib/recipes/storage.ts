@@ -1,6 +1,7 @@
 import "server-only";
 import postgres from "postgres";
 import { requireAdmin } from "@/lib/admin";
+import { getDatabaseUrl } from "@/lib/db/connection";
 import {
   inspectRecipePackage,
   RecipePackageError,
@@ -34,12 +35,13 @@ function database() {
     throw new RecipePackageError(
       "Development recipe storage is restricted to Preview.",
     );
-  if (!process.env.RECIPE_DEV_POSTGRES_URL)
+  const connectionString = getDatabaseUrl();
+  if (!connectionString)
     throw new RecipePackageError(
       "Private recipe storage is not configured for this environment.",
     );
-  return (pool ??= postgres(process.env.RECIPE_DEV_POSTGRES_URL, {
-    max: 3,
+  return (pool ??= postgres(connectionString, {
+    max: process.env.VERCEL ? 1 : 3,
     prepare: false,
     connect_timeout: 10,
     idle_timeout: 20,

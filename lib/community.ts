@@ -2,6 +2,7 @@ import "server-only";
 import { and, avg, count, eq } from "drizzle-orm";
 import { getViewer } from "@/lib/admin";
 import { db } from "@/lib/db";
+import { hasDatabaseConnection } from "@/lib/db/connection";
 import { communityRating, skill, skillDownload, user } from "@/lib/db/schema";
 
 export type RecipeReviewAccess =
@@ -14,7 +15,7 @@ export type RecipeReviewAccess =
 export async function getRecipeReviewAccess(
   skillId: string,
 ): Promise<RecipeReviewAccess> {
-  if (!process.env.DATABASE_URL) return "unavailable";
+  if (!hasDatabaseConnection()) return "unavailable";
   try {
     const session = await getViewer();
     if (!session?.user) return "signed_out";
@@ -42,7 +43,7 @@ export async function getRecipeReviewAccess(
 }
 
 export async function getRatings(target: string) {
-  if (!process.env.DATABASE_URL)
+  if (!hasDatabaseConnection())
     return { average: 0, count: 0, reviews: [], available: false };
   try {
     const [summary] = await db

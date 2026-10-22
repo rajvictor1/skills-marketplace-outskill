@@ -7,6 +7,7 @@ import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { hasDatabaseConnection } from "@/lib/db/connection";
 import {
   finding, reviewEvent, scanResult, skill, skillFile, skillSubmission,
   skillVersion, type ListingSnapshot,
@@ -47,7 +48,7 @@ type Selection = {
 };
 
 async function signedInUser() {
-  if (!process.env.DATABASE_URL)
+  if (!hasDatabaseConnection())
     throw new RecipePackageError("Publishing is unavailable until the account database is configured.");
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) throw new RecipePackageError("Sign in before checking or submitting a recipe ZIP.");

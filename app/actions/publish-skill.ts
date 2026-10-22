@@ -9,6 +9,7 @@ import { revalidatePath } from "next/cache";
 
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { hasDatabaseConnection } from "@/lib/db/connection";
 import {
   finding,
   scanResult,
@@ -358,7 +359,7 @@ export async function publishSkill(
   _previousState: PublishState,
   formData: FormData,
 ): Promise<PublishState> {
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseConnection()) {
     return {
       status: "error",
       message:

@@ -4,6 +4,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
 import * as schema from "./schema";
+import { getDatabaseUrl } from "./connection";
 
 // A single postgres-js client, reused across hot reloads in dev to avoid
 // exhausting connections. Works unchanged against local Postgres and Neon
@@ -14,18 +15,18 @@ const globalForDb = globalThis as unknown as {
 };
 
 function createDb() {
-  const connectionString = process.env.DATABASE_URL;
+  const connectionString = getDatabaseUrl();
   if (!connectionString) {
     // Deferred to first use so importing this module never throws — the app
     // can build and render sample-data pages without a live database.
     throw new Error(
-      "DATABASE_URL is not set. Copy .env.example to .env.local and set it " +
-        "(local Docker via `docker compose up -d`, or a Neon connection string).",
+      "No Postgres connection is configured. Set RECIPE_DEV_POSTGRES_URL " +
+        "for Preview, or DATABASE_URL for local development.",
     );
   }
   const client =
     globalForDb.__pgClient ??
-    postgres(connectionString, { max: 10, prepare: false });
+    postgres(connectionString, { max: process.env.VERCEL ? 1 : 10, prepare: false });
   if (process.env.NODE_ENV !== "production") {
     globalForDb.__pgClient = client;
   }

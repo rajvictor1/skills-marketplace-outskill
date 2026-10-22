@@ -4,6 +4,7 @@ import { cache } from "react";
 
 import { and, eq, inArray, avg, count } from "drizzle-orm";
 import { db } from "@/lib/db";
+import { hasDatabaseConnection } from "@/lib/db/connection";
 import {
   finding,
   scanResult,
@@ -222,7 +223,7 @@ async function loadPublishedSkills(slug?: string): Promise<SampleSkill[]> {
 
 export const getCatalogState = cache(
   async function getCatalogState(): Promise<CatalogState> {
-    if (!process.env.DATABASE_URL) {
+    if (!hasDatabaseConnection()) {
       return previewExamples().length
         ? {
             skills: previewExamples(),
@@ -257,7 +258,7 @@ export const getCatalogState = cache(
 export const getCatalogSkillBySlug = cache(async function getCatalogSkillBySlug(
   slug: string,
 ): Promise<CatalogSkillLookup> {
-  if (!process.env.DATABASE_URL) {
+  if (!hasDatabaseConnection()) {
     const sample = previewExample(slug);
     return sample
       ? { status: "found", skill: sample, source: "demo" }

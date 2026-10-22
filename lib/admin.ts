@@ -3,11 +3,12 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { hasDatabaseConnection } from "@/lib/db/connection";
 import { marketplaceAdmin } from "@/lib/db/schema";
 
 export async function getViewer() {
   const requestHeaders = await headers();
-  if (!process.env.DATABASE_URL) return null;
+  if (!hasDatabaseConnection()) return null;
   return auth.api.getSession({ headers: requestHeaders });
 }
 export async function isAdmin(userId: string) {

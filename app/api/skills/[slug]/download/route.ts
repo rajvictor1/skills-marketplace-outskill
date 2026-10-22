@@ -2,6 +2,7 @@ import { createId } from "@paralleldrive/cuid2";
 import { and, eq, sql } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { hasDatabaseConnection } from "@/lib/db/connection";
 import {
   skill,
   skillDownload,
@@ -17,7 +18,7 @@ export async function POST(
       { error: "Same-origin request required." },
       { status: 403 },
     );
-  if (!process.env.DATABASE_URL)
+  if (!hasDatabaseConnection())
     return Response.json(
       { error: "Downloads are temporarily unavailable." },
       { status: 503 },
