@@ -245,7 +245,18 @@ export async function POST(request: Request) {
     if (!result) return Response.json({ error: "Unknown migration step" }, { status: 400 });
     return Response.json(result, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
-    console.error("Preview migration step failed", error instanceof Error ? error.name : "Unknown error");
-    return Response.json({ error: "Migration step failed. No cutover was made." }, { status: 500 });
+    const safeDetail =
+      error instanceof Error && /^Integrity check failed for [a-z_]+$/.test(error.message)
+        ? error.message
+        : error && typeof error === "object" && "code" in error
+          ? String(error.code)
+          : error instanceof Error
+            ? error.name
+            : "Unknown error";
+    console.error("Preview migration step failed", safeDetail);
+    return Response.json(
+      { error: "Migration step failed. No cutover was made.", diagnostic: safeDetail },
+      { status: 500 },
+    );
   }
 }
