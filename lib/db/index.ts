@@ -6,9 +6,7 @@ import postgres from "postgres";
 import * as schema from "./schema";
 import { getDatabaseUrl } from "./connection";
 
-// A single postgres-js client, reused across hot reloads in dev to avoid
-// exhausting connections. Works unchanged against local Postgres and Neon
-// (Neon requires `?sslmode=require` in the URL).
+// Reuse one postgres-js client across hot reloads in development.
 const globalForDb = globalThis as unknown as {
   __pgClient?: ReturnType<typeof postgres>;
   __db?: ReturnType<typeof drizzle<typeof schema>>;
@@ -26,7 +24,15 @@ function createDb() {
   }
   const client =
     globalForDb.__pgClient ??
-    postgres(connectionString, { max: process.env.VERCEL ? 1 : 10, prepare: false });
+    postgres(connectionString, {
+      max: process.env.VERCEL ? 1 : 10,
+      prepare: false,
+      connect_timeout: 10,
+      ssl:
+        connectionString === process.env.RECIPE_DEV_POSTGRES_URL
+          ? "require"
+          : undefined,
+    });
   if (process.env.NODE_ENV !== "production") {
     globalForDb.__pgClient = client;
   }

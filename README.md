@@ -1,6 +1,6 @@
 # Skillbuffet
 
-A curated marketplace for AI agent skills. Creators submit a SKILL.md file, deterministic security checks run (plus an optional AI classifier), and an administrator reviews the saved version before publication.
+A curated marketplace for AI agent recipes. Creators submit a recipe or a structured recipe package, security checks inspect its files, and an administrator reviews the saved version before publication.
 
 ## Current features
 
@@ -9,13 +9,15 @@ A curated marketplace for AI agent skills. Creators submit a SKILL.md file, dete
 - Private per-version submissions with approve/publish, request changes, reject, unpublish and review history.
 - Server-side administrator authorization; registration cannot grant an admin role.
 - Approved public listings and a bounded read-only catalog API.
-- Authenticated SKILL.md downloads with unique account/version counting; creator downloads do not count.
+- Authenticated recipe downloads with unique account/version counting; creator downloads do not count.
 - Download-eligible skill ratings, marketplace reviews and administrator moderation. No fabricated social proof.
 - Creator workspace, live catalog metrics, docs, API reference, changelog and beta policy pages.
 
 ## Local setup
 
 Use the package manager version in package.json. Copy `.env.example` to `.env.local`, set a Postgres `DATABASE_URL`, generate a private `BETTER_AUTH_SECRET`, and set `BETTER_AUTH_URL=http://localhost:3000` for local development. Never commit this file. The local app can show its empty public shell without a database, but accounts and submissions need Postgres.
+
+The Vercel Preview uses one Supabase Postgres database for Better Auth accounts, public recipes, review history, and private recipe packages. The server-only `RECIPE_DEV_POSTGRES_URL` points to that database. Supabase Auth is not enabled for the app; existing Better Auth accounts and password hashes retain their IDs. Local development can use `DATABASE_URL` alone, or set `RECIPE_DEV_POSTGRES_URL` to use that same database for all features.
 
 ```sh
 pnpm install --frozen-lockfile
