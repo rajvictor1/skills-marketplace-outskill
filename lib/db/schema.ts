@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import {
   boolean,
+  index,
   integer,
   jsonb,
   pgEnum,
@@ -309,7 +310,10 @@ export const reviewEvent = pgTable("review_event", {
   action: text("action").notNull(),
   note: text("note").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("review_event_created_at_idx").on(table.createdAt),
+  index("review_event_action_created_at_idx").on(table.action, table.createdAt),
+]);
 
 export const skillDownload = pgTable(
   "skill_download",

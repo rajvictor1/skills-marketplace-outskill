@@ -63,8 +63,29 @@ Use the Vercel deployment page for build and function errors. Connect an uptime
 monitor to the production `/api/health` URL and configure an alert destination
 owned by the team. Keep database and publishing checks separate from the
 liveness probe so a database incident is diagnosed accurately.
-The uptime monitor should use plain `/api/health`, not `?check=db`; an edge rate
-rule should cover `/api/health?check=db` before requests reach the shared limit.
+The uptime monitor should use plain `/api/health`, not `?check=db`. The active
+Vercel edge rule limits `/api/health?check=db` before it reaches the app. The
+database readiness route does not write a usage event or enforce an app-side
+rate limit; edge protection must remain enabled in every deployment environment.
+
+### Review history retention and integration verification
+
+`public.review_event` keeps administrator decisions and recipe inspection
+events for 12 months. The Supabase migration
+`20261022090000_review_event_retention.sql` creates indexes on `created_at`
+and `(action, created_at)`, enables Supabase Cron, and schedules a daily
+03:00 UTC delete of rows older than 12 months. Apply and verify that migration
+in the target Supabase database during an approved release; check the Cron job
+and recent run history in Supabase afterward. This policy does not change the
+separate immutable `recipe_private.review_events` table.
+
+Run `pnpm test:integration` with `TEST_DATABASE_URL` pointing to a disposable
+local Postgres database named `skillbuffet_e2e`. The browser test creates test
+accounts and checks creator ZIP upload, admin approval, public listing, and
+signed-in package download using real SQL. It refuses remote databases and
+does not run in the ordinary mocked Vitest suite. Install Chrome and the
+Postgres schema migrations before the first run; the test also reapplies
+pending migrations safely.
 
 ### Handle a failed check or bad release
 
@@ -104,7 +125,7 @@ rule should cover `/api/health?check=db` before requests reach the shared limit.
 | Release | Vercel Preview plus separate production branch workflow; admin approve/publish per saved version | Main merge/production promotion still needs operator release decision |
 | Configure | .env.example, migrations, explicit administrator provisioning | Never commit credentials; configure production independently |
 | Monitor | /api/health, Vercel logs, review events, download records | External uptime alerts and agent execution telemetry not connected |
-| Govern | Review queue, reasons, per-version approvals, unpublish controls, review moderation, beta policies | Branch protection, legal details, retention and private contact require operator configuration |
+| Govern | Review queue, reasons, per-version approvals, unpublish controls, review moderation, beta policies | Branch protection, legal details, private contact and retention migration verification require operator configuration |
 
 The pipeline is on the implementation branch until its pull request is merged into `main`. The presence of a workflow is not evidence that every stage passed in a run: inspect the commit's GitHub check results and Vercel deployment state. [GitHub's secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use) explains immutable SHA-pinned actions.
 

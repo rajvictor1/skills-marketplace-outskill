@@ -32,4 +32,10 @@ Downloads count once per signed-in account per version; creator downloads do not
 
 Set `PRIVACY_CONTACT_EMAIL` to a dedicated support/privacy inbox after the owner approves its publication. Confirm the legal entity, launch jurisdiction, lawful basis, retention schedule, complaint route and final terms. Existing policy pages intentionally identify these beta details as unresolved rather than claiming legal compliance.
 
+Administrator review history in `public.review_event` has a proposed 12-month
+retention policy and daily Supabase Cron cleanup in the release migration. An
+approved release must apply the migration and verify the job in Supabase.
+This does not settle retention for account data, recipe content, or the
+separate private package review log; those need an owner policy decision.
+
 Privacy-notice preparation reference: [ICO transparency guidance](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/the-right-to-be-informed/what-privacy-information-should-we-provide/). This is a reference, not a conclusion that UK law applies to this operator.
