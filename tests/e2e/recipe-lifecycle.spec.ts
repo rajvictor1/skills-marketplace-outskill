@@ -78,8 +78,16 @@ test("creator upload requires admin approval before an authenticated package dow
       select id, slug, status from public.skill where metadata->>'recipeId' = ${recipeId}`;
     expect(listing?.status).toBe("draft");
     const anonymousPage = await anonymous.newPage();
-    await anonymousPage.goto(`/skills/${listing.slug}`);
+    const pendingResponse = await anonymousPage.goto(`/skills/${listing.slug}`);
+    expect(pendingResponse?.status()).toBe(404);
+    expect(await pendingResponse?.text()).not.toContain(recipeId);
+    expect(await pendingResponse?.text()).not.toContain(title);
+    await expect(anonymousPage.locator('meta[name="robots"]').first()).toHaveAttribute("content", /noindex/);
     await expect(anonymousPage.getByRole("heading", { name: title, exact: true, level: 1 })).toHaveCount(0);
+
+    const unknownResponse = await anonymousPage.goto(`/skills/unknown-${suffix}`);
+    expect(unknownResponse?.status()).toBe(404);
+    await expect(anonymousPage.locator('meta[name="robots"]').first()).toHaveAttribute("content", /noindex/);
 
     const reviewerEmail = `reviewer-${suffix}@example.test`;
     const reviewerPage = await signUp(reviewer, reviewerEmail, password);
