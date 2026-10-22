@@ -95,4 +95,8 @@ describe("recipe ZIP intake", () => {
     ]);
     expect(() => readRecipeZip(many)).toThrow(/safe text extraction/);
   });
+  it("rejects a zip-bomb compression ratio below the per-file size limit", () => {
+    const bomb = zip([{ name: "recipe.yaml", content: "a".repeat(200 * 1024) }]);
+    expect(() => readRecipeZip(bomb)).toThrow(/safe text extraction/);
+  });
 });

@@ -11,6 +11,18 @@ describe("structured recipe intake", () => {
       /plain, non-duplicated YAML/,
     );
   });
+  it("rejects recursive YAML aliases and bounded alias expansion", async () => {
+    await expect(inspectRecipePackage(manifest("root: &root [*root]\n"))).rejects.toThrow(
+      /plain, non-duplicated YAML/,
+    );
+    const expansion = ["a: &a [1, 1, 1, 1, 1]"];
+    for (const [name, previous] of [["b", "a"], ["c", "b"], ["d", "c"], ["e", "d"], ["f", "e"], ["g", "f"]]) {
+      expansion.push(`${name}: &${name} [*${previous}, *${previous}, *${previous}, *${previous}, *${previous}]`);
+    }
+    await expect(inspectRecipePackage(manifest(`${expansion.join("\n")}\n`))).rejects.toThrow(
+      /plain, non-duplicated YAML/,
+    );
+  });
   it("rejects duplicate YAML keys", async () => {
     await expect(inspectRecipePackage(manifest("id: first\nid: second\n"))).rejects.toThrow(
       /plain, non-duplicated YAML/,
