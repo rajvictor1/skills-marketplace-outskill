@@ -82,7 +82,7 @@ export default function SecurityPage() {
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
               The first three layers inspect submitted files and combine their
               findings into a risk score. The optional AI classifier is not used
-              for ZIP recipe package uploads in this Preview.
+              for recipe ZIP packages; those receive static checks only.
             </p>
           </div>
 
