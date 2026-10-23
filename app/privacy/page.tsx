@@ -22,7 +22,7 @@ export default function PrivacyPage() {
         },
         {
           title: "Providers and automated review",
-          body: "Vercel hosts this deployment and Supabase Postgres stores Preview account, marketplace and private recipe records. Better Auth manages sign-in using that database; Supabase Auth is not enabled for this app. Public GitHub imports fetch the specified repository. If the optional AI classifier is configured, legacy instruction-file submissions are sent to its model provider for security review; the scan report shows whether it was used. Structured ZIP recipe uploads use static checks and are not sent to the classifier. Provider terms and processing locations also apply.",
+          body: "Vercel hosts this deployment and Supabase Postgres stores account, marketplace and private recipe records. Better Auth manages sign-in using that database; Supabase Auth is not enabled for this app. Public GitHub imports fetch the specified repository. If the optional AI classifier is configured, legacy instruction-file submissions are sent to its model provider for security review; the scan report shows whether it was used. Structured ZIP recipe uploads use static checks and are not sent to the classifier. Provider terms and processing locations also apply.",
         },
         {
           title: "Cookies and measurement",
