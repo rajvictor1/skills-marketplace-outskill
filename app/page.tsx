@@ -207,7 +207,7 @@ export default async function Home() {
               Recipe files are checked for hidden instructions, risky patterns
               and scripts. An optional AI classifier can review legacy
               instruction files when configured; it is not used for ZIP
-              packages in this Preview. An administrator reviews each submitted
+              recipe ZIP packages; those receive static checks only. An administrator reviews each submitted
               version before it becomes public.
             </p>
           </div>
