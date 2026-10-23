@@ -25,13 +25,14 @@ test("mobile navigation and account menus dismiss and remain usable", async ({ b
     const accountToggle = page.getByRole("button", { name: "Open account menu" });
     await expect(accountToggle).toBeVisible();
     await accountToggle.click();
-    await expect(page.getByText("My recipes", { exact: true })).toBeVisible();
+    const accountMenu = page.locator("#mobile-account-menu");
+    await expect(accountMenu.getByRole("link", { name: "My recipes", exact: true })).toBeVisible();
     await page.keyboard.press("Escape");
-    await expect(page.getByText("My recipes", { exact: true })).toHaveCount(0);
+    await expect(accountMenu).toHaveCount(0);
 
     await accountToggle.click();
     await page.locator("main").click({ position: { x: 8, y: 8 } });
-    await expect(page.getByText("My recipes", { exact: true })).toHaveCount(0);
+    await expect(accountMenu).toHaveCount(0);
 
     const navigationToggle = page.getByRole("button", { name: "Open navigation menu" });
     await navigationToggle.click();
