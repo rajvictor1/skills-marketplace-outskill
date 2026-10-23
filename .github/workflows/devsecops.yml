@@ -71,6 +71,10 @@ jobs:
           node-version: '22'
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Apply schema to the isolated integration database
+        run: pnpm db:migrate
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
       - run: pnpm exec playwright install --with-deps chrome
       - run: pnpm test:integration
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { UserRound } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,8 @@ export function AccountActions() {
   const router = useRouter();
   const { data: session, isPending } = useSession();
   const [admin, setAdmin] = useState(false);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement>(null);
   const userId = session?.user?.id;
   useEffect(() => {
     let active = true;
@@ -25,6 +27,25 @@ export function AccountActions() {
       active = false;
     };
   }, [userId]);
+  useEffect(() => {
+    if (!accountMenuOpen) return;
+
+    function closeOutside(event: PointerEvent) {
+      if (event.target instanceof Node && !accountMenuRef.current?.contains(event.target)) {
+        setAccountMenuOpen(false);
+      }
+    }
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setAccountMenuOpen(false);
+    }
+
+    document.addEventListener("pointerdown", closeOutside);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOutside);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [accountMenuOpen]);
   if (isPending || !session?.user) {
     return (
       <div className="ml-auto flex items-center gap-2">
@@ -58,36 +79,44 @@ export function AccountActions() {
 
   return (
     <div className="ml-auto flex min-w-0 items-center gap-2">
-      <details className="relative md:hidden">
-        <summary
-          aria-label="Account menu"
-          className="flex size-11 cursor-pointer list-none items-center justify-center rounded-xl border border-border text-xs font-semibold marker:hidden"
+      <div ref={accountMenuRef} className="relative md:hidden">
+        <button
+          type="button"
+          aria-label={accountMenuOpen ? "Close account menu" : "Open account menu"}
+          aria-expanded={accountMenuOpen}
+          aria-controls="mobile-account-menu"
+          onClick={() => setAccountMenuOpen((value) => !value)}
+          className="flex size-11 cursor-pointer items-center justify-center rounded-xl border border-border text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <UserRound className="size-4" aria-hidden="true" />
-        </summary>
-        <div className="absolute right-0 top-11 z-50 grid w-48 gap-1 rounded-2xl border border-border bg-popover p-2 shadow-xl">
-          {admin && (
+        </button>
+        {accountMenuOpen && (
+          <div id="mobile-account-menu" className="absolute right-0 top-11 z-50 grid w-48 gap-1 rounded-2xl border border-border bg-popover p-2 shadow-xl">
+            {admin && (
+              <Link
+                href="/admin"
+                onClick={() => setAccountMenuOpen(false)}
+                className="rounded-xl px-4 py-3 text-sm hover:bg-primary/10"
+              >
+                Admin review desk
+              </Link>
+            )}
             <Link
-              href="/admin"
+              href="/dashboard/skills"
+              onClick={() => setAccountMenuOpen(false)}
               className="rounded-xl px-4 py-3 text-sm hover:bg-primary/10"
             >
-              Admin review desk
+              My recipes
             </Link>
-          )}
-          <Link
-            href="/dashboard/skills"
-            className="rounded-xl px-4 py-3 text-sm hover:bg-primary/10"
-          >
-            My recipes
-          </Link>
-          <button
-            onClick={logout}
-            className="rounded-xl px-4 py-3 text-left text-sm hover:bg-primary/10"
-          >
-            Sign out
-          </button>
-        </div>
-      </details>
+            <button
+              onClick={() => { setAccountMenuOpen(false); void logout(); }}
+              className="rounded-xl px-4 py-3 text-left text-sm hover:bg-primary/10"
+            >
+              Sign out
+            </button>
+          </div>
+        )}
+      </div>
       <div className="hidden items-center gap-2 md:flex">
         <Link
           href="/dashboard/skills"
