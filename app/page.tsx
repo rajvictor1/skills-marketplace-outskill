@@ -204,11 +204,7 @@ export default async function Home() {
               </h2>
             </div>
             <p className="max-w-xl text-base leading-relaxed text-muted-foreground lg:pb-2">
-              Recipe files are checked for hidden instructions, risky patterns
-              and scripts. An optional AI classifier can review legacy
-              instruction files when configured; it is not used for ZIP
-              recipe ZIP packages; those receive static checks only. An administrator reviews each submitted
-              version before it becomes public.
+              Recipe files are checked for hidden instructions, risky patterns and scripts. When configured, an optional AI classifier can review legacy SKILL.md instruction files. Recipe ZIP packages receive static checks only. An administrator reviews each submitted version before it becomes public.
             </p>
           </div>
           <div className="mt-14 grid gap-px overflow-hidden rounded-[1.8rem] border border-border bg-primary/10 md:grid-cols-2 lg:grid-cols-4">
