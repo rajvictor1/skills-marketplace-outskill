@@ -15,6 +15,8 @@ import { PublishForm } from "@/components/publish-form";
 import { RecipeZipPublisher } from "@/components/recipe-zip-publisher";
 import { getCategoryBySlug } from "@/lib/skills/taxonomy";
 import { SCAN_LAYERS } from "@/lib/trust";
+import { getViewer } from "@/lib/admin";
+import { hasDatabaseConnection } from "@/lib/db/connection";
 
 export const metadata = staticMetadata("/publish", false);
 
@@ -34,6 +36,8 @@ export default async function PublishPage({
   }>;
 }) {
   const params = await searchParams;
+  const databaseReady = hasDatabaseConnection();
+  const viewer = databaseReady ? await getViewer() : null;
   const requestedCategory = params.category;
   const initialSource = params.source === "github" ? "github" : "paste";
   const selectedCategory =
@@ -53,7 +57,7 @@ export default async function PublishPage({
       <div className="max-w-2xl">
         <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
           <ShieldCheck className="size-3.5 text-primary" aria-hidden />
-          Scanned before it ships
+          Static checks before admin review
         </span>
         <h1 className="mt-5 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
           Publish a recipe
@@ -86,9 +90,27 @@ export default async function PublishPage({
         </div>
       </section>
 
-      <div className="mt-10"><RecipeZipPublisher initialCategory={selectedCategory} /></div>
+      {viewer?.user ? (
+        <div className="mt-10"><RecipeZipPublisher initialCategory={selectedCategory} /></div>
+      ) : databaseReady ? (
+        <section className="mt-10 rounded-3xl border border-primary/30 bg-category-violet p-6 sm:p-8" aria-labelledby="publish-sign-in-title">
+          <p className="text-xs font-semibold uppercase tracking-wider text-primary">Before you upload</p>
+          <h2 id="publish-sign-in-title" className="mt-2 text-xl font-semibold text-foreground">Create an account or sign in</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            A free account is required to inspect and submit a recipe pack. Your submission stays private until an administrator reviews it.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link href="/auth/sign-up" className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground">Create a free account</Link>
+            <Link href="/auth/sign-in" className="inline-flex min-h-11 items-center rounded-xl border border-border px-5 py-2 text-sm font-semibold text-foreground">Sign in</Link>
+          </div>
+        </section>
+      ) : (
+        <p role="status" className="mt-10 rounded-2xl border border-caution/30 bg-caution/10 p-5 text-sm text-foreground">
+          Recipe publishing is temporarily unavailable because the account database is not connected.
+        </p>
+      )}
 
-      <details className="mt-10 rounded-2xl border border-border bg-card p-5 sm:p-7">
+      {viewer?.user ? <details className="mt-10 rounded-2xl border border-border bg-card p-5 sm:p-7">
         <summary className="cursor-pointer text-base font-semibold text-foreground">Legacy format: single SKILL.md instruction file</summary>
         <p className="mt-3 text-sm text-muted-foreground">Use this only for an existing SKILL.md recipe. New multi-file recipes belong in the ZIP publisher above.</p>
       <div className="mt-6 grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:gap-10">
@@ -134,7 +156,7 @@ export default async function PublishPage({
           </ul>
         </aside>
       </div>
-      </details>
+      </details> : null}
     </main>
   );
 }
