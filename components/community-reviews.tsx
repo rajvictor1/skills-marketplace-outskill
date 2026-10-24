@@ -8,10 +8,14 @@ import type { RecipeReviewAccess } from "@/lib/community";
 export function RatingSummary({
   average,
   count,
+  illustrateUnrated = false,
 }: {
   average: number;
   count: number;
+  /** A visual-only example used on the home page before real reviews exist. */
+  illustrateUnrated?: boolean;
 }) {
+  const showIllustrativeStars = illustrateUnrated && count === 0;
   return (
     <span className="inline-flex flex-wrap items-center gap-2 text-sm">
       <span className="inline-flex text-caution" aria-hidden>
@@ -19,14 +23,20 @@ export function RatingSummary({
           <Star
             key={n}
             className="size-4"
-            fill={n <= Math.round(average) ? "currentColor" : "none"}
+            fill={
+              n <= (showIllustrativeStars ? 4 : Math.round(average))
+                ? "currentColor"
+                : "none"
+            }
           />
         ))}
       </span>
       <span>
         {count
           ? `${average.toFixed(1)}/5 · ${count} ${count === 1 ? "review" : "reviews"}`
-          : "No reviews yet"}
+          : showIllustrativeStars
+            ? "Illustrative style · no reviews yet"
+            : "No reviews yet"}
       </span>
     </span>
   );

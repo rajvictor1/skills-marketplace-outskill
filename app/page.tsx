@@ -84,7 +84,11 @@ export default async function Home() {
               </Link>
             </div>
             <div className="mx-auto mt-7 flex max-w-xl flex-wrap items-center justify-center gap-4 rounded-2xl border border-border bg-primary/10 p-5 text-foreground sm:mt-9">
-              <RatingSummary average={reviews.average} count={reviews.count} />
+              <RatingSummary
+                average={reviews.average}
+                count={reviews.count}
+                illustrateUnrated
+              />
               <Link
                 href="/reviews"
                 className="text-sm font-semibold text-primary underline underline-offset-4"
