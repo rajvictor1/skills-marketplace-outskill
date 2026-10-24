@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/security", label: "How vetting works" },
   { href: "/publish", label: "Publish" },
+  { href: "/about", label: "About Product" },
 ];
 
 export function SiteNav() {

@@ -24,7 +24,7 @@ const GROUPS = [
   {
     title: "Trust",
     links: [
-      ["About Skillbuffet", "/about"],
+      ["About Product", "/about"],
       ["How it works", "/how-it-works"],
       ["Review & security", "/docs/security"],
       ["Privacy policy", "/privacy"],
