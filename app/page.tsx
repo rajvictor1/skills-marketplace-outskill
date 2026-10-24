@@ -52,27 +52,24 @@ export default async function Home() {
   return (
     <main className="overflow-hidden">
       <PageSeo path="/" {...PUBLIC_PAGES["/"]} faq={HOME_FAQ} />
-      <section className="brand-hero dark-surface relative px-5 pb-24 pt-20 text-foreground sm:px-8 sm:pt-28 lg:pb-32">
+      <section className="brand-hero dark-surface relative px-5 pb-16 pt-16 text-foreground sm:px-8 sm:pb-24 sm:pt-28 lg:pb-32">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-5xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-primary/10 px-4 py-2 text-xs font-medium text-foreground/90 backdrop-blur-md">
-              <ShieldCheck className="size-4 text-safe" aria-hidden />A more
-              thoughtful home for AI agent recipes
+              <ShieldCheck className="size-4 text-safe" aria-hidden />AI
+              agent recipes you can inspect before you use
             </span>
-            <h1 className="mt-9 text-balance text-[clamp(2.4rem,5.5vw,4.8rem)] font-semibold leading-[0.99] tracking-[-0.065em] text-foreground">
+            <h1 className="mt-7 text-balance text-[clamp(2.25rem,5.5vw,4.8rem)] font-semibold leading-[0.99] tracking-[-0.065em] text-foreground sm:mt-9">
               Discover AI agent recipes.
               <br />
               <span className="text-primary">Know what&apos;s inside.</span>
             </h1>
-            <p className="mx-auto mt-8 max-w-2xl text-balance text-lg leading-relaxed text-muted-foreground sm:text-xl">
-              Skillbuffet is a marketplace for reusable AI agent recipes.
-              Browse by category, inspect the saved files and review results,
-              then download an approved version to use in your own environment.
-              Creators can submit one recipe from a ZIP pack at a time for
-              administrator review. Approval does not guarantee safety or
-              working integrations.
+            <p className="mx-auto mt-6 max-w-2xl text-balance text-base leading-7 text-muted-foreground sm:mt-8 sm:text-xl sm:leading-relaxed">
+              Find recipes for real work. See the instructions, included files
+              and review details before deciding what to try in your own AI
+              environment.
             </p>
-            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:mt-9 sm:flex-row">
               <Link
                 href="/skills"
                 className="brand-button inline-flex h-13 min-w-44 items-center justify-center gap-2 rounded-full px-7 text-sm font-semibold"
@@ -86,7 +83,7 @@ export default async function Home() {
                 Publish a recipe <ArrowUpRight className="size-4" aria-hidden />
               </Link>
             </div>
-            <div className="mx-auto mt-9 flex max-w-xl flex-wrap items-center justify-center gap-4 rounded-2xl border border-border bg-primary/10 p-5 text-foreground">
+            <div className="mx-auto mt-7 flex max-w-xl flex-wrap items-center justify-center gap-4 rounded-2xl border border-border bg-primary/10 p-5 text-foreground sm:mt-9">
               <RatingSummary average={reviews.average} count={reviews.count} />
               <Link
                 href="/reviews"
@@ -97,12 +94,12 @@ export default async function Home() {
                   : "Be the first to review Skillbuffet"}
               </Link>
             </div>
-            <p className="mt-12 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              Built for creators · teams · AI builders
+            <p className="mt-9 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground sm:mt-12">
+              For creators · teams · AI builders
             </p>
           </div>
 
-          <div className="relative mx-auto mt-12 max-w-5xl rounded-[2rem] border border-border bg-primary/10 p-2 shadow-[0_32px_100px_#06091f99] sm:mt-16 sm:p-3">
+          <div className="relative mx-auto mt-10 max-w-5xl rounded-[2rem] border border-border bg-primary/10 p-2 shadow-[0_32px_100px_#06091f99] sm:mt-16 sm:p-3">
             <div
               className="absolute inset-x-16 -top-12 -z-10 h-36 rounded-full bg-[#5875ff]/30 blur-3xl"
               aria-hidden
@@ -120,17 +117,17 @@ export default async function Home() {
         <div className="mx-auto grid max-w-7xl items-start gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-24">
           <div>
             <p className="editorial-kicker text-primary">
-              One clear place to start
+              Make an informed choice
             </p>
             <h2 className="mt-5 max-w-2xl text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.05em] sm:text-5xl lg:text-6xl">
-              From a useful idea to a recipe people can trust.
+              Find a recipe. Understand it. Decide if it fits your workflow.
             </h2>
           </div>
           <div className="lg:pt-9">
             <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Skillbuffet brings discovery, review, and publishing together.
-              Find a recipe by the work it helps you do, inspect its files and
-              review result, then decide whether it fits your own system.
+              Each listing brings together a recipe&apos;s purpose, included
+              files, declared access and review information. See what you are
+              considering before you download and test it in your own system.
             </p>
             <Link
               href="#categories"
@@ -154,7 +151,7 @@ export default async function Home() {
               How Skillbuffet works
             </p>
             <h2 className="mt-4 text-balance text-4xl font-semibold leading-tight tracking-[-0.05em] sm:text-5xl">
-              A simple journey, with the details that matter.
+              A clear path from discovery to review.
             </h2>
           </div>
           <div className="mt-14 grid gap-0 border-y border-border lg:grid-cols-3">
@@ -162,17 +159,17 @@ export default async function Home() {
               [
                 "01",
                 "Discover",
-                "Browse recipes by category, search for a use case, and compare what each one does.",
+                "Explore categories and find a recipe that matches the work you want to do.",
               ],
               [
                 "02",
                 "Inspect",
-                "Check the saved files, requirements, scan findings, and runtime status before downloading.",
+                "Read the instructions, inspect included files, and review the declared access and scan results.",
               ],
               [
                 "03",
-                "Publish",
-                "Upload a ZIP, choose one recipe and a category, then submit it for administrator review.",
+                "Submit for review",
+                "Upload one supported recipe file or ZIP at a time. An administrator reviews it before it can be published.",
               ],
             ].map(([number, title, description]) => (
               <div
@@ -198,13 +195,16 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="grid items-end gap-8 lg:grid-cols-[1fr_0.9fr]">
             <div>
-              <p className="editorial-kicker text-primary">The review layer</p>
+              <p className="editorial-kicker text-primary">What review means</p>
               <h2 className="mt-4 max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.05em] sm:text-5xl lg:text-6xl">
-                Good recipes deserve a closer look.
+                Review the recipe before it reaches the catalog.
               </h2>
             </div>
             <p className="max-w-xl text-base leading-relaxed text-muted-foreground lg:pb-2">
-              Recipe files are checked for hidden instructions, risky patterns and scripts. When configured, an optional AI classifier can review legacy SKILL.md instruction files. Recipe ZIP packages receive static checks only. An administrator reviews each submitted version before it becomes public.
+              Supported submissions go through format validation and static
+              checks for signals such as hidden instructions, risky patterns
+              and scripts. An administrator reviews each submitted version
+              before approval. Skillbuffet does not execute recipes.
             </p>
           </div>
           <div className="mt-14 grid gap-px overflow-hidden rounded-[1.8rem] border border-border bg-primary/10 md:grid-cols-2 lg:grid-cols-4">
@@ -229,9 +229,9 @@ export default async function Home() {
             })}
           </div>
           <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-            Automated scanning reduces risk; it cannot guarantee that every
-            recipe is safe or ready to run. Review the files, permissions and
-            runtime status before integrating a recipe.
+            These checks can flag concerns, but they cannot guarantee safety or
+            confirm how a recipe will behave in your environment. Review the
+            files and grant only the access your agent needs.
           </p>
           <Link
             href="/security"
@@ -253,7 +253,8 @@ export default async function Home() {
                 Find your next useful recipe.
               </h2>
               <p className="mt-4 max-w-xl text-base text-muted-foreground">
-                Explore recipes across marketing, sales, and technical workflows.
+                Browse the current collection across categories, including
+                marketing, sales and technology.
               </p>
             </div>
             <Button
@@ -299,13 +300,13 @@ export default async function Home() {
             />
             <Stat
               value={String(WORKFLOW_TEMPLATES.length)}
-              label="Workflow template"
+              label="Workflow templates"
             />
             <Stat
               value={String(
                 realSkills.reduce((sum, skill) => sum + skill.installs, 0),
               )}
-              label="Recorded downloads"
+              label="Recorded download requests"
             />
           </div>
         </div>
@@ -315,11 +316,11 @@ export default async function Home() {
         <div className="mx-auto max-w-3xl">
           <BadgeCheck className="mx-auto size-11 text-primary" aria-hidden />
           <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.05em] sm:text-6xl">
-            Your expertise deserves a better home.
+            Have a workflow worth sharing?
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-lg text-muted-foreground">
-            Publish an AI agent recipe, see its review result, and make it
-            discoverable to the people who need it.
+            Submit a recipe for review. If approved, it can join the public
+            catalog for other builders to explore.
           </p>
           <Link
             href="/publish"
