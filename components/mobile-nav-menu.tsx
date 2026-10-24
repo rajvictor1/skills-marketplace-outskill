@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useSession } from "@/lib/auth-client";
 
 type NavLink = { href: string; label: string };
 
 export function MobileNavMenu({ links }: { links: NavLink[] }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { data: session, isPending } = useSession();
 
   useEffect(() => {
     if (!open) return;
@@ -58,6 +60,15 @@ export function MobileNavMenu({ links }: { links: NavLink[] }) {
               {link.label}
             </Link>
           ))}
+          {(isPending || !session?.user) && (
+            <Link
+              href="/auth/sign-in"
+              onClick={() => setOpen(false)}
+              className="block rounded-xl px-4 py-3 text-sm text-foreground hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:hidden"
+            >
+              Sign in
+            </Link>
+          )}
         </nav>
       )}
     </div>
