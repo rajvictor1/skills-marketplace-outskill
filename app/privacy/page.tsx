@@ -25,8 +25,8 @@ export default function PrivacyPage() {
           body: "Vercel hosts this deployment and Supabase Postgres stores Preview account, marketplace and private recipe records. Better Auth manages sign-in using that database; Supabase Auth is not enabled for this app. Public GitHub imports fetch the specified repository. If the optional AI classifier is configured, legacy instruction-file submissions are sent to its model provider for security review; the scan report shows whether it was used. Structured ZIP recipe uploads use static checks and are not sent to the classifier. Provider terms and processing locations also apply.",
         },
         {
-          title: "Cookies and measurement",
-          body: "Authentication uses essential session cookies. Download events store account, recipe, version and time; ratings store account, target, stars and optional comment. The current product does not measure agent execution, time saved or revenue. It does not implement an advertising or third-party marketing analytics integration.",
+          title: "Cookies and browser storage",
+          body: "Better Auth uses essential session cookies to provide sign-in and account security. The site stores your selected display theme and whether you have dismissed the cookie notice in your browser's local storage. The cookie notice does not enable optional tracking. This beta does not use advertising cookies or third-party marketing analytics cookies. Download events store account, recipe, version and time; ratings store account, target, stars and optional comment. The current product does not measure agent execution, time saved or revenue.",
         },
         {
           title: "Retention and requests",

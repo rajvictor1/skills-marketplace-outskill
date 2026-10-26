@@ -7,6 +7,7 @@ import "./globals.css";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
+import { CookieNotice } from "@/components/cookie-notice";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,6 +61,7 @@ export default function RootLayout({
             {children}
           </div>
           <SiteFooter />
+          <CookieNotice />
           <Toaster />
         </ThemeProvider>
       </body>

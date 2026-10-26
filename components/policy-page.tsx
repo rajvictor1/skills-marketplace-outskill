@@ -22,11 +22,15 @@ export function PolicyPage({
       </p>
       <h1 className="mt-4 text-5xl font-semibold tracking-tight">{title}</h1>
       <p className="mt-4 text-sm text-muted-foreground">
-        Updated 21 October 2026
+        Updated 26 October 2026
       </p>
       <p className="mt-6 text-lg leading-relaxed">{intro}</p>
       {sections.map((item) => (
-        <section key={item.title} className="mt-8">
+        <section
+          key={item.title}
+          id={item.title === "Cookies and browser storage" ? "cookies-and-browser-storage" : undefined}
+          className="mt-8"
+        >
           <h2 className="text-xl font-semibold">{item.title}</h2>
           <p className="mt-3 leading-8 text-muted-foreground">{item.body}</p>
         </section>
