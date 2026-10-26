@@ -59,6 +59,8 @@ export default async function SkillDetailPage({
   await headers();
   const { slug } = await params;
   const lookup = await getCatalogSkillBySlug(slug);
+  // Keep this check outside loading/Suspense boundaries so missing recipes
+  // send an HTTP 404 before Next.js starts streaming the response.
   if (lookup.status === "not_found") notFound();
   if (lookup.status === "unavailable")
     return (

@@ -1,15 +1,15 @@
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
-import { Menu } from "lucide-react";
-
 import { Logo } from "@/components/logo";
 import { AccountActions } from "@/components/account-actions";
+import { MobileNavMenu } from "@/components/mobile-nav-menu";
 
 const NAV_LINKS = [
   { href: "/skills", label: "Browse" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/security", label: "How vetting works" },
   { href: "/publish", label: "Publish" },
+  { href: "/about", label: "About Product" },
 ];
 
 export function SiteNav() {
@@ -34,25 +34,7 @@ export function SiteNav() {
 
         <AccountActions />
         <ThemeToggle />
-        <details className="group relative xl:hidden">
-          <summary
-            className="flex size-11 cursor-pointer list-none items-center justify-center rounded-full border border-border text-foreground marker:hidden hover:bg-primary/10"
-            aria-label="Open navigation menu"
-          >
-            <Menu className="size-5" aria-hidden />
-          </summary>
-          <div className="absolute right-0 top-12 w-56 rounded-2xl border border-border bg-popover p-2 shadow-2xl">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block rounded-xl px-4 py-3 text-sm text-foreground hover:bg-primary/10"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        </details>
+        <MobileNavMenu links={NAV_LINKS} />
       </nav>
     </header>
   );
