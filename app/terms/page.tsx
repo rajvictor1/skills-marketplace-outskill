@@ -9,6 +9,10 @@ export default function TermsPage() {
       intro="These beta terms explain the current service and participation rules. They need operator review and jurisdiction-specific legal review before general public launch."
       sections={[
         {
+          title: "Age eligibility",
+          body: "You must be at least 18 years old to create or use a Skillbuffet account. This beta does not ask for or verify your date of birth during signup; the age requirement is stated here and is not enforced by the signup form.",
+        },
+        {
           title: "The service",
           body: "Skillbuffet lets creators submit AI agent recipe packages or instruction files for review and lets users discover and download approved versions. It does not install or run recipes, promise task outcomes or guarantee that a recipe is secure, accurate or suitable for your situation. Availability and features may change during beta.",
         },
