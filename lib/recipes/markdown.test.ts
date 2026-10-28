@@ -57,6 +57,23 @@ describe("validateMarkdownRecipePair against Skill Port Recipe Standard v1", () 
     });
   });
 
+  it("does not treat complete or unfinished HTML comments as recipe content", () => {
+    const commentOnlyRecipe = recipe.replace(
+      "## D. Inputs and outputs\n\nNot applicable for this example because it only drafts a search plan.",
+      "## D. Inputs and outputs\n\n<!-- add real inputs and outputs here -->",
+    );
+    const unfinishedCommentRecipe = recipe.replace(
+      "## D. Inputs and outputs\n\nNot applicable for this example because it only drafts a search plan.",
+      "## D. Inputs and outputs\n\n<!-- add real inputs and outputs here",
+    );
+    for (const candidate of [commentOnlyRecipe, unfinishedCommentRecipe]) {
+      expect(validateMarkdownRecipePair(candidate, report)).toContainEqual({
+        file: "recipe.md",
+        message: "Add recipe-specific content or an explicit explanation in “D. inputs and outputs”.",
+      });
+    }
+  });
+
   it("requires a separate, non-empty validation report", () => {
     expect(validateMarkdownRecipePair(recipe, "").some((issue) => issue.file === "validation-report.md")).toBe(true);
   });

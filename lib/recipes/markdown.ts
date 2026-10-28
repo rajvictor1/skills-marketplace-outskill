@@ -66,9 +66,22 @@ function sectionBody(content: string, heading: Heading, all: Heading[]): string 
   return content.slice(heading.index + heading.title.length + heading.level + 2, next?.index ?? content.length);
 }
 
+function withoutHtmlComments(value: string): string {
+  let result = "";
+  let cursor = 0;
+  while (cursor < value.length) {
+    const opening = value.indexOf("<!--", cursor);
+    if (opening === -1) return result + value.slice(cursor);
+    result += value.slice(cursor, opening);
+    const closing = value.indexOf("-->", opening + 4);
+    if (closing === -1) return result;
+    cursor = closing + 3;
+  }
+  return result;
+}
+
 function hasSubstantiveContent(content: string, heading: Heading, all: Heading[]): boolean {
-  const body = sectionBody(content, heading, all)
-    .replace(/<!--[\s\S]*?-->/g, "")
+  const body = withoutHtmlComments(sectionBody(content, heading, all))
     .split("\n")
     .map((line) => line.replace(/\[[^\]]*\]/g, "").trim())
     .filter((line) => line && !/^[-|:\s]+$/.test(line) && !/^\|.*\|$/.test(line))
