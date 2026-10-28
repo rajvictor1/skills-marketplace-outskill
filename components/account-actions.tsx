@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 
 export function AccountActions() {
   const router = useRouter();
-  const { data: session, isPending } = useSession();
+  const { data: session } = useSession();
   const [admin, setAdmin] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
@@ -46,7 +46,7 @@ export function AccountActions() {
       document.removeEventListener("keydown", closeOnEscape);
     };
   }, [accountMenuOpen]);
-  if (isPending || !session?.user) {
+  if (!session?.user) {
     return (
       <div className="ml-auto flex items-center gap-2">
         <Button

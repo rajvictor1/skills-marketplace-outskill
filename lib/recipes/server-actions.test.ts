@@ -17,7 +17,8 @@ vi.mock("@/lib/recipes/access", () => ({ consumeRecipeInspectionLimit: mocks.lim
 vi.mock("next/headers", () => ({ headers: async () => new Headers() }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
-import { inspectRecipeZip, submitRecipeZip } from "@/app/actions/recipe-zip";
+import { inspectRecipeYaml, inspectRecipeZip, submitRecipeYaml, submitRecipeZip } from "@/app/actions/recipe-zip";
+import { inspectRecipeMarkdown, submitRecipeMarkdown } from "@/app/actions/recipe-markdown";
 import { reviewPrivateRecipeVersion, savePrivateRecipeVersion } from "@/lib/recipes/storage";
 
 beforeEach(() => {
@@ -29,7 +30,7 @@ beforeEach(() => {
 describe("recipe server actions", () => {
   it("returns an authentication error for anonymous ZIP inspection and submission", async () => {
     mocks.session.mockResolvedValue(null);
-    for (const action of [inspectRecipeZip, submitRecipeZip]) {
+    for (const action of [inspectRecipeMarkdown, submitRecipeMarkdown]) {
       const result = await action(new FormData());
       expect(result.ok).toBe(false);
       if (result.ok) throw new Error("Anonymous action unexpectedly succeeded.");
@@ -38,18 +39,54 @@ describe("recipe server actions", () => {
     expect(mocks.limit).not.toHaveBeenCalled();
     expect(mocks.transaction).not.toHaveBeenCalled();
   });
-  it("returns a rate-limit error before reading uploaded ZIP contents", async () => {
-    mocks.limit.mockResolvedValue(false);
-    expect(await inspectRecipeZip(new FormData())).toMatchObject({
-      ok: false, message: expect.stringMatching(/limit reached/i),
+  it("rejects Markdown submission without the rights confirmation before database writes", async () => {
+    const form = new FormData();
+    form.set("title", "Research summary recipe");
+    form.set("recipeId", "research.summary");
+    form.set("version", "1.0.0");
+    form.set("summary", "Summarize a research document with clear citations and concise findings.");
+    form.set("category", "Research");
+    form.set("subcategory", "Academic research");
+    form.set("license", "Proprietary");
+    expect(await submitRecipeMarkdown(form)).toMatchObject({
+      ok: false, message: expect.stringMatching(/permission to submit/i),
     });
     expect(mocks.transaction).not.toHaveBeenCalled();
   });
-  it("rejects an oversized ZIP before any database mutation", async () => {
+  it("requires both exact Markdown filenames before inspection", async () => {
     const form = new FormData();
-    form.set("archive", new File([new Uint8Array(1_500_001)], "recipe.zip"));
+    form.set("title", "Research summary recipe");
+    form.set("recipeId", "research.summary");
+    form.set("version", "1.0.0");
+    form.set("summary", "Summarize a research document with clear citations and concise findings.");
+    form.set("category", "Research");
+    form.set("subcategory", "Academic research");
+    form.set("license", "Proprietary");
+    form.set("recipe", new File(["# Draft"], "wrong-name.md"));
+    expect(await inspectRecipeMarkdown(form)).toMatchObject({
+      ok: false, message: expect.stringMatching(/recipe\.md/i),
+    });
+    expect(mocks.transaction).not.toHaveBeenCalled();
+  });
+  it("rejects legacy YAML inspection and submission without touching the database", async () => {
+    const form = new FormData();
+    form.set("recipe", new File(["id: legacy.example"], "recipe.yaml"));
+    expect(await inspectRecipeYaml(form)).toMatchObject({
+      ok: false, message: expect.stringMatching(/YAML and ZIP uploads are paused/i),
+    });
+    expect(await submitRecipeYaml(form)).toMatchObject({
+      ok: false, message: expect.stringMatching(/YAML and ZIP uploads are paused/i),
+    });
+    expect(mocks.transaction).not.toHaveBeenCalled();
+  });
+  it("rejects legacy ZIP inspection and submission without touching the database", async () => {
+    const form = new FormData();
+    form.set("archive", new File([new Uint8Array([1, 2, 3])], "legacy.zip"));
     expect(await inspectRecipeZip(form)).toMatchObject({
-      ok: false, message: expect.stringMatching(/smaller than 1.5 MB/),
+      ok: false, message: expect.stringMatching(/YAML and ZIP uploads are paused/i),
+    });
+    expect(await submitRecipeZip(form)).toMatchObject({
+      ok: false, message: expect.stringMatching(/YAML and ZIP uploads are paused/i),
     });
     expect(mocks.transaction).not.toHaveBeenCalled();
   });

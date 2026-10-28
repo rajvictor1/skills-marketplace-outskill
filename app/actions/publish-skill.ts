@@ -359,6 +359,16 @@ export async function publishSkill(
   _previousState: PublishState,
   formData: FormData,
 ): Promise<PublishState> {
+  if (
+    formData.has("sourceType") || formData.has("skillMd") ||
+    formData.has("skillFile") || formData.has("repositoryUrl") ||
+    formData.has("githubUrl") || formData.has("sourceUrl")
+  ) {
+    return {
+      status: "error",
+      message: "New submissions must use the manager-standard recipe.md and separate validation-report.md. SKILL.md uploads are not accepted for new recipes.",
+    };
+  }
   if (!hasDatabaseConnection()) {
     return {
       status: "error",

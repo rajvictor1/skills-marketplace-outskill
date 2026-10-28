@@ -41,10 +41,10 @@ export function FindingsList({ findings }: { findings: SampleFinding[] }) {
           aria-hidden
         />
         <div>
-          <p className="text-sm font-medium text-safe">No findings</p>
+          <p className="text-sm font-medium text-safe">No flagged findings</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            No findings were reported. An optional classifier may not have run;
-            check the report and review the instructions yourself.
+            The checks that ran reported no findings. An optional classifier
+            may not have run; review the report and instructions yourself.
           </p>
         </div>
       </div>

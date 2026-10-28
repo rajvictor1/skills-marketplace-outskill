@@ -34,7 +34,7 @@ export default function TermsPage() {
         },
         {
           title: "Feedback, payments and legal details",
-          body: "Reviews should reflect real experience and disclose relevant relationships. There are no paid listings, creator payouts, billing or refund workflows in this release. Final provisions on eligibility, liability, disputes, governing law and termination need review by the operator for the intended jurisdiction; this beta page does not assert a legal compliance certification.",
+          body: "Reviews should reflect the account holder's experience and disclose relevant relationships. Reviews are submitted through signed-in accounts, but account holders' identities are not independently verified. There are no paid listings, creator payouts, billing or refund workflows in this release. Final provisions on eligibility, liability, disputes, governing law and termination need review by the operator for the intended jurisdiction; this beta page does not assert a legal compliance certification.",
         },
       ]}
     />

@@ -6,7 +6,7 @@ export default function HowItWorks() {
     <InfoPage
       path="/how-it-works"
       heading="How AI agent recipes work on Skillbuffet"
-      intro="Find a recipe for a specific task, inspect its saved files and review result, then download the approved version. Structured recipes arrive as packages with a manifest and supporting files; older recipes may be a single SKILL.md file. You connect and run them in your own environment. Skillbuffet does not activate a recipe for you."
+      intro="Find a recipe for a specific task, inspect its saved files and review result, then download the approved version. A listing may provide recipe.md with a separate validation report, a structured package, or a legacy SKILL.md file. You connect and run recipes in your own environment. Skillbuffet does not activate them for you."
       sections={[
         {
           title: "1. Find a recipe for your task",
@@ -18,11 +18,11 @@ export default function HowItWorks() {
         },
         {
           title: "3. Download and integrate in your own environment",
-          body: "Sign in and download the approved version. Structured recipes provide recipe-package.json with the reviewed files; older listings provide SKILL.md. A manifest describes the contract, but a working adapter or provider setup may still be needed. Follow your own agent or application's integration instructions and grant minimum permissions. Skillbuffet has no automatic activation or hosted recipe runtime in this beta.",
+          body: "Sign in and download the approved version. Markdown listings provide recipe.md and validation-report.md separately; structured listings provide recipe-package.json; legacy listings provide SKILL.md. The report's evidence is creator-provided, and a working adapter or provider setup may still be needed. Follow your own agent or application's integration instructions and grant minimum permissions. Skillbuffet has no automatic activation or hosted recipe runtime in this beta.",
         },
         {
           title: "4. Check the result and share feedback",
-          body: "After integrating a recipe yourself, try it with non-sensitive sample data and check the result against your task. A recorded downloader can leave a star rating and optional comment; creators cannot rate their own recipe. Download counts record account activity, not installation or successful execution.",
+          body: "After integrating a recipe yourself, try it with non-sensitive sample data and check the result against your task. An account with a recorded download request can leave a star rating and optional comment; creators cannot rate their own recipe. Download-request counts record account activity, not installation or successful execution.",
         },
         {
           title: "5. Recheck changes before updating",

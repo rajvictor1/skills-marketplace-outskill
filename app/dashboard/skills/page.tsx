@@ -149,7 +149,7 @@ export default async function MySkillsPage() {
                 </Link>
               )}
               <span className="text-muted-foreground">
-                {listing.downloadCount} recorded downloads
+                {listing.downloadCount} recorded download requests
               </span>
             </div>
           </article>
@@ -161,7 +161,9 @@ export default async function MySkillsPage() {
             Start with one useful recipe.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Upload a recipe ZIP, choose one recipe and a category, then send it for review.
+            Submit one manager-standard recipe.md together with its separate
+            validation-report.md. Choose a category and send both files for
+            private administrator review.
           </p>
         </div>
       )}

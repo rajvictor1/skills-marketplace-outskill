@@ -10,7 +10,16 @@ const TONES = [
   "bg-category-peach text-peach",
   "bg-category-blue text-blue",
 ];
-export function SkillCard({ skill }: { skill: SampleSkill }) {
+export function SkillCard({
+  skill,
+  variant = "default",
+  layout = "grid",
+}: {
+  skill: SampleSkill;
+  variant?: "default" | "marketplace";
+  layout?: "grid" | "list";
+}) {
+  const marketplace = variant === "marketplace";
   const tone =
     TONES[
       Math.max(
@@ -21,25 +30,33 @@ export function SkillCard({ skill }: { skill: SampleSkill }) {
   return (
     <Link
       href={`/skills/${skill.slug}`}
-      className="group flex min-h-80 flex-col overflow-hidden rounded-3xl border border-border bg-card transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary motion-reduce:hover:translate-y-0"
+      className={
+        marketplace
+          ? `group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary motion-reduce:hover:translate-y-0 ${layout === "list" ? "sm:flex-row" : ""}`
+          : "group flex min-h-80 flex-col overflow-hidden rounded-3xl border border-border bg-card transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary motion-reduce:hover:translate-y-0"
+      }
     >
-      <div
-        className={`flex min-h-28 items-center justify-between gap-3 p-6 ${tone}`}
-      >
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest">
-            {skill.category}
-          </p>
-          <span className="mt-3 flex size-10 items-center justify-center rounded-xl bg-primary/10">
+      {marketplace ? (
+        <div className={`flex items-center gap-3 border-b border-border/70 px-5 py-4 ${tone}`}>
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-card/75 shadow-sm">
             <Sparkles className="size-5" aria-hidden />
           </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold text-foreground">{skill.category}</p>
+            <p className="truncate text-xs text-muted-foreground">{skill.subcategory || "AI agent recipe"}</p>
+          </div>
+          <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden />
         </div>
-        <ArrowUpRight
-          className="size-5 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 motion-reduce:transform-none"
-          aria-hidden
-        />
-      </div>
-      <div className="flex flex-1 flex-col p-6">
+      ) : (
+        <div className={`flex min-h-28 items-center justify-between gap-3 p-6 ${tone}`}>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest">{skill.category}</p>
+            <span className="mt-3 flex size-10 items-center justify-center rounded-xl bg-primary/10"><Sparkles className="size-5" aria-hidden /></span>
+          </div>
+          <ArrowUpRight className="size-5 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 motion-reduce:transform-none" aria-hidden />
+        </div>
+      )}
+      <div className={`flex min-w-0 flex-1 flex-col ${marketplace ? "p-5" : "p-6"}`}>
         <div className="flex flex-wrap items-center gap-2">
           {skill.metadata?.isSample ? (
             <span className="text-xs font-semibold text-primary">
@@ -55,13 +72,13 @@ export function SkillCard({ skill }: { skill: SampleSkill }) {
             </span>
           )}
         </div>
-        <h3 className="mt-4 text-xl font-semibold tracking-tight group-hover:text-primary">
+        <h3 className={`${marketplace ? "mt-3 text-lg" : "mt-4 text-xl"} font-semibold tracking-tight group-hover:text-primary`}>
           {skill.name}
         </h3>
-        <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+        <p className={`mt-2 ${marketplace ? "line-clamp-2" : "line-clamp-3"} text-sm leading-relaxed text-muted-foreground`}>
           {skill.summary}
         </p>
-        <div className="mt-5">
+        <div className={`${marketplace ? "mt-3" : "mt-5"}`}>
           {!skill.metadata?.isSample && (
             <RatingSummary
               average={skill.ratingAverage ?? 0}
@@ -69,7 +86,7 @@ export function SkillCard({ skill }: { skill: SampleSkill }) {
             />
           )}
         </div>
-        <div className="mt-5 flex items-center justify-between gap-3 border-t border-border pt-4 text-xs text-muted-foreground">
+        <div className={`${marketplace ? "mt-4" : "mt-5"} flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4 text-xs text-muted-foreground`}>
           <span className="truncate">By {skill.author.name}</span>
           <span className="inline-flex shrink-0 items-center gap-1">
             {skill.metadata?.isSample ? (
@@ -77,7 +94,7 @@ export function SkillCard({ skill }: { skill: SampleSkill }) {
             ) : (
               <>
                 <Download className="size-3.5" aria-hidden />
-                {skill.installs.toLocaleString()} downloads
+                {skill.installs.toLocaleString()} recorded download requests
               </>
             )}
           </span>

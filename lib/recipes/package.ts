@@ -32,8 +32,16 @@ export const recipeManifestSchema = z.looseObject({
   ]),
   permissions: fields,
   adapter: z.string().min(1).max(160),
-  input_schema: z.string().min(1).max(240),
-  output_schema: z.string().min(1).max(240),
+  // A standalone recipe.yaml can carry schemas inline. File paths remain the
+  // preferred format for multi-file ZIP packages.
+  input_schema: z.union([
+    z.string().min(1).max(240),
+    z.record(z.string(), z.unknown()),
+  ]),
+  output_schema: z.union([
+    z.string().min(1).max(240),
+    z.record(z.string(), z.unknown()),
+  ]),
   human_gate: z
     .object({
       actor: z.string().min(1).max(160),
@@ -324,6 +332,9 @@ export async function inspectRecipePackage(raw: unknown) {
   if (!parsed.success)
     for (const e of parsed.error.issues)
       issue("recipe.yaml", e.path.join("."), "manifest_type", e.message);
+  if (manifest.skillport_standard !== undefined)
+    warnings.push("The skillport_standard YAML block is a conceptual authoring example, not an approved platform schema. It is preserved but not treated as a verified runtime contract.");
+  warnings.push("This YAML package uses Skillbuffet's current structural checks. It does not by itself satisfy the manager's required recipe.md plus separate validation-report.md deliverables.");
   const manifestId = typeof manifest.id === "string" ? manifest.id : null;
   const dependencyIds = Array.isArray(manifest.dependencies)
     ? manifest.dependencies.filter((v): v is string => typeof v === "string")
@@ -376,9 +387,19 @@ export async function inspectRecipePackage(raw: unknown) {
       "approval_required",
       "External writes need an explicit approval policy; runtime enforcement is still required.",
     );
+  const schemaFiles = new Map(byPath);
+  const inlineSchemaPaths = new Map<string, string>();
+  for (const field of ["input_schema", "output_schema"] as const) {
+    const schema = manifest[field];
+    if (object(schema)) {
+      const path = `__inline__/${field}.schema.json`;
+      schemaFiles.set(path, JSON.stringify(schema));
+      inlineSchemaPaths.set(field, path);
+    }
+  }
   let compile: ReturnType<typeof schemaCompiler> | undefined;
   try {
-    compile = schemaCompiler(byPath);
+    compile = schemaCompiler(schemaFiles);
   } catch {
     issue(
       "schemas",
@@ -395,17 +416,17 @@ export async function inspectRecipePackage(raw: unknown) {
     ["input_schema", manifest.input_schema],
     ["output_schema", manifest.output_schema],
   ] as const) {
-    const resolvedPath =
+    const inlinePath = inlineSchemaPaths.get(field);
+    const resolvedPath = inlinePath ?? (
       typeof path === "string"
         ? byPath.has(path)
           ? path
           : posix.join(posix.dirname(manifestPath), path)
-        : "";
+        : ""
+    );
     if (
-      typeof path !== "string" ||
-      !path ||
-      !safePath(path) ||
-      !byPath.has(resolvedPath)
+      (!inlinePath && (typeof path !== "string" || !path || !safePath(path))) ||
+      !schemaFiles.has(resolvedPath)
     ) {
       issue(
         "recipe.yaml",
@@ -419,7 +440,7 @@ export async function inspectRecipePackage(raw: unknown) {
       schemaResults[field] = compile!(resolvedPath);
     } catch {
       issue(
-        path,
+        typeof path === "string" ? path : field,
         "",
         "unsupported_schema",
         "The schema is invalid or outside the supported bounded schema profile. See the recipe-package documentation.",

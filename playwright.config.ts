@@ -17,6 +17,7 @@ export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 180_000,
   workers: 1,
+  globalSetup: "./tests/e2e/global-setup.ts",
   use: { baseURL, channel: "chrome", headless: true },
   webServer: {
     command: "pnpm dev --port 3100",

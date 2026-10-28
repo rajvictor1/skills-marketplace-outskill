@@ -1,6 +1,5 @@
-import { execFileSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect, test, type BrowserContext } from "@playwright/test";
@@ -11,30 +10,24 @@ import postgres from "postgres";
 const databaseUrl = process.env.TEST_DATABASE_URL!;
 const baseURL = "http://localhost:3100";
 
-function recipeArchive(recipeId: string) {
+function recipeDocuments(recipeId: string) {
   const directory = mkdtempSync(join(tmpdir(), "skillbuffet-e2e-recipe-"));
-  mkdirSync(join(directory, "schemas"));
-  writeFileSync(join(directory, "recipe.yaml"), [
-    `id: ${recipeId}`,
-    "version: 1.0.0",
-    "description: A harmless recipe used to verify the marketplace publication flow.",
-    "provides: [e2e.result.v1]",
-    "requires: []",
-    "dependencies: []",
-    "preconditions: []",
-    "side_effects: none",
-    "permissions: []",
-    "adapter: unimplemented:e2e.recipe",
-    "input_schema: schemas/input.schema.json",
-    "output_schema: schemas/output.schema.json",
-    "",
-  ].join("\n"));
-  const schema = JSON.stringify({ type: "object", properties: {}, additionalProperties: false });
-  writeFileSync(join(directory, "schemas/input.schema.json"), schema);
-  writeFileSync(join(directory, "schemas/output.schema.json"), schema);
-  const archive = join(directory, "recipe.zip");
-  execFileSync("zip", ["-X", "-q", "-r", archive, "recipe.yaml", "schemas"], { cwd: directory });
-  return { archive, directory };
+  const recipePath = join(directory, "recipe.md");
+  const reportPath = join(directory, "validation-report.md");
+  const sections = [
+    "A. Identity and ownership", "B. Capability register and callable objects", "C. Intent and applicability",
+    "D. Inputs and outputs", "E. Constraints and budgets", "F. CRUD and side effects",
+    "G. Autonomy and approval policy", "H. Execution plan", "I. Continuous verification",
+    "J. Self-correction and recovery", "K. Independent challenge", "L. Human escalation",
+    "M. Completion conditions", "N. Final output contract", "O. Learning and revision",
+    "P. Testing and publication readiness", "Q. Open questions and known limitations",
+  ];
+  writeFileSync(recipePath, `# Lifecycle test recipe\n\nRecipe ID: ${recipeId}. Test-only declaration; runtime capabilities and evidence are UNVERIFIED.\n\n${sections.map((heading) =>
+    `## ${heading}\n\nThis test recipe documents a harmless review-flow fixture. No external capability is claimed; runtime and evidence are UNVERIFIED.`).join("\n\n")}`);
+  writeFileSync(reportPath, `# Validation report\n\n${[
+    "Checks performed", "Results", "Findings", "Evidence", "Tests still needed", "Limitations",
+  ].map((heading) => `## ${heading}\n\nUNVERIFIED: test fixture has not been executed as a recipe.`).join("\n\n")}`);
+  return { recipePath, reportPath, directory };
 }
 
 async function signUp(context: BrowserContext, email: string, password: string) {
@@ -43,13 +36,18 @@ async function signUp(context: BrowserContext, email: string, password: string) 
     headers: { origin: baseURL },
   });
   expect(response.status()).toBe(200);
+  const signIn = await context.request.post(`${baseURL}/api/auth/sign-in/email`, {
+    data: { email, password },
+    headers: { origin: baseURL },
+  });
+  expect(signIn.status()).toBe(200);
   const page = await context.newPage();
   await page.goto("/dashboard/skills");
   await expect(page).toHaveURL(/\/dashboard\/skills/);
   return page;
 }
 
-test("creator upload requires admin approval before an authenticated package download", async ({ browser }) => {
+test("creator Markdown recipe requires admin approval before authenticated downloads", async ({ browser }) => {
   const sql = postgres(databaseUrl, { max: 2, prepare: false });
   const creator = await browser.newContext();
   const reviewer = await browser.newContext();
@@ -58,21 +56,27 @@ test("creator upload requires admin approval before an authenticated package dow
   const recipeId = `e2e.lifecycle.${suffix}`;
   const title = `Lifecycle recipe ${suffix.slice(0, 8)}`;
   const password = `test-${randomUUID()}`;
-  const { archive, directory } = recipeArchive(recipeId);
+  const creatorEmail = `creator-${suffix}@example.test`;
+  const reviewerEmail = `reviewer-${suffix}@example.test`;
+  const { recipePath, reportPath, directory } = recipeDocuments(recipeId);
   try {
     await migrate(drizzle(sql), { migrationsFolder: "drizzle" });
-    const creatorPage = await signUp(creator, `creator-${suffix}@example.test`, password);
+    const creatorPage = await signUp(creator, creatorEmail, password);
     await creatorPage.goto("/publish");
-    await expect(creatorPage.getByRole("button", { name: /Switch to (light|dark) mode/ })).toBeEnabled();
-    await creatorPage.locator('section[aria-labelledby="zip-publish-heading"] input[type="file"]').first().setInputFiles(archive);
-    await expect(creatorPage.getByRole("button", { name: "Find recipes" })).toBeEnabled();
-    await creatorPage.getByRole("button", { name: "Find recipes" }).click();
-    await expect(creatorPage.getByText("File checks passed")).toBeVisible();
+    await expect(creatorPage.getByRole("button", { name: /Switch to (light|dark) mode/ })).toBeEnabled({ timeout: 15_000 });
+    await expect(creatorPage.getByRole("heading", { name: "Submit a recipe and its validation report" })).toBeVisible();
+    await expect(creatorPage.getByRole("button", { name: /Recipe ZIP|Single recipe\.yaml/ })).toHaveCount(0);
+    await creatorPage.getByLabel(/Recipe Markdown/).setInputFiles(recipePath);
+    await creatorPage.getByLabel(/Separate validation report/).setInputFiles(reportPath);
     await creatorPage.getByLabel("Display title").fill(title);
-    await creatorPage.getByLabel("Reuse terms for this recipe").selectOption("Other");
-    await creatorPage.getByRole("checkbox", { name: /permission to submit this recipe/ }).check();
-    await creatorPage.getByRole("button", { name: "Submit this recipe" }).click();
-    await expect(creatorPage.getByRole("status")).toContainText("submitted for admin review");
+    await creatorPage.getByLabel("Stable recipe ID").fill(recipeId);
+    await creatorPage.getByLabel("Short summary").fill("A harmless recipe used to verify the manager-standard marketplace publication flow.");
+    await creatorPage.getByLabel("Reuse terms").selectOption("Other");
+    await creatorPage.getByRole("checkbox", { name: /permission to submit these files/ }).check();
+    await creatorPage.getByRole("button", { name: "Check both files" }).click();
+    await expect(creatorPage.getByRole("status")).toContainText("passed format and static security checks");
+    await creatorPage.getByRole("button", { name: "Submit for admin review" }).click();
+    await expect(creatorPage.getByRole("status")).toContainText("submitted for administrator review");
 
     const [listing] = await sql<{ id: string; slug: string; status: string }[]>`
       select id, slug, status from public.skill where metadata->>'recipeId' = ${recipeId}`;
@@ -89,7 +93,6 @@ test("creator upload requires admin approval before an authenticated package dow
     expect(unknownResponse?.status()).toBe(404);
     await expect(anonymousPage.locator('meta[name="robots"]').first()).toHaveAttribute("content", /noindex/);
 
-    const reviewerEmail = `reviewer-${suffix}@example.test`;
     const reviewerPage = await signUp(reviewer, reviewerEmail, password);
     const [adminUser] = await sql<{ id: string }[]>`
       select id from public."user" where email = ${reviewerEmail}`;
@@ -117,18 +120,27 @@ test("creator upload requires admin approval before an authenticated package dow
     await expect(anonymousPage.getByRole("heading", { name: title, exact: true, level: 1 })).toBeVisible();
 
     const download = await reviewer.request.post(`/api/skills/${listing.slug}/download`, {
-      headers: { origin: baseURL },
+      form: { file: "recipe.md" }, headers: { origin: baseURL },
     });
     expect(download.status()).toBe(200);
-    expect(download.headers()["content-type"]).toContain("application/json");
-    const payload = JSON.parse((await download.body()).toString());
-    expect(payload.manifestPath).toBe("recipe.yaml");
-    expect(payload.files.some((file: { path: string; content: string }) =>
-      file.path === "recipe.yaml" && file.content.includes(recipeId))).toBe(true);
+    expect(download.headers()["content-type"]).toContain("text/markdown");
+    expect((await download.text())).toContain(recipeId);
+    const reportDownload = await reviewer.request.post(`/api/skills/${listing.slug}/download`, {
+      form: { file: "validation-report.md" }, headers: { origin: baseURL },
+    });
+    expect(reportDownload.status()).toBe(200);
+    expect(await reportDownload.text()).toContain("Validation report");
     const [record] = await sql<{ count: string }[]>`
       select count(*)::text as count from public.skill_download where skill_id = ${listing.id}`;
     expect(record.count).toBe("1");
+
   } finally {
+    await sql`
+      delete from public.review_event
+      where skill_id in (select id from public.skill where metadata->>'recipeId' = ${recipeId})
+         or actor_id in (select id from public."user" where email in (${creatorEmail}, ${reviewerEmail}))`;
+    await sql`delete from public.skill where metadata->>'recipeId' = ${recipeId}`;
+    await sql`delete from public."user" where email in (${creatorEmail}, ${reviewerEmail})`;
     await creator.close();
     await reviewer.close();
     await anonymous.close();
