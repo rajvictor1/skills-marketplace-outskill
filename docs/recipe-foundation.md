@@ -20,8 +20,16 @@ Status: first implementation slice, 21 October 2026. Existing catalog and publis
 
 ## Supported source layouts
 
-1. A standalone folder containing recipe.yaml, SKILL.md, schemas and optional adapter text.
-2. A shared package with capabilities/<id>/recipe.yaml and root schemas, selected by manifestPath.
+1. A paired Markdown submission: `recipe.md` plus a separate `validation-report.md`. Markdown sections are checked against the manager's canonical A–Q headings, and the report must include checks performed, results, findings, evidence, tests still needed, and limitations. The checks do not validate factual claims or execute reported tests.
+2. Creator submissions currently use `recipe.md` and `validation-report.md` directly. New ZIP and standalone YAML submissions are paused until the team approves their package contract. The Markdown pair is the manager-standard human-readable deliverable.
+
+YAML and ZIP inspection/submission server actions now return a paused-format response. The `skillport_standard` YAML example is conceptual and is not enforced as an approved runtime schema. The actual runtime schema remains unselected; no JSON execution upload is offered.
+
+The Markdown path accepts exactly two UTF-8 Markdown files, a recipe and its separate validation report. It checks required headings, bounded file sizes and the existing static scanner, then stores both original files with the pending listing. This is a structural intake check only; creator-provided evidence is not independently verified. JSON is not accepted as a substitute because the team has not supplied an agreed JSON Schema for the Markdown contract. Templates are available at `public/templates/recipe-markdown-standard.md` and `public/templates/recipe-validation-report.md`.
+
+## Manager-standard boundaries
+
+The Markdown validator checks the manager's A–Q section structure and the separate report sections. This is structural coverage, not proof that the author supplied complete, accurate, or independently verified information. The example YAML shape in the manager's document is explicitly conceptual; Skillbuffet no longer treats a custom `skillport_standard` block as an approved machine schema. Recipes are not installed, activated, or executed here. Marketplace approval is publication review only.
 
 Identifiers containing dots or underscores are preserved. The original files are not rewritten into the legacy SKILL.md format. No source scripts, test suites, shell commands or bundled validators are run. A ZIP is prepared by the repository's own read-only Python utility, without extraction or script execution. Binary caches and hidden files are omitted.
 

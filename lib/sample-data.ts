@@ -50,7 +50,7 @@ export type SampleSkill = {
 };
 
 export type SkillMarketplaceMetadata = {
-  format?: "recipe_package";
+  format?: "recipe_package" | "recipe_markdown";
   recipeId?: string;
   packageVersionId?: string;
   packageHash?: string;

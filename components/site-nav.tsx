@@ -5,7 +5,7 @@ import { AccountActions } from "@/components/account-actions";
 import { MobileNavMenu } from "@/components/mobile-nav-menu";
 
 const NAV_LINKS = [
-  { href: "/skills", label: "Browse" },
+  { href: "/skills", label: "Recipe Marketplace" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/security", label: "How vetting works" },
   { href: "/publish", label: "Publish" },

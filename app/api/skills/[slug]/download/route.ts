@@ -28,6 +28,8 @@ export async function POST(
     if (!session?.user)
       return Response.redirect(new URL("/auth/sign-in", request.url), 303);
     const { slug } = await params;
+    const submittedForm = await request.formData();
+    const requestedFile = String(submittedForm.get("file") ?? "");
     const result = await db.transaction(async (tx) => {
       const [listing] = await tx
         .select()
@@ -57,7 +59,9 @@ export async function POST(
               skillFile.path,
               listing.metadata.format === "recipe_package"
                 ? "recipe-package.json"
-                : "SKILL.md",
+                : listing.metadata.format === "recipe_markdown"
+                  ? requestedFile === "validation-report.md" ? "validation-report.md" : "recipe.md"
+                  : "SKILL.md",
             ),
           ),
         )
@@ -84,6 +88,7 @@ export async function POST(
       return {
         content: file.content,
         package: listing.metadata.format === "recipe_package",
+        filename: listing.metadata.format === "recipe_package" ? "recipe-package.json" : listing.metadata.format === "recipe_markdown" && requestedFile === "validation-report.md" ? "validation-report.md" : listing.metadata.format === "recipe_markdown" ? "recipe.md" : "SKILL.md",
       };
     });
     if (result === null)
@@ -96,9 +101,7 @@ export async function POST(
         "Content-Type": result.package
           ? "application/json; charset=utf-8"
           : "text/markdown; charset=utf-8",
-        "Content-Disposition": result.package
-          ? 'attachment; filename="recipe-package.json"'
-          : 'attachment; filename="SKILL.md"',
+        "Content-Disposition": `attachment; filename="${result.filename}"`,
         "Cache-Control": "private, no-store",
         "X-Content-Type-Options": "nosniff",
       },

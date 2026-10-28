@@ -5,15 +5,15 @@ export const DOCS: Record<
   "recipe-packages": {
     title: "Structured recipe packages",
     intro:
-      "A standard recipe has one recipe.yaml with its local JSON Schemas, optional documentation and adapter source. Upload a pack containing one or many recipes, then choose one to submit. Inspection does not publish, install or execute it.",
+      "The manager-standard creator submission is recipe.md with a separate validation-report.md. New YAML and ZIP creator submissions are paused until the team approves a package schema. Inspection does not publish, install or execute a recipe.",
     sections: [
       {
         title: "Supported package layouts",
-        body: "Inspect a standalone recipe folder or select one capabilities/<id>/recipe.yaml inside a shared schema package. Original IDs and source files are preserved. Adapter and test code is read as text and never executed.",
+        body: "The creator publishing page currently accepts recipe.md and a separate validation-report.md only. New recipe.yaml and ZIP uploads are paused until the team approves their package contract. The manager's YAML example is conceptual, not an approved runtime schema. Existing published listings remain available.",
       },
       {
         title: "Prepare a ZIP",
-        body: "Keep recipe.yaml with its local source files and schemas in a ZIP. Sign in and upload it at /publish. If the ZIP contains several recipes, choose one valid recipe to submit. Assign its category and subcategory; the same VDX-style contract applies across categories. The current ZIP limit is 1.5 MB. Remove credentials, patient records and real runtime input. The offline recipe-pack-to-json.py and prepare-recipe-collection.ts tools remain available for owner QC.",
+        body: "YAML and ZIP creator uploads are currently unavailable. Do not package or submit them as a workaround. Prepare recipe.md and its separate validation-report.md, choose one category and subcategory, and upload both from /publish. Remove credentials, patient records and real runtime input.",
       },
       {
         title: "Owner/team inspection endpoint",
@@ -25,14 +25,14 @@ export const DOCS: Record<
       },
       {
         title: "Private upload and review",
-        body: "Platform administrators can use /admin/recipes to inspect and save private drafts, including packages with compatibility issues, in the Preview Supabase registry. Creators use /publish to inspect a ZIP and submit one valid recipe at a time to the administrator review desk. Private drafts and marketplace submissions use separate schemas in the same Supabase Postgres database and share the package inspector. Source issues must be corrected before submission; a saved draft is not public. The administrator reviews the original package JSON and static findings before approving a listing. An approved package offers an authenticated JSON download of its original files. Agent registration, installation and runtime activation remain pending. The older SKILL.md uploader remains under Legacy format. Remote schemas, executable custom validators and arbitrary code execution are unsupported.",
+        body: "Creators use /publish to submit recipe.md and its separate report. YAML and ZIP submissions are paused. The validator checks the manager's A–Q recipe sections and the report sections, then runs static scanning. It does not verify report evidence or execute recipes. Submissions remain private for administrator review. No structured JSON upload is offered until the team agrees an approved schema.",
       },
     ],
   },
   "getting-started": {
     title: "Start with a useful recipe",
     intro:
-      "Skillbuffet is a curated library of AI agent recipes. Listings may contain a structured recipe.yaml package or a legacy SKILL.md instruction file. Discover an approved recipe, inspect it and download the saved version.",
+      "Skillbuffet is a curated library of AI agent recipes. The current manager-standard submission pairs a human-readable Markdown recipe with a separate validation report. Discover an approved recipe, inspect it and download the saved version.",
     sections: [
       {
         title: "1. Discover",
@@ -40,11 +40,11 @@ export const DOCS: Record<
       },
       {
         title: "2. Inspect",
-        body: "Read the complete instructions, compatibility, required permissions, license, automated scan report and administrator approval badge. The approval applies to the displayed version. A scan and an admin review reduce risk but do not guarantee safety or accuracy.",
+        body: "Read the complete instructions, creator-declared compatibility, required permissions, license, static scan report and administrator approval badge. The approval applies to the displayed version. Static checks and admin review may identify some problems but cannot guarantee safety or accuracy.",
       },
       {
         title: "3. Download and use",
-        body: "Sign in and select Download recipe. Structured listings provide recipe-package.json with the reviewed source files; older listings provide SKILL.md. Follow your agent application's instructions and grant only the access needed. Skillbuffet does not activate the recipe or connect your accounts.",
+        body: "Sign in to download the approved version. Markdown listings provide recipe.md and validation-report.md separately; structured listings provide recipe-package.json; legacy listings provide SKILL.md. Follow your agent application's instructions and grant only the access needed. Skillbuffet does not activate the recipe or connect your accounts.",
       },
       {
         title: "4. Share feedback",
@@ -55,27 +55,23 @@ export const DOCS: Record<
   publishing: {
     title: "Publish your expertise",
     intro:
-      "Upload your recipe pack and choose one recipe.yaml package to submit at a time. A larger archive can be inspected, but each submission selects one recipe. The older single-file SKILL.md form is under Legacy format. Every public recipe version requires administrator approval.",
+      "Submit the manager-standard recipe.md and its separate validation report. Upload both files separately. YAML, ZIP and SKILL.md submissions are paused until their formats are aligned with the manager's standard. Every public recipe version requires administrator approval.",
     sections: [
       {
-        title: "Prepare your recipe archive",
-        body: "Create a ZIP with one or more recipe.yaml manifests and their referenced local JSON Schemas. Include documentation and adapter source when useful. The publisher reads text files but never runs adapter code. Remove credentials, private customer information and files you cannot distribute. A structurally invalid or scanner-blocked recipe cannot be selected for submission.",
+        title: "Prepare your recipe files",
+        body: "Prepare two UTF-8 files: recipe.md and validation-report.md. Download the outlines on /publish. Submit one recipe at a time and choose its category and subcategory. YAML and ZIP uploads are paused; do not use them as a workaround. Remove credentials, private customer information and files you cannot distribute. Uploaded code is never executed.",
       },
       {
         title: "Complete your listing",
-        body: "Sign in, open Submit a recipe, choose the ZIP and click Find recipes. Select one valid recipe, then give it a display title, category and subcategory. Choose reuse terms and confirm your right to submit its files. Repeat for another recipe. The legacy SKILL.md form still supports paste, file upload and optional GitHub import.",
+        body: "Sign in and open Submit a recipe. Upload the Markdown recipe and report, then enter the listing title, recipe ID, version, summary, category and subcategory. Choose reuse terms and confirm your right to submit the files. Submit one recipe at a time.",
       },
       {
         title: "Scan and submit",
-        body: "The server rechecks the same ZIP and every selected package at submission. It verifies the inspected file hash, manifest and local schemas, then runs deterministic security checks. The ZIP path does not execute code or send package content to an AI classifier. Blocked recipes cannot be submitted. Successful submissions remain private as Pending admin review.",
+        body: "The server rechecks the manager's A–Q recipe sections, required validation-report sections, and static security scan at submission. The report and its evidence are creator-provided; the system does not independently verify them or execute reported tests. Blocked recipes cannot be submitted. Successful submissions remain private as Pending admin review. Structured JSON upload is not enabled because the team has not selected an approved schema.",
       },
       {
         title: "Follow the decision",
         body: "Open My recipes to see status and administrator feedback. Approval publishes the reviewed version automatically. Request changes or rejection keeps that submission private. Submit a revision with the same recipe name and a new version number, such as 1.0.1. An existing approved version remains public until a replacement is approved or it is explicitly unpublished.",
-      },
-      {
-        title: "Legacy SKILL.md format",
-        body: "If you only have a single instruction file, expand Legacy format on the publishing page. Its YAML frontmatter needs a lowercase name and description. Structured packages use recipe.yaml instead; SKILL.md is optional documentation inside them.",
       },
     ],
   },
@@ -94,11 +90,11 @@ export const DOCS: Record<
       },
       {
         title: "Downloads",
-        body: "The website uses POST /api/skills/{slug}/download with a signed-in session cookie and matching Origin. It returns recipe-package.json for approved structured recipes or SKILL.md for legacy listings. Signed-out requests redirect to sign-in; unapproved versions return 404. This is a browser session endpoint, not a public token-authenticated integration API. API keys and a supported CLI are not available yet.",
+        body: "The website uses POST /api/skills/{slug}/download with a signed-in session cookie and matching Origin. It returns recipe.md or validation-report.md for approved Markdown listings, recipe-package.json for structured recipes, or SKILL.md for legacy listings. Signed-out requests redirect to sign-in; unapproved versions return 404. This is a browser session endpoint, not a public token-authenticated integration API. API keys and a supported CLI are not available yet.",
       },
       {
         title: "Counting and limits",
-        body: "A recorded download is a successful server response request by a signed-in non-creator account. Each account counts once per recipe version. It does not prove the recipe was installed or used successfully. Catalog responses are bounded; there is no API uptime guarantee in beta. Avoid bulk polling.",
+        body: "A recorded download request is counted for a signed-in non-creator account when the server begins sending a saved file. Each account counts once per recipe version. The record does not confirm a complete transfer, installation or use. Catalog responses are bounded; there is no API uptime guarantee in beta. Avoid bulk polling.",
       },
     ],
   },
@@ -121,7 +117,7 @@ export const DOCS: Record<
       },
       {
         title: "Known limits",
-        body: "Structured package and SKILL.md submissions are read and scanned, never executed. Static scanning does not prove runtime safety. External source repositories can change after approval; direct GitHub downloads are outside Skillbuffet's saved-version review. Email verification is disabled in the current beta; verified-download labels describe account activity, not independently verified identities.",
+        body: "Structured package and SKILL.md submissions are read and scanned, never executed. Static scanning does not prove runtime safety. External source repositories can change after approval; direct GitHub downloads are outside Skillbuffet's saved-version review. Email verification is disabled in the current beta; download-request labels describe account activity, not independently verified identities.",
       },
     ],
   },
@@ -144,7 +140,7 @@ export const DOCS: Record<
       },
       {
         title: "2026-10-21 · Curated publishing",
-        body: "Added a private admin review queue, approve/publish, request changes, reject, unpublish and review history. New versions retain the previously approved public version while waiting. Legacy auto-published recipes return to review. Removed catalog fixtures and illustrative dashboard activity.",
+        body: "Added a private admin review queue, approve/publish, request changes, reject, unpublish and review history. New versions retain the previously approved public version while waiting. Legacy auto-published recipes return to review. Removed catalog fixture counts; the dashboard still contains labeled illustrative activity.",
       },
       {
         title: "2026-10-21 · Community and discovery",

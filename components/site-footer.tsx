@@ -81,8 +81,8 @@ export function SiteFooter() {
             Original project credits ↗
           </a>
           <p>
-            Automated scanning and administrator review reduce risk; they do not
-            guarantee safety.
+            Static scanning and admin review can flag some problems; neither
+            guarantees safety.
           </p>
         </div>
       </div>

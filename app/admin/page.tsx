@@ -101,7 +101,7 @@ export default async function AdminPage({
                 skillFile.skillVersionId,
                 pending.map((row) => row.version.id),
               ),
-              inArray(skillFile.path, ["SKILL.md", "recipe-package.json"]),
+              inArray(skillFile.path, ["SKILL.md", "recipe-package.json", "recipe.md", "validation-report.md"]),
             ),
           ),
       ])
@@ -163,9 +163,10 @@ export default async function AdminPage({
                 (item) => item.scanResultId === row.scan?.id,
               )}
               raw={
-                allFiles.find((item) => item.skillVersionId === row.version.id)
-                  ?.content ?? row.version.skillMdBody
+                allFiles.find((item) => item.skillVersionId === row.version.id &&
+                  item.path === (row.review.snapshot.metadata.format === "recipe_package" ? "recipe-package.json" : row.review.snapshot.metadata.format === "recipe_markdown" ? "recipe.md" : "SKILL.md"))?.content ?? row.version.skillMdBody
               }
+              validationReport={allFiles.find((item) => item.skillVersionId === row.version.id && item.path === "validation-report.md")?.content}
             />
           ))}
         </div>
@@ -212,7 +213,7 @@ export default async function AdminPage({
                 {item.name}
               </Link>
               <p className="mt-1 text-sm text-muted-foreground">
-                {item.category} · {item.downloadCount} recorded downloads
+                {item.category} · {item.downloadCount} recorded download requests
               </p>
               <AdminReviewForm id={item.id} mode="unpublish" />
             </article>
@@ -293,10 +294,12 @@ function ReviewCard({
   row,
   findings,
   raw,
+  validationReport,
 }: {
   row: Row;
   findings: (typeof finding.$inferSelect)[];
   raw: string;
+  validationReport?: string;
 }) {
   const data = row.review.snapshot;
   return (
@@ -391,7 +394,7 @@ function ReviewCard({
       </details>
       <details className="mt-5">
         <summary className="cursor-pointer text-sm font-semibold">
-          {data.metadata.format === "recipe_package" ? "Inspect package files and content hash" : "Inspect instructions and content hash"}
+          {data.metadata.format === "recipe_package" ? "Inspect package files and content hash" : data.metadata.format === "recipe_markdown" ? "Inspect recipe Markdown and content hash" : "Inspect instructions and content hash"}
         </summary>
         <p className="mt-2 break-all font-mono text-xs">
           SHA-256 {row.version.contentHash}
@@ -402,6 +405,15 @@ function ReviewCard({
             : <Markdown>{raw}</Markdown>}
         </div>
       </details>
+      {data.metadata.format === "recipe_markdown" && validationReport && (
+        <details className="mt-5">
+          <summary className="cursor-pointer text-sm font-semibold">Inspect the separate validation report</summary>
+          <div className="mt-4 max-h-[30rem] overflow-auto rounded-xl border border-border p-5">
+            <Markdown>{validationReport}</Markdown>
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">Report and evidence are creator-provided. Review the evidence; structural checks do not independently verify its claims.</p>
+        </details>
+      )}
       {data.metadata.format === "recipe_package" && (
         <div className="mt-5 rounded-xl bg-category-teal p-4 text-sm">
           <p>

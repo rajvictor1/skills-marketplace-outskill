@@ -492,9 +492,9 @@ export function PublishForm({
           </span>
         </div>
         <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-          Critical scanner findings block publication. Automated checks reduce
-          risk but cannot guarantee a recipe is safe. The scanner reads submitted
-          instructions; it does not execute them.
+          Critical scanner findings block publication. Automated checks can
+          flag some problems but cannot guarantee safety. The scanner reads
+          submitted instructions; it does not execute them.
         </p>
       </section>
 

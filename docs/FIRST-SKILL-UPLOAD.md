@@ -1,11 +1,15 @@
-# Submit your first Skillbuffet skill
+# Submit a recipe using the manager's standard
 
-1. Create a SKILL.md file with YAML frontmatter: a unique lowercase `name`, and a useful `description`. Add concrete instructions below it. One UTF-8 Markdown file, maximum 256 KB. Remove secrets and private customer information.
-2. Sign in and open `/publish`. Select Paste text, Upload file, or Import GitHub. A ZIP must be extracted first. GitHub import needs a public repository with SKILL.md at its root. File uploads have an optional GitHub source link.
-3. Add the display title, category, subcategory, summary, version (start 1.0.0), license, tags, compatibility, permissions, inputs/outputs and data handling. Do not choose a license you cannot grant.
-4. Confirm your publishing rights, then Scan and submit for review. Critical findings block the submission. Other submissions are Pending admin review and private.
-5. Open My skills for the status and administrator feedback. If changes are requested, correct the skill and submit it under the same frontmatter name with a new version number.
-6. The administrator inspects `/admin` and chooses Approve and publish, Request changes or Reject. Approval publishes that exact version automatically. A replacement version does not change the public listing before approval.
-7. Open the approved listing to download SKILL.md. Download counts exclude creators and count each account once per version. Skill ratings require a recorded download; creators cannot rate their own work.
+1. Create an account, sign in, and open `/publish`.
+2. Choose **Recipe Markdown + report**. Download the `recipe.md` and `validation-report.md` outlines.
+3. Complete all sections A–Q in `recipe.md`. If an item is unknown, mark it `TBD` or `UNVERIFIED`; do not claim a tool, permission, test, or runtime behavior that has not been confirmed.
+4. Complete the separate `validation-report.md`. Record the checks performed, results, findings, evidence, tests still needed, and limitations. Clearly mark tests that have not run.
+5. Upload both Markdown files. Add the marketplace title, lowercase recipe ID, version, summary, category, subcategory, and reuse terms.
+6. Inspect the findings, confirm you have the right to submit the files, then send the recipe for administrator review.
+7. Track the result under **My recipes**. It remains private until an administrator approves it.
 
-Detailed guides: `/docs/publishing`, `/docs/security`, `/docs/api`.
+The checks validate the document structure and run static security scanning. They do not verify the truth of the report, establish that a capability is registered, grant permissions, or execute the recipe.
+
+## Structured files
+
+New creator submissions currently accept only `recipe.md` and its separate `validation-report.md`. YAML and ZIP uploads are paused on both the publishing page and server actions until the team approves their package contract. The example `skillport_standard` block is conceptual and is not an approved runtime schema. No structured JSON execution upload is enabled until the team selects an approved schema.

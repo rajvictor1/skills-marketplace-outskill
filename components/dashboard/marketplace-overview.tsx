@@ -54,7 +54,7 @@ export function MarketplaceOverview({
   const model = getOverviewDemo(data);
   const kpis = [
     {
-      label: "Active recipes",
+      label: "Illustrative active recipes",
       value: number(model.activeSkills),
       note: "Published and available to agents",
       change: "+12.4%",
@@ -64,7 +64,7 @@ export function MarketplaceOverview({
       values: getActiveSkillSparkline(data, model.activeSkills),
     },
     {
-      label: "Successful agent runs",
+      label: "Illustrative agent runs",
       value: number(model.successful),
       note: "Tasks completed with usable outcomes",
       change: "+18.7%",
@@ -74,7 +74,7 @@ export function MarketplaceOverview({
       values: data.map((p) => p.successful),
     },
     {
-      label: "Marketplace success rate",
+      label: "Illustrative marketplace success rate",
       value: `${model.successRate.toFixed(1)}%`,
       note: "Successful runs ÷ completed runs",
       change: "+1.9 pts",
@@ -84,7 +84,7 @@ export function MarketplaceOverview({
       values: data.map((p) => (p.successful / p.runs) * 100),
     },
     {
-      label: "Creator earnings",
+      label: "Illustrative creator earnings",
       value: `$${number(model.earnings)}`,
       note: "Illustrative creator revenue, not payouts",
       change: "+24.1%",
@@ -277,21 +277,21 @@ export function MarketplaceOverview({
               {
                 icon: Users,
                 value: number(model.creators),
-                label: "Active creators",
+                label: "Illustrative active creators",
                 detail: "Sample creator community",
                 tone: "violet",
               },
               {
                 icon: Download,
                 value: number(model.installs),
-                label: "Agent installs",
+                label: "Illustrative agent installs",
                 detail: "Illustrative enabled recipes; not file downloads",
                 tone: "teal",
               },
               {
                 icon: Clock3,
                 value: `${number(model.hours)} hrs`,
-                label: "Estimated time saved",
+                label: "Illustrative time saved",
                 detail: "Sample estimate, not measured customer savings",
                 tone: "peach",
               },
@@ -415,7 +415,7 @@ export function MarketplaceOverview({
             <strong className="text-foreground">{catalog.count}</strong>{" "}
             approved recipes ·{" "}
             <strong className="text-foreground">{catalog.downloads}</strong>{" "}
-            recorded downloads ·{" "}
+            recorded download requests ·{" "}
             <strong className="text-foreground">
               {catalog.categories}/{catalog.categoryTotal}
             </strong>{" "}

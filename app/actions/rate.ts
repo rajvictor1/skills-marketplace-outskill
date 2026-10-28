@@ -72,7 +72,7 @@ export async function rateSkill(
       if (!download)
         return {
           message:
-            "Download the recipe before reviewing it. This keeps reviews tied to real downloads.",
+            "Request the recipe download before reviewing it. Reviews are limited to accounts with a recorded download request.",
         };
     }
     const [existing] = await db

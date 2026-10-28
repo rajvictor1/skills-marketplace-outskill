@@ -39,6 +39,9 @@ export type ZipSubmitResult = {
   submitted?: { id: string; slug: string }[];
   failed?: { id: string; reason: string }[];
 };
+const MAX_RECIPE_YAML_BYTES = 32 * 1024;
+const LEGACY_INTAKE_ENABLED = false;
+const LEGACY_INTAKE_PAUSED = "YAML and ZIP uploads are paused. Submit recipe.md with its separate validation-report.md instead.";
 type Selection = {
   manifestPath: string;
   packageHash: string;
@@ -51,7 +54,7 @@ async function signedInUser() {
   if (!hasDatabaseConnection())
     throw new RecipePackageError("Publishing is unavailable until the account database is configured.");
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session?.user) throw new RecipePackageError("Sign in before checking or submitting a recipe ZIP.");
+  if (!session?.user) throw new RecipePackageError("Sign in before checking or submitting a recipe.");
   return session.user;
 }
 async function readPreparedZip(form: FormData) {
@@ -61,31 +64,67 @@ async function readPreparedZip(form: FormData) {
     throw new RecipePackageError("Choose a recipe ZIP smaller than 1.5 MB.");
   return prepareRecipeCollection(readRecipeZip(new Uint8Array(await archive.arrayBuffer())));
 }
+async function readPreparedYaml(form: FormData) {
+  const upload = form.get("recipe");
+  if (!(upload instanceof File) || !/\.ya?ml$/i.test(upload.name) || !upload.size ||
+      upload.size > MAX_RECIPE_YAML_BYTES)
+    throw new RecipePackageError("Choose one recipe.yaml file no larger than 32 KB.");
+  let content: string;
+  try {
+    content = new TextDecoder("utf-8", { fatal: true }).decode(await upload.arrayBuffer()).replace(/^\uFEFF/, "");
+  } catch {
+    throw new RecipePackageError("recipe.yaml must be a UTF-8 text file.");
+  }
+  return prepareRecipeCollection({ files: [{ path: "recipe.yaml", content }] });
+}
 function message(error: unknown) {
   return error instanceof RecipePackageError ? error.message : "Could not process this recipe ZIP. Try again.";
 }
 
+function toRecipeRow({ manifestPath, envelope, report }: PreparedRecipe): ZipRecipeRow {
+  return {
+    manifestPath,
+    id: report.recipeId,
+    version: report.version,
+    title: report.title ?? report.recipeId?.split(".").slice(-2).join(" ").replaceAll("_", " ") ?? "Untitled recipe",
+    description: report.description ?? "Recipe package",
+    packageHash: report.packageHash,
+    valid: report.valid,
+    issueCount: report.issues.length,
+    issues: report.issues.slice(0, 8).map((issue) => `${issue.path || issue.file}: ${issue.message}`),
+    security: report.security.status,
+    fileCount: envelope.files.length,
+    warnings: report.warnings.filter((warning) =>
+      warning.includes("same recipe ID") ||
+      warning.includes("conceptual authoring example") ||
+      warning.includes("manager's required recipe.md") ||
+      warning.includes("Adapter registration")),
+  };
+}
+
 export async function inspectRecipeZip(form: FormData): Promise<ZipInspectResult> {
+  if (!LEGACY_INTAKE_ENABLED) return { ok: false, message: LEGACY_INTAKE_PAUSED };
   try {
     const user = await signedInUser();
     if (!(await consumeRecipeInspectionLimit(user.id)))
       throw new RecipePackageError("Inspection limit reached. Try again in one minute.");
     const recipes = await readPreparedZip(form);
-    return { ok: true, recipes: recipes.map(({ manifestPath, envelope, report }) => ({
-      manifestPath,
-      id: report.recipeId,
-      version: report.version,
-      title: report.title ?? report.recipeId?.split(".").slice(-2).join(" ").replaceAll("_", " ") ?? "Untitled recipe",
-      description: report.description ?? "Recipe package",
-      packageHash: report.packageHash,
-      valid: report.valid,
-      issueCount: report.issues.length,
-      issues: report.issues.slice(0, 8).map((issue) => `${issue.path || issue.file}: ${issue.message}`),
-      security: report.security.status,
-      fileCount: envelope.files.length,
-      warnings: report.warnings.filter((warning) => warning.includes("same recipe ID")),
-    })) };
+    return { ok: true, recipes: recipes.map(toRecipeRow) };
   } catch (error) { return { ok: false, message: message(error) }; }
+}
+
+export async function inspectRecipeYaml(form: FormData): Promise<ZipInspectResult> {
+  if (!LEGACY_INTAKE_ENABLED) return { ok: false, message: LEGACY_INTAKE_PAUSED };
+  try {
+    const user = await signedInUser();
+    if (!(await consumeRecipeInspectionLimit(user.id)))
+      throw new RecipePackageError("Inspection limit reached. Try again in one minute.");
+    const recipes = await readPreparedYaml(form);
+    return { ok: true, recipes: recipes.map(toRecipeRow) };
+  } catch (error) {
+    const fallback = "Could not process this recipe.yaml. Try again.";
+    return { ok: false, message: error instanceof RecipePackageError ? error.message : fallback };
+  }
 }
 
 function readSelections(form: FormData): Selection[] {
@@ -205,6 +244,7 @@ async function saveSubmission(recipe: PreparedRecipe, selection: Selection, user
 }
 
 export async function submitRecipeZip(form: FormData): Promise<ZipSubmitResult> {
+  if (!LEGACY_INTAKE_ENABLED) return { ok: false, message: LEGACY_INTAKE_PAUSED };
   try {
     const user = await signedInUser();
     if (!(await consumeRecipeInspectionLimit(user.id)))
@@ -230,4 +270,47 @@ export async function submitRecipeZip(form: FormData): Promise<ZipSubmitResult> 
     }
     return { ok: submitted.length > 0, message: `${submitted.length} recipe${submitted.length === 1 ? "" : "s"} submitted for admin review. ${failed.length} need attention. Nothing was published or installed.`, submitted, failed };
   } catch (error) { return { ok: false, message: message(error) }; }
+}
+
+export async function submitRecipeYaml(form: FormData): Promise<ZipSubmitResult> {
+  if (!LEGACY_INTAKE_ENABLED) return { ok: false, message: LEGACY_INTAKE_PAUSED };
+  try {
+    const user = await signedInUser();
+    if (!(await consumeRecipeInspectionLimit(user.id)))
+      throw new RecipePackageError("Submission limit reached. Try again in one minute.");
+    if (form.get("rights") !== "on")
+      throw new RecipePackageError("Confirm you have permission to submit this recipe file.");
+    const license = String(form.get("license") ?? "").trim();
+    if (!["MIT", "Apache-2.0", "CC-BY-4.0", "Proprietary", "Other"].includes(license))
+      throw new RecipePackageError("Choose reuse terms for this recipe.");
+    const title = String(form.get("title") ?? "").trim();
+    const category = String(form.get("category") ?? "");
+    const subcategory = String(form.get("subcategory") ?? "");
+    if (title.length < 3 || title.length > 100 || !isSkillCategory(category) ||
+        !getSubcategories(category).includes(subcategory))
+      throw new RecipePackageError("Choose a title, category and matching subcategory.");
+    const [recipe] = await readPreparedYaml(form);
+    if (!recipe?.report.valid) {
+      const issues = recipe?.report.issues.slice(0, 3).map((item) => item.message).join(" ");
+      throw new RecipePackageError(`This recipe did not pass the required file checks.${issues ? ` ${issues}` : ""}`);
+    }
+    const submitted = await saveSubmission(recipe, {
+      manifestPath: recipe.manifestPath,
+      packageHash: recipe.report.packageHash,
+      title,
+      category,
+      subcategory,
+    }, user.id, license);
+    revalidatePath("/dashboard/skills");
+    revalidatePath("/admin");
+    revalidatePath("/skills");
+    return {
+      ok: true,
+      message: "1 recipe submitted for admin review. Nothing was published or installed.",
+      submitted: [submitted],
+    };
+  } catch (error) {
+    const fallback = "Could not process this recipe.yaml. Try again.";
+    return { ok: false, message: error instanceof RecipePackageError ? error.message : fallback };
+  }
 }

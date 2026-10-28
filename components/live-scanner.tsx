@@ -67,7 +67,7 @@ export function LiveScanner() {
               onClick={() => setText(SAFE_EXAMPLE)}
               className="rounded-md border border-border px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
             >
-              Safe example
+              Plain-text example
             </button>
           </div>
         </div>
@@ -126,7 +126,8 @@ export function LiveScanner() {
                 {res.result.layerStatus.llm_injection === "ok"
                   ? "All four layers ran, including the Claude classifier."
                   : "Layers 1-3 ran. The LLM classifier is skipped without an API key."}{" "}
-                Automated vetting reduces risk but is not a guarantee.
+                This demo can flag some suspicious text but cannot establish
+                safety.
               </p>
             </div>
           )}

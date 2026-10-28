@@ -74,6 +74,7 @@ export default async function SkillDetailPage({
     );
   const { skill } = lookup;
   const isPackage = skill.metadata?.format === "recipe_package";
+  const isMarkdownRecipe = skill.metadata?.format === "recipe_markdown";
   const [ratings, catalog, reviewAccess] = await Promise.all([
     getRatings(skill.id),
     getCatalogState(),
@@ -177,6 +178,11 @@ export default async function SkillDetailPage({
                 Package reviewed · Runtime not verified
               </span>
             )}
+            {isMarkdownRecipe && (
+              <span className="rounded-md bg-category-blue px-2 py-1 text-xs font-semibold text-primary">
+                Recipe Markdown · validation report included
+              </span>
+            )}
             <span className="font-mono text-xs text-muted-foreground">
               v{skill.version}
             </span>
@@ -211,7 +217,7 @@ export default async function SkillDetailPage({
             {!isExample && (
               <span className="flex items-center gap-1.5">
                 <Download className="size-4" aria-hidden />
-                {skill.installs.toLocaleString()} recorded downloads
+                {skill.installs.toLocaleString()} recorded download requests
               </span>
             )}
             {!isExample && (
@@ -251,14 +257,16 @@ export default async function SkillDetailPage({
             <h2 className="text-xl font-semibold">How to use this recipe</h2>
             <ol className="mt-4 list-decimal space-y-3 pl-5 leading-7 text-muted-foreground">
               <li>
-                Read the complete instructions, license, compatibility and
-                access declarations for version {skill.version}.
+                Read the complete instructions, license, creator-declared
+                compatibility and access declarations for version {skill.version}.
               </li>
               <li>
                 {isExample
                   ? "Download the example SKILL.md for inspection. Review and adapt it in an isolated environment before use."
                   : isPackage
                     ? "Sign in and download the reviewed recipe package. Inspect its manifest and bundled schemas before integration."
+                    : isMarkdownRecipe
+                      ? "Download the approved recipe Markdown and its separate validation report. Review the evidence and limitations before adapting it."
                     : "Sign in and download the approved SKILL.md. Follow your agent application’s instructions for loading SKILL.md."}
               </li>
               <li>
@@ -326,9 +334,9 @@ export default async function SkillDetailPage({
               </div>
 
               <p className="mt-4 text-xs text-muted-foreground">
-                Classifier: {skill.classifierModel}. Automated vetting reduces
-                risk but is not a guarantee. Review a recipe before trusting it
-                with sensitive data.
+                Classifier: {skill.classifierModel}. Static checks can flag
+                some patterns but cannot establish overall safety. Review a
+                recipe before trusting it with sensitive data.
               </p>
             </section>
           )}
@@ -359,7 +367,7 @@ export default async function SkillDetailPage({
                   <p className="text-sm font-semibold">
                     {review.name} · {review.stars}/5{" "}
                     <span className="font-normal text-muted-foreground">
-                      · Recorded downloader
+                      · Account with a recorded download request
                     </span>
                   </p>
                   <p className="mt-2 whitespace-pre-wrap text-sm">
@@ -380,7 +388,7 @@ export default async function SkillDetailPage({
                 ? "Illustrative instructions for this preview listing. Adapt and review them before submitting a real recipe."
                 : isPackage
                   ? "A guide to the reviewed source package. Runtime execution and activation have not been verified."
-                  : "The full instructions that load into your agent. Read them before installing."}
+                  : "The saved instruction file for you to inspect and add to a compatible agent. Review it before installation."}
             </p>
             <div className="mt-4 rounded-2xl border border-border bg-card p-6">
               <Markdown>
@@ -429,21 +437,35 @@ export default async function SkillDetailPage({
               <p className="mt-3 text-sm text-muted-foreground">
                 {isPackage
                   ? "Download the original multi-file recipe package as JSON. Runtime adapter implementation and provider setup are still required."
-                  : "Download the approved SKILL.md, read its instructions, and add it to your agent’s skills folder."}
+                  : isMarkdownRecipe
+                    ? "Download the two approved Markdown deliverables separately. The report is creator-provided and its evidence is not independently verified."
+                    : "Download the approved SKILL.md, read its instructions, and add it to your agent’s skills folder."}
               </p>
-              <form
-                action={`/api/skills/${skill.slug}/download`}
-                method="post"
-                className="mt-5"
-              >
-                <button className="cta-primary inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">
-                  <Download className="size-4" aria-hidden />
-                  {isPackage ? "Download recipe package" : "Download SKILL.md"}
-                </button>
-              </form>
+              {isMarkdownRecipe ? (
+                <div className="mt-5 flex flex-wrap gap-3">
+                  {([ ["recipe.md", "Download recipe.md"], ["validation-report.md", "Download validation report"] ] as const).map(([file, label]) => (
+                    <form key={file} action={`/api/skills/${skill.slug}/download`} method="post">
+                      <input type="hidden" name="file" value={file} />
+                      <button className="cta-primary inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">
+                        <Download className="size-4" aria-hidden />{label}
+                      </button>
+                    </form>
+                  ))}
+                </div>
+              ) : (
+                <form action={`/api/skills/${skill.slug}/download`} method="post" className="mt-5">
+                  <button className="cta-primary inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">
+                    <Download className="size-4" aria-hidden />
+                    {isPackage ? "Download recipe package" : "Download SKILL.md"}
+                  </button>
+                </form>
+              )}
               <p className="mt-3 text-xs text-muted-foreground">
-                Sign-in required. Repeat downloads of the same version count
-                once per account. Creator downloads do not increase the counter.
+                Sign-in required. A download request is recorded when the
+                server starts sending the saved file. Repeat requests for the
+                same version count once per account; this does not confirm a
+                complete transfer or use. Creator downloads do not increase the
+                counter.
               </p>
             </div>
           )}
@@ -538,7 +560,7 @@ function MarketplaceDetails({
         <DetailField label="License" value={metadata.license} />
       )}
       <DetailField
-        label="Works with"
+        label="Creator-declared compatibility"
         value={
           compatibility.length ? compatibility.join(", ") : "Not specified"
         }

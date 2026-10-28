@@ -131,8 +131,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             n8n workflows for {match.category.name.toLowerCase()}
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Download a workflow to import into your own n8n account. Workflows
-            have separate setup requirements and are not AI agent recipes.
+            Download an example workflow JSON to configure and test in your
+            own n8n account. Successful import and operation are not verified.
+            These workflows have separate setup requirements and are not AI
+            agent recipes.
           </p>
           <div className="mt-8 grid gap-5">
             {workflowTemplates.map((template) => (

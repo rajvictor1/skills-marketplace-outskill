@@ -152,7 +152,7 @@ export default function SecurityPage() {
             The outcome
           </p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Three trust tiers
+            Three scan outcomes
           </h2>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
             Every scan resolves to one of three outcomes. The same badge and the
@@ -187,12 +187,12 @@ export default function SecurityPage() {
           <ShieldOff className="size-4" aria-hidden />
           <AlertTitle className="text-caution">What we do not claim</AlertTitle>
           <AlertDescription className="text-foreground/80">
-            Prompt injection is not a fully solved problem, and we will not
-            pretend otherwise. Automated vetting meaningfully reduces risk, but
-            it is not a guarantee. We never claim to catch everything, and we
-            never execute a submitted script. Treat the trust badge as informed
-            defense in depth, not a promise, and keep reading the findings
-            before you download or use a recipe.
+            Prompt injection is not a fully solved problem. Static checks can
+            flag some patterns, but they cannot determine overall safety. The
+            checks may miss issues, and submitted scripts are never executed.
+            Treat the badge as a summary of checks that ran, not a safety
+            certification. Read the findings before downloading or using a
+            recipe.
           </AlertDescription>
         </Alert>
       </section>

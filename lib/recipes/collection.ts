@@ -5,6 +5,7 @@ import {
   RecipePackageError,
   type PackageEnvelope,
 } from "@/lib/recipes/package";
+import { validateMarkdownRecipePair } from "@/lib/recipes/markdown";
 
 export type PreparedRecipe = {
   manifestPath: string;
@@ -93,6 +94,35 @@ export async function prepareRecipeCollection(source: PackageEnvelope): Promise<
       manifestPath,
     };
     const report = await inspectRecipePackage(envelope);
+    const recipeDoc = byPath.get(posix.join(directory, "recipe.md"));
+    const validationDoc = byPath.get(posix.join(directory, "validation-report.md"));
+    if (!recipeDoc)
+      report.issues.push({
+        file: posix.join(directory, "recipe.md"),
+        path: "",
+        code: "manager_recipe_markdown_missing",
+        message: "The manager's standard requires a human-readable recipe.md alongside this structured package.",
+      });
+    if (!validationDoc)
+      report.issues.push({
+        file: posix.join(directory, "validation-report.md"),
+        path: "",
+        code: "manager_validation_report_missing",
+        message: "The manager's standard requires a separate validation-report.md alongside this structured package.",
+      });
+    if (recipeDoc && validationDoc) {
+      for (const markdownIssue of validateMarkdownRecipePair(recipeDoc.content, validationDoc.content))
+        report.issues.push({
+          file: posix.join(directory, markdownIssue.file),
+          path: "",
+          code: "manager_standard_markdown",
+          message: markdownIssue.message,
+        });
+    }
+    if (report.issues.length) {
+      report.valid = false;
+      report.structuralValid = false;
+    }
     const identity = `${report.recipeId ?? manifestPath}@${report.version ?? "unknown"}`;
     if (identities.has(identity))
       report.warnings.push("Another manifest in this ZIP uses the same recipe ID and version. Select only one variant for submission.");

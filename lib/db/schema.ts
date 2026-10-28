@@ -15,7 +15,7 @@ import {
 import { user } from "./auth-schema";
 
 export interface SkillMetadata {
-  format?: "recipe_package";
+  format?: "recipe_package" | "recipe_markdown";
   recipeId?: string;
   packageVersionId?: string;
   packageHash?: string;

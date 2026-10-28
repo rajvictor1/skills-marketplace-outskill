@@ -30,9 +30,9 @@ export const TRUST_META: Record<
   }
 > = {
   verified_safe: {
-    label: "Verified Safe",
-    short: "Safe",
-    blurb: "No high-risk findings reported by completed automated checks.",
+    label: "Static scan: no high-risk findings",
+    short: "No high-risk finding",
+    blurb: "Completed static checks reported no high-risk findings. This is not a safety certification.",
     icon: ShieldCheck,
     dot: "bg-safe",
     text: "text-safe",

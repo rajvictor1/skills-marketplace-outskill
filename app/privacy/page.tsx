@@ -10,7 +10,7 @@ export default function PrivacyPage() {
       sections={[
         {
           title: "What we collect",
-          body: "Account name, email, a password hash managed by the authentication service, session records, submitted recipe packages or SKILL.md instructions, listing metadata, scan reports, review decisions, ratings and recorded download events. Session records can include IP address and browser information. Hosting providers may retain operational request logs.",
+          body: "Account name, email, a password hash managed by the authentication service, session records, submitted recipe Markdown and validation reports, recipe packages or legacy SKILL.md instructions, listing metadata, scan reports, review decisions, ratings and recorded download events. Session records can include IP address and browser information. Hosting providers may retain operational request logs.",
         },
         {
           title: "How data is used",
@@ -22,7 +22,7 @@ export default function PrivacyPage() {
         },
         {
           title: "Providers and automated review",
-          body: "Vercel hosts this deployment and Supabase Postgres stores account, marketplace and private recipe records. Better Auth manages sign-in using that database; Supabase Auth is not enabled for this app. Public GitHub imports fetch the specified repository. If the optional AI classifier is configured, legacy instruction-file submissions are sent to its model provider for security review; the scan report shows whether it was used. Structured ZIP recipe uploads use static checks and are not sent to the classifier. Provider terms and processing locations also apply.",
+          body: "Vercel hosts this deployment and environment-specific Supabase Postgres databases store account, marketplace and private recipe records. Better Auth manages sign-in using that database; Supabase Auth is not enabled for this app. Public GitHub imports fetch the specified repository. If the optional AI classifier is configured, Markdown recipe and legacy instruction-file submissions are sent to its model provider for security review; the scan report shows whether it was used. Structured ZIP recipe uploads use static checks and are not sent to the classifier. Provider terms and processing locations also apply.",
         },
         {
           title: "Cookies and browser storage",
@@ -30,7 +30,7 @@ export default function PrivacyPage() {
         },
         {
           title: "Retention and requests",
-          body: "No automatic retention or deletion schedule is configured yet. Account, submission, review and security records remain until the operator deletes them or establishes a retention schedule. Contact the operator to request access, correction or deletion; identity may need confirmation. Applicable rights depend on your jurisdiction. A legal basis, final retention schedule, complaint route and international transfer disclosures must be reviewed for the intended launch markets.",
+          body: "A 12-month review-event cleanup is defined for environments where its migration and scheduled job are active. Retention of other account, submission and security records is under review. Contact the operator to request access, correction or deletion; identity may need confirmation. Applicable rights depend on your jurisdiction. A legal basis, final retention schedule, complaint route and international transfer disclosures must be reviewed for the intended launch markets.",
         },
       ]}
     />
